@@ -63,9 +63,12 @@ export function renderPlainText(
     const text = line.html
       .replace(/<[^>]+>/g, "")
       .replace(/&#58;/g, ":")
-      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
       .replace(/&#39;/g, "'")
       .replace(/&quot;/g, '"')
+      // Ampersand last, so "&amp;lt;" cannot decode into a bracket.
+      .replace(/&amp;/g, "&")
       .trim();
     if (!text) continue;
     const label =

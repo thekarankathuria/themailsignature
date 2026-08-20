@@ -1,5 +1,4 @@
 import {
-  esc,
   gap,
   gutter,
   hairline,
@@ -13,7 +12,6 @@ import {
   contactRows,
   ctaButton,
   footerRows,
-  hasName,
   logoImg,
   nameHtml,
   photoImg,
@@ -69,7 +67,7 @@ function roleRow(data: SignatureData, style: SignatureStyle, align?: string) {
 /** Photo stacked over logo, for templates with a dedicated media column. */
 function mediaStack(data: SignatureData, style: SignatureStyle) {
   const photo = photoImg(data, style);
-  const logo = logoImg(data, style);
+  const logo = logoImg(data);
   if (photo && logo) {
     return table(
       `<tr><td>${photo}</td></tr>` + spacer(gap(style) + 4) + `<tr><td>${logo}</td></tr>`,
@@ -124,11 +122,17 @@ const meridian: Renderer = (data, style, ctx) => {
     ? `${gutter(16)}<td width="2" style="width:2px;background-color:${style.accent};font-size:0;line-height:0;">&nbsp;</td>${gutter(16)}`
     : gutter(18);
 
+  // With no logo or photo there is no media column, so the accent survives as
+  // a left bar rather than vanishing entirely.
   const main = media
     ? table(
         `<tr><td valign="top">${media}</td>${rule}<td valign="top">${details}</td></tr>`,
       )
-    : details;
+    : style.showDivider
+      ? table(
+          `<tr><td width="3" style="width:3px;background-color:${style.accent};font-size:0;line-height:0;">&nbsp;</td>${gutter(14)}<td valign="top">${details}</td></tr>`,
+        )
+      : details;
 
   return table(`<tr><td>${main}</td></tr>` + trailer(data, style));
 };
@@ -136,7 +140,7 @@ const meridian: Renderer = (data, style, ctx) => {
 /* 2. Stack ----------------------------------------------------------- */
 
 const stack: Renderer = (data, style, ctx) => {
-  const logo = logoImg(data, style);
+  const logo = logoImg(data);
   const photo = photoImg(data, style);
   const social = socialRow(data, style, ctx);
   const top = photo || logo;
@@ -163,7 +167,7 @@ const stack: Renderer = (data, style, ctx) => {
 /* 3. Ledger ---------------------------------------------------------- */
 
 const ledger: Renderer = (data, style, ctx) => {
-  const logo = logoImg(data, style);
+  const logo = logoImg(data);
   const social = socialRow(data, style, ctx);
 
   const header = logo
@@ -191,7 +195,7 @@ const ledger: Renderer = (data, style, ctx) => {
 const portrait: Renderer = (data, style, ctx) => {
   const photo = photoImg(data, style);
   const social = socialRow(data, style, ctx);
-  const logo = logoImg(data, style);
+  const logo = logoImg(data);
 
   const heading = table(
     nameRow(data, style) +
@@ -288,7 +292,7 @@ const minimal: Renderer = (data, style, ctx) => {
 /* 7. Broadcast ------------------------------------------------------- */
 
 const broadcast: Renderer = (data, style, ctx) => {
-  const logo = logoImg(data, style);
+  const logo = logoImg(data);
   const social = socialRow(data, style, ctx);
 
   const left = table(nameRow(data, style) + roleRow(data, style));

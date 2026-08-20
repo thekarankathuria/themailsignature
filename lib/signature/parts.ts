@@ -178,7 +178,7 @@ export function contactColumns(
 
 /* Images ------------------------------------------------------------ */
 
-export function logoImg(data: SignatureData, style: SignatureStyle): string {
+export function logoImg(data: SignatureData): string {
   if (!data.logoUrl.trim()) return "";
   const el = img({
     src: data.logoUrl,

@@ -23,6 +23,10 @@ export function safeUrl(raw: string): string {
   const value = String(raw ?? "").trim();
   if (!value) return "";
   if (SAFE_SCHEME.test(value)) return esc(value);
+  // Root-relative paths are used by the on-site previews, where the browser
+  // resolves them. The builder always hands templates an absolute origin, so
+  // anything that reaches a real inbox is fully qualified.
+  if (value.startsWith("/")) return esc(value);
   // Anything with a scheme we do not recognise (javascript:, data:, ...) is dropped.
   if (/^[a-z][a-z0-9+.-]*:/i.test(value)) return "";
   return esc("https://" + value.replace(/^\/+/, ""));
