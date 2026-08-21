@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sendmark.app";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mailsignature.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),

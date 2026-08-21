@@ -11,7 +11,7 @@
  */
 
 /** Same default as `app/layout.tsx`'s `metadataBase`, so canonical and JSON-LD agree. */
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sendmark.app";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mailsignature.com";
 
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;

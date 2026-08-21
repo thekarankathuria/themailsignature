@@ -249,3 +249,28 @@ body,
 .tab-pane:not(.is-active) {
   opacity: 0.15;
 }
+
+/* Hero H1.
+   The keyword "Email Signature Generator" is six characters longer than the
+   phrase the original laid out here, so at the inherited 64px it overflowed the
+   heading column and wrapped mid-phrase. Widening the column would have fixed
+   the wrap but shifted the absolutely-positioned email mock up into the rating
+   row, so instead the type scales down to fit the column the original sized. */
+.section_hero .heading_block .heading {
+  flex-wrap: nowrap !important;
+  white-space: nowrap;
+  font-size: clamp(1.5rem, 3.85vw, 3.5rem);
+}
+@media (max-width: 767px) {
+  .section_hero .heading_block .heading {
+    font-size: clamp(1.15rem, 5.6vw, 1.75rem);
+  }
+}
+
+/* The original tucks the hero animation up by -80px, which makes the email mock
+   collide with the G2/Google rating row — visible on the source site too, where
+   "5.0 | 5.0" lands on top of the mock's "to:" line. Dropping the negative pull
+   lets the ratings clear the card. */
+.section_hero .hero_animation_container {
+  margin-top: 0;
+}

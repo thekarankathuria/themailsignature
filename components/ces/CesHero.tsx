@@ -72,8 +72,21 @@ export function CesHero() {
                     width="Auto"
                     className="image-3"
                   />
+                  {/*
+                    "Email Signature Generator" is wider than the original phrase, so it no
+                    longer fits this heading column at the inherited 64px. The fit is handled
+                    in `app/ces-extra.css` (`.section_hero .heading_block .heading`), which
+                    pins the line to `nowrap` and scales the type to the viewport.
+                  */}
                   <h1 className="heading">
-                    <span className="highlight_text">Email Signature</span> Generator
+                    {/*
+                      `.heading` is a flex container, so the span and the trailing word are
+                      separate anonymous flex items and the ordinary space between them is
+                      stripped — it renders "SignatureGenerator". A non-breaking space is not
+                      collapsible whitespace, so it survives. (The same clone-wide quirk still
+                      affects `CesVideoTutorials`, which is left verbatim.)
+                    */}
+                    <span className="highlight_text">Email Signature</span>&nbsp;Generator
                   </h1>
                 </div>
               </div>
