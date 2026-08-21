@@ -151,7 +151,7 @@ export function CesVideoTutorials({ isPageHeading = false }: { isPageHeading?: b
               <div>
                 <div className="heading_block">
                   <Heading className="heading">
-                    <span className="highlight_text">Video</span> Tutorials
+                    <span className="highlight_text">Video</span>&nbsp;Tutorials
                   </Heading>
                 </div>
               </div>
