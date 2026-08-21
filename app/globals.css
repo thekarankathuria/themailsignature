@@ -18,6 +18,18 @@
   --color-brand-900: #093f30;
   --color-brand-950: #04241c;
 
+  --color-taskgo-50: #f5f3ff;
+  --color-taskgo-100: #ede9fe;
+  --color-taskgo-200: #ddd6fe;
+  --color-taskgo-300: #c4b5fd;
+  --color-taskgo-400: #a78bfa;
+  --color-taskgo-500: #8b5cf6;
+  --color-taskgo-600: #7c3aed;
+  --color-taskgo-700: #6d28d9;
+  --color-taskgo-800: #5b21b6;
+  --color-taskgo-900: #4c1d95;
+  --color-taskgo-950: #2e1065;
+
   --color-ink-50: #f7f7f8;
   --color-ink-100: #eeeff1;
   --color-ink-200: #dfe1e5;
@@ -73,7 +85,7 @@ select:focus-visible,
 textarea:focus-visible,
 button:focus-visible,
 a:focus-visible {
-  outline: 2px solid var(--color-brand-600);
+  outline: 2px solid var(--color-taskgo-600);
   outline-offset: 2px;
 }
 
@@ -90,6 +102,29 @@ a:focus-visible {
   transform-origin: top left;
   pointer-events: none;
   user-select: none;
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes float-medium {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes float-fast {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+.animate-float-medium {
+  animation: float-medium 5s ease-in-out infinite;
+}
+.animate-float-fast {
+  animation: float-fast 4s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

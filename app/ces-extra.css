@@ -1,0 +1,251 @@
+/* Replacements for behaviour the original site drove with Webflow's IX2 runtime,
+   which does not exist in this project. Keeps app/ces.css a verbatim copy. */
+
+/* Brand-logo marquee (.client-section). Two identical tracks slide left in lockstep;
+   when the first has fully left, the animation resets and the second is exactly where
+   the first began, so the loop is seamless. */
+@keyframes ces-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+.client-marquee-list {
+  animation: ces-marquee 30s linear infinite;
+  will-change: transform;
+}
+.client-marquee-wrapper:hover .client-marquee-list {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .client-marquee-list { animation: none; }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Theme: one flat accent, pure-white surface
+   ---------------------------------------------------------------------------
+   - Accent is a single flat colour. No gradients, no glows, no coloured shadows.
+     The ramp swap and the gradient/shadow flattening happen in app/ces.css via
+     scripts/recolor-css.mjs; this file holds the parts that need a selector.
+   - The whole page is pure white, including the seven sections the original
+     rendered on a near-black band.
+   --------------------------------------------------------------------------- */
+
+:root {
+  --accent: #ea4335;
+  --accent-dark: #c5221f;
+  --ink: #030712;
+  --ink-muted: #4a5565;
+  --hairline: #e5e7eb;
+}
+
+/* --- pure white surface, no washes ---------------------------------------- */
+html,
+body,
+.page-wrapper,
+.main-wrapper,
+.section_hero,
+.client-section,
+.supercharge-your-emails,
+.top_user_examples_evan,
+.how-it-work,
+.email-replies,
+.deliverability {
+  background: #fff;
+}
+
+/* Decorative background art: hero wash, blurred blobs, dotted grids, gradient
+   rules. All of it existed to sit under a tinted page, so none of it survives. */
+.background-image,
+.bg-image,
+.bg-img-mobile,
+.image-5,
+.gradinat-img,
+.cta-inner-top-gradient,
+.cta-inner-bottom-gredient-block-2,
+.cta-image-wrap,
+.footer-gradient-line,
+.hero-littie-line-wrper > .email-line {
+  display: none !important;
+}
+
+.cta-box,
+.cta-box-inner,
+.faq,
+.features,
+.integrations,
+.our-platform,
+.cta_section,
+.footer,
+.interactive_sections_new,
+.background-color-alternate {
+  background-color: #fff !important;
+  background-image: none !important;
+}
+
+/* --- the former dark half, flipped to dark-on-white ----------------------- */
+.background-color-alternate {
+  color: var(--ink);
+}
+.background-color-alternate .heading,
+.background-color-alternate h1,
+.background-color-alternate h2,
+.background-color-alternate h3,
+.background-color-alternate h4,
+.faq6_list,
+.footer-menu-title,
+.tab-link.w--current,
+.tab-link.active {
+  color: var(--ink) !important;
+}
+.background-color-alternate .button-text,
+.background-color-alternate .section-sub-tag-title,
+.background-color-alternate .dropdown-heading,
+.background-color-alternate .feature-title,
+.background-color-alternate .faq6_question,
+.background-color-alternate p,
+.background-color-alternate .text-size-medium,
+.background-color-alternate .text-size-regular,
+.footer-menu-link,
+.tab-link {
+  color: var(--ink-muted) !important;
+}
+.footer-menu-link:hover,
+.background-color-alternate a:hover {
+  color: var(--accent) !important;
+}
+
+/* Cards and chips in that half were dark-on-dark; give them a white face and a
+   hairline so they still read as cards. */
+.feature-content-wraper,
+.faq6_accordion,
+.faq6_question,
+.crm-wrapper,
+.footer-action-button,
+.section-sub-inner-box,
+.tab-wrapper,
+.slider-nav {
+  background-color: #fff !important;
+  border-color: var(--hairline) !important;
+}
+.footer-action-button {
+  color: var(--ink) !important;
+}
+.link-wraper {
+  border-color: var(--hairline) !important;
+}
+
+/* Exception: these tiles hold artwork that was authored on black (product
+   screenshots, the CRM orbit, the 3-D signature card). Keeping their own
+   surface dark is what lets the art stay legible on a white page. */
+.feature-content-wraper .feature-img-wraper,
+._3d_esign_card_master {
+  background-color: #030712 !important;
+}
+
+/* --- flat accent ---------------------------------------------------------- */
+/* Any accent-coloured text that the original painted with a clipped gradient. */
+.highlight_text,
+.highlight-text,
+.text-span-blue,
+.blue-text {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+/* Buttons: flat fill, square-off the glow. */
+.button-border,
+.button-border-b,
+.try-for-free_btn--b .button-border,
+.primary_cta_btn,
+.get-started-btn {
+  background: var(--accent) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+.button-border:hover,
+.button-border-b:hover,
+.primary_cta_btn:hover {
+  background: var(--accent-dark) !important;
+}
+
+/* Kill every remaining glow/soft-shadow on accent furniture. */
+.section-sub-inner-box,
+.section-sub-tag-title,
+.tag-border,
+.gradient-line,
+.button-wrapper a,
+.white_cta_btn {
+  box-shadow: none !important;
+  filter: none !important;
+}
+.gradient-line {
+  background: var(--accent) !important;
+}
+
+/* Brand-logo marquee (.client-section). Two identical tracks slide left in
+   lockstep, so the loop is seamless. Replaces the Webflow IX2 animation. */
+@keyframes ces-marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+.client-marquee-list {
+  animation: ces-marquee 30s linear infinite;
+  will-change: transform;
+}
+.client-marquee-wrapper:hover .client-marquee-list {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .client-marquee-list { animation: none; }
+}
+
+/* Lottie containers have no intrinsic size until lottie-web injects its <svg>.
+   Reserving the source aspect ratio stops the card collapsing to zero height —
+   which also keeps the IntersectionObserver that triggers playback able to fire. */
+.sign_example_lottie {
+  aspect-ratio: 688 / 344;
+  width: 100%;
+}
+.sign_example_lottie.hero-lottie {
+  aspect-ratio: auto;
+}
+
+/* Our Platform tab bar.
+   The original was a dark glass pill sitting on a near-black band. On the white
+   page it read as a stray black block, so the track becomes a light surface, the
+   active chip a white card, and the label colours invert. */
+.tabs-menu {
+  background-color: #f6f7f8 !important;
+  border: 1px solid var(--hairline) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.tab-link {
+  color: var(--ink-muted) !important;
+}
+.tab-link.active,
+.tab-link.w--current {
+  color: var(--ink) !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 1px 2px rgb(3 7 18 / 0.06);
+}
+.tab-link:hover {
+  color: var(--ink) !important;
+}
+
+/* Centre-mode carousel: the neighbouring slides peek past the active one. On the
+   dark original they fell away; on white their copy read as broken overflow, so
+   the inactive panes are dimmed and the track edges keep the original mask. */
+.tab-pane {
+  transition: opacity 0.3s ease;
+}
+.tab-pane[aria-hidden="true"],
+.tab-pane:not(.is-active) {
+  opacity: 0.15;
+}

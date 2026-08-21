@@ -1,51 +1,32 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-
-const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sendmark.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: {
-    default: "Sendmark - free email signature generator",
-    template: "%s | Sendmark",
+    default: "Mail Signature — AI email signature generator",
+    template: "%s | Mail Signature",
   },
   description:
-    "Build a professional HTML email signature in under a minute. Eight tested templates, free image hosting, and install steps for Gmail, Outlook, Apple Mail and more. No account needed.",
-  keywords: [
-    "email signature generator",
-    "free email signature",
-    "html email signature",
-    "outlook signature",
-    "gmail signature",
-  ],
-  openGraph: {
-    type: "website",
-    url: SITE,
-    title: "Sendmark - free email signature generator",
-    description:
-      "Build a professional HTML email signature in under a minute. No account needed.",
-  },
+    "AI-powered email signature maker that helps you create, customize and deploy professional signatures that boost replies and drive traffic.",
   robots: { index: true, follow: true },
 };
-
-/** Applies the stored theme before paint so the page never flashes. */
-const themeScript = `(function(){try{var t=localStorage.getItem("sendmark.theme");var d=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark")}catch(e){}})();`;
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Urbanist:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

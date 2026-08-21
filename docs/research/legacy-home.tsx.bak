@@ -1,0 +1,666 @@
+import {
+  ArrowRight,
+  Bell,
+  Briefcase,
+  Chat,
+  Check,
+  CheckCircle,
+  Clock,
+  DotsThree,
+  Envelope,
+  Kanban,
+  List,
+  Paperclip,
+  Plus,
+  Robot,
+  Star,
+  Users,
+} from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
+import Image from "next/image";
+import { Footer } from "@/components/site/Footer";
+import { Nav } from "@/components/site/Nav";
+import { Reveal } from "@/components/site/Reveal";
+
+export default function HomePage() {
+  return (
+    <div className="min-h-[100dvh] bg-ink-50 dark:bg-ink-950 overflow-x-hidden">
+      <Nav />
+
+      {/* Hero Section */}
+      <section className="relative pt-16 pb-24 md:pt-24 md:pb-32 bg-ink-50 dark:bg-ink-950">
+        {/* Subtle grid pattern background */}
+        <div className="absolute inset-0 z-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+
+        <div className="relative z-10 mx-auto max-w-[1200px] px-5 sm:px-8 text-center flex flex-col items-center">
+          
+          {/* Tagline Badge */}
+          <Reveal>
+            <div className="inline-flex items-center gap-2 rounded-full border border-taskgo-200 bg-taskgo-50/50 dark:border-taskgo-800/40 dark:bg-taskgo-950/30 px-3.5 py-1 text-xs font-semibold text-taskgo-700 dark:text-taskgo-300 mb-6">
+              <span className="flex h-2 w-2 rounded-full bg-taskgo-500 animate-pulse" />
+              SaaS Email Signature Management
+            </div>
+          </Reveal>
+
+          {/* Hero Titles */}
+          <Reveal delay={0.05}>
+            <h1 className="max-w-[24ch] text-[2.8rem] leading-[1.08] font-bold tracking-tight text-ink-950 md:text-[4.25rem] dark:text-white">
+              Professional Email Signatures <br />
+              <span className="bg-gradient-to-r from-taskgo-600 to-indigo-600 bg-clip-text text-transparent">Deployed in Seconds.</span>
+            </h1>
+          </Reveal>
+
+          <Reveal delay={0.1}>
+            <p className="mt-6 max-w-[54ch] text-lg md:text-xl text-ink-600 dark:text-ink-300 leading-relaxed">
+              Align your team&apos;s branding, manage automated campaign banners, and sync signatures across Google Workspace & Office 365 automatically.
+            </p>
+          </Reveal>
+
+          {/* CTAs */}
+          <Reveal delay={0.15}>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/generator"
+                className="inline-flex items-center gap-2 rounded-full bg-taskgo-600 px-7 py-3.5 text-base font-semibold text-white transition-all hover:bg-taskgo-700 active:translate-y-px shadow-lg shadow-taskgo-600/25 hover:shadow-xl hover:shadow-taskgo-600/35"
+              >
+                Build My Signature
+                <ArrowRight size={18} weight="bold" aria-hidden />
+              </Link>
+              <Link
+                href="#features"
+                className="inline-flex items-center rounded-full border border-ink-300 bg-white/80 dark:bg-ink-900/80 backdrop-blur px-7 py-3.5 text-base font-semibold text-ink-800 dark:text-ink-200 transition-colors hover:border-ink-400 dark:border-ink-700 dark:hover:border-ink-600 hover:bg-white dark:hover:bg-ink-900"
+              >
+                Request a Demo
+              </Link>
+            </div>
+          </Reveal>
+
+          {/* Hero Visual: Dark Browser frame containing the generated dashboard mockup */}
+          <Reveal delay={0.25} className="mt-16 w-full max-w-[960px] relative z-20">
+            <div className="rounded-2xl border border-ink-800/80 bg-ink-950 shadow-[0_25px_60px_-15px_rgba(99,102,241,0.25)] overflow-hidden relative group">
+              
+              {/* Browser Window Bar */}
+              <div className="h-11 border-b border-ink-800 bg-ink-900/50 flex items-center px-4 justify-between">
+                <div className="flex gap-2">
+                  <div className="h-3 w-3 rounded-full bg-[#ff5f56]" />
+                  <div className="h-3 w-3 rounded-full bg-[#ffbd2e]" />
+                  <div className="h-3 w-3 rounded-full bg-[#27c93f]" />
+                </div>
+                <div className="rounded bg-ink-950 border border-ink-850 px-8 py-0.5 text-[10px] text-ink-400 font-mono tracking-tight select-none">
+                  app.taskgo.io/editor
+                </div>
+                <div className="w-12" /> {/* spacer */}
+              </div>
+
+              {/* Mockup Image Display */}
+              <div className="relative aspect-video w-full">
+                <Image
+                  src="/dashboard_mockup.jpg"
+                  alt="TaskGo Signature Editor Dashboard"
+                  fill
+                  className="object-cover pointer-events-none"
+                  priority
+                />
+              </div>
+
+            </div>
+          </Reveal>
+
+        </div>
+      </section>
+
+      {/* Client Logos Band */}
+      <section className="border-y border-ink-200/50 bg-white/70 dark:border-ink-800/50 dark:bg-ink-950/30 backdrop-blur py-10 relative z-30">
+        <div className="mx-auto max-w-[1200px] px-5 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-sm font-medium text-ink-500 dark:text-ink-400 flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-taskgo-600" />
+            Endorsed by leading enterprises globally
+          </p>
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
+            {["IPSUM", "Legalipsum", "ooo", "LOGO"].map((logo) => (
+              <div
+                key={logo}
+                className="rounded-full border border-ink-200 bg-white/80 dark:border-ink-800 dark:bg-ink-900/85 px-6 py-2 text-sm font-bold tracking-wider text-ink-400 dark:text-ink-500 hover:text-taskgo-600 dark:hover:text-taskgo-400 hover:border-taskgo-300 dark:hover:border-taskgo-800/50 transition-all cursor-default shadow-sm"
+              >
+                {logo}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Templates Showcase Section */}
+      <section id="templates" className="mx-auto max-w-[1200px] px-5 py-24 sm:px-8">
+        <div className="text-center max-w-xl mx-auto flex flex-col items-center">
+          <Reveal>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-ink-900 dark:text-white leading-tight">
+              Choose From Professional, <br />
+              Mail-Safe Layouts.
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mt-4 text-base text-ink-500 dark:text-ink-400">
+              Each template is crafted with compatibility in mind, rendering beautifully in Outlook, Gmail, and Apple Mail.
+            </p>
+          </Reveal>
+        </div>
+
+        {/* Templates Grid */}
+        <div className="mt-16 grid gap-8 md:grid-cols-2">
+          
+          {/* Template 1: Corporate Standard */}
+          <Reveal className="bg-white dark:bg-ink-900 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+            <div className="flex justify-between items-start mb-6">
+              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-purple-50 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300">
+                Corporate Standard
+              </span>
+              <span className="text-xs text-ink-400 dark:text-ink-500">Template #1</span>
+            </div>
+
+            {/* Rendered HTML signature */}
+            <div className="p-5 rounded-xl bg-ink-50 dark:bg-ink-950 border border-ink-150 dark:border-ink-850/50">
+              <table cellPadding="0" cellSpacing="0" border={0} style={{ borderCollapse: "collapse" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ verticalAlign: "top", paddingRight: "16px" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&h=120&q=80"
+                        alt="Sarah Jenkins"
+                        style={{ width: "65px", height: "65px", borderRadius: "8px", objectFit: "cover" }}
+                      />
+                    </td>
+                    <td style={{ verticalAlign: "top", borderLeft: "2px solid #7c3aed", paddingLeft: "16px" }}>
+                      <div style={{ fontSize: "15px", fontWeight: "bold", color: "#17191e", lineHeight: "1.2" }} className="dark:text-white">Sarah Jenkins</div>
+                      <div style={{ fontSize: "12px", color: "#7c3aed", fontWeight: "600", marginTop: "2px" }}>VP of Operations, TaskGo</div>
+                      <div style={{ fontSize: "11px", color: "#6c737f", marginTop: "8px", lineHeight: "1.4" }} className="dark:text-ink-400">
+                        <span>p: +1 555-0199</span><br />
+                        <span>e: s.jenkins@taskgo.com</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <div className="mt-6 pt-4 border-t border-ink-100 dark:border-ink-800/50 flex justify-between items-center text-xs text-ink-500">
+              <span>Used by HR & Executives</span>
+              <Link href="/generator" className="font-semibold text-taskgo-600 hover:text-taskgo-700 flex items-center gap-1">
+                Customize <ArrowRight size={14} />
+              </Link>
+            </div>
+          </Reveal>
+
+          {/* Template 2: Creative Hub */}
+          <Reveal delay={0.1} className="bg-white dark:bg-ink-900 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+            <div className="flex justify-between items-start mb-6">
+              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300">
+                Creative Hub
+              </span>
+              <span className="text-xs text-ink-400 dark:text-ink-500">Template #2</span>
+            </div>
+
+            {/* Rendered HTML signature */}
+            <div className="p-5 rounded-xl bg-ink-50 dark:bg-ink-950 border border-ink-150 dark:border-ink-850/50">
+              <table cellPadding="0" cellSpacing="0" border={0} style={{ borderCollapse: "collapse" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ verticalAlign: "middle", paddingRight: "16px" }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&h=120&q=80"
+                        alt="David Chen"
+                        style={{ width: "60px", height: "60px", borderRadius: "50%", objectFit: "cover" }}
+                      />
+                    </td>
+                    <td style={{ verticalAlign: "middle" }}>
+                      <div style={{ fontSize: "14px", fontWeight: "bold", color: "#17191e" }} className="dark:text-white">David Chen</div>
+                      <div style={{ fontSize: "11px", color: "#4b5563" }} className="dark:text-ink-400">Creative Lead</div>
+                      <div style={{ display: "flex", gap: "6px", marginTop: "8px" }}>
+                        <span style={{ fontSize: "8px", fontWeight: "bold", background: "#8b5cf6", color: "white", padding: "2px 6px", borderRadius: "4px" }}>DRIBBBLE</span>
+                        <span style={{ fontSize: "8px", fontWeight: "bold", background: "#8b5cf6", color: "white", padding: "2px 6px", borderRadius: "4px" }}>LINKEDIN</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-ink-100 dark:border-ink-800/50 flex justify-between items-center text-xs text-ink-500">
+              <span>Perfect for Design & Media</span>
+              <Link href="/generator" className="font-semibold text-taskgo-600 hover:text-taskgo-700 flex items-center gap-1">
+                Customize <ArrowRight size={14} />
+              </Link>
+            </div>
+          </Reveal>
+
+          {/* Template 3: Marketing Special */}
+          <Reveal className="bg-white dark:bg-ink-900 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+            <div className="flex justify-between items-start mb-6">
+              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300">
+                Marketing Promo
+              </span>
+              <span className="text-xs text-ink-400 dark:text-ink-500">Template #3</span>
+            </div>
+
+            {/* Rendered HTML signature */}
+            <div className="p-5 rounded-xl bg-ink-50 dark:bg-ink-950 border border-ink-150 dark:border-ink-850/50">
+              <table cellPadding="0" cellSpacing="0" border={0} style={{ borderCollapse: "collapse", width: "100%" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ verticalAlign: "top" }}>
+                      <div style={{ fontSize: "14px", fontWeight: "bold", color: "#17191e" }} className="dark:text-white">Elena Rostova</div>
+                      <div style={{ fontSize: "11px", color: "#6c737f" }}>Product Marketer | e.rostova@taskgo.com</div>
+                      
+                      {/* Banner advertisement */}
+                      <div style={{ marginTop: "12px", width: "100%", height: "45px", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", borderRadius: "6px", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 12px", color: "white", boxSizing: "border-box" }}>
+                        <span style={{ fontSize: "10px", fontWeight: "bold", letterSpacing: "-0.2px" }}>🚀 Try TaskGo Free for 14 Days!</span>
+                        <span style={{ fontSize: "8px", fontWeight: "bold", background: "white", color: "#7c3aed", padding: "4px 8px", borderRadius: "4px" }}>ACTIVATE</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-ink-100 dark:border-ink-800/50 flex justify-between items-center text-xs text-ink-500">
+              <span>Drive Traffic from Every Mail</span>
+              <Link href="/generator" className="font-semibold text-taskgo-600 hover:text-taskgo-700 flex items-center gap-1">
+                Customize <ArrowRight size={14} />
+              </Link>
+            </div>
+          </Reveal>
+
+          {/* Template 4: Sleek Minimalist */}
+          <Reveal delay={0.1} className="bg-white dark:bg-ink-900 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between hover:shadow-md transition-all">
+            <div className="flex justify-between items-start mb-6">
+              <span className="px-2.5 py-1 rounded-md text-[10px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300">
+                Sleek Minimalist
+              </span>
+              <span className="text-xs text-ink-400 dark:text-ink-500">Template #4</span>
+            </div>
+
+            {/* Rendered HTML signature */}
+            <div className="p-5 rounded-xl bg-ink-50 dark:bg-ink-950 border border-ink-150 dark:border-ink-850/50">
+              <table cellPadding="0" cellSpacing="0" border={0} style={{ borderCollapse: "collapse" }}>
+                <tbody>
+                  <tr>
+                    <td style={{ verticalAlign: "top" }}>
+                      <div style={{ fontSize: "14px", fontWeight: "bold", color: "#17191e" }} className="dark:text-white">Liam Parker</div>
+                      <div style={{ fontSize: "10px", color: "#9ca3af", letterSpacing: "1px", textTransform: "uppercase", marginTop: "2px" }}>Software Engineer</div>
+                      <div style={{ height: "1px", width: "40px", background: "#d1d5db", margin: "8px 0" }} />
+                      <div style={{ fontSize: "10px", color: "#6c737f" }}>liam.p@taskgo.com &bull; github/liamparker</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="mt-6 pt-4 border-t border-ink-100 dark:border-ink-800/50 flex justify-between items-center text-xs text-ink-500">
+              <span>Best for Engineers & Analysts</span>
+              <Link href="/generator" className="font-semibold text-taskgo-600 hover:text-taskgo-700 flex items-center gap-1">
+                Customize <ArrowRight size={14} />
+              </Link>
+            </div>
+          </Reveal>
+
+        </div>
+      </section>
+
+      {/* Bento Grid: Features Section */}
+      <section id="features" className="bg-white dark:bg-ink-900 border-y border-ink-200/50 dark:border-ink-800/50 py-24 scroll-mt-20">
+        <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
+          
+          <div className="text-center max-w-xl mx-auto flex flex-col items-center">
+            <Reveal>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-ink-900 dark:text-white leading-tight">
+                Scale Brand Control Across <br />
+                Your Whole Company.
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-4 text-base text-ink-500 dark:text-ink-400">
+                Centralized command for IT managers, marketing leads, and operations directors.
+              </p>
+            </Reveal>
+          </div>
+
+          {/* Bento Grid */}
+          <div className="mt-16 grid gap-6 md:grid-cols-3">
+            
+            {/* Card 1: Centralized Dashboard */}
+            <Reveal className="bg-ink-50 dark:bg-ink-950 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+              <div>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-white">Centralized Dashboard</h3>
+                <p className="text-sm text-ink-500 dark:text-ink-400 mt-2 leading-relaxed">
+                  Manage hundreds of employee profiles from a single dashboard. Lock templates, standard colors, and specific contact cards.
+                </p>
+              </div>
+              <div className="mt-auto pt-6 border-t border-ink-200/50 dark:border-ink-800/30">
+                <div className="bg-white dark:bg-ink-900 p-4 rounded-xl border border-ink-150 dark:border-ink-850/50">
+                  <div className="flex justify-between items-center text-xs text-ink-400 mb-3">
+                    <span>Active Profiles</span>
+                    <span className="font-semibold text-taskgo-600">124 users</span>
+                  </div>
+                  <div className="h-2 w-full bg-ink-100 dark:bg-ink-950 rounded-full overflow-hidden">
+                    <div className="h-full bg-taskgo-600" style={{ width: "92%" }} />
+                  </div>
+                  <div className="flex justify-between text-[9px] text-ink-500 mt-2">
+                    <span>Synced with directory</span>
+                    <span className="font-semibold text-emerald-500">114 Succeeded</span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Card 2: Marketing Banner Campaigns */}
+            <Reveal delay={0.1} className="bg-ink-50 dark:bg-ink-950 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+              <div>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-white">Banner Campaigns</h3>
+                <p className="text-sm text-ink-500 dark:text-ink-400 mt-2 leading-relaxed">
+                  Schedule campaign banners to automatically toggle globally. Add tracking tokens to link to new product rollouts or holiday sales.
+                </p>
+              </div>
+              <div className="mt-auto pt-6 border-t border-ink-200/50 dark:border-ink-800/30">
+                <div className="bg-white dark:bg-ink-900 p-4 rounded-xl border border-ink-150 dark:border-ink-850/50 flex flex-col gap-2">
+                  <div className="flex justify-between items-center text-[10px]">
+                    <span className="font-semibold text-ink-800 dark:text-ink-200">Winter Sale Banner</span>
+                    <span className="text-xs text-emerald-500 font-bold">• Active</span>
+                  </div>
+                  <div className="h-6 bg-gradient-to-r from-taskgo-500 to-indigo-500 rounded text-[8px] flex items-center px-2 text-white font-bold justify-between">
+                    <span>❄️ Get 20% Off winter deal!</span>
+                    <span className="bg-white text-taskgo-600 px-1 py-0.5 rounded text-[6px]">JOIN</span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Card 3: Directory Integrations */}
+            <Reveal delay={0.2} className="md:row-span-2 bg-ink-50 dark:bg-ink-950 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col gap-4 justify-between">
+              <div>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-white">Seamless Integrations</h3>
+                <p className="text-sm text-ink-500 dark:text-ink-400 mt-2 leading-relaxed">
+                  Sync seamlessly with GSuite, Office 365, or Azure AD. As employees join or change roles, their signatures update in real-time without manual copying.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 mt-6 pt-6 border-t border-ink-200/50 dark:border-ink-800/30">
+                {[
+                  { name: "Google Workspace API", sync: "Last sync: 2m ago", active: true },
+                  { name: "Microsoft 365 Outlook", sync: "Last sync: 10m ago", active: true },
+                  { name: "Exchange Server Sync", sync: "Off", active: false },
+                ].map((item, idx) => (
+                  <div key={idx} className="bg-white dark:bg-ink-900 border border-ink-150 dark:border-ink-850/50 p-3 rounded-xl flex items-center justify-between shadow-xs">
+                    <div className="flex items-center gap-2">
+                      <div className={`h-2.5 w-2.5 rounded-full ${item.active ? "bg-emerald-500" : "bg-ink-300 dark:bg-ink-700"}`} />
+                      <div>
+                        <div className="text-[11px] font-bold text-ink-900 dark:text-white">{item.name}</div>
+                        <div className="text-[9px] text-ink-400">{item.sync}</div>
+                      </div>
+                    </div>
+                    {item.active && (
+                      <span className="text-[8px] bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 font-bold px-1.5 py-0.5 rounded">CONNECTED</span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </Reveal>
+
+            {/* Card 4: Banner Performance Analytics */}
+            <Reveal delay={0.15} className="bg-ink-50 dark:bg-ink-950 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+              <div>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-white">Real-Time Analytics</h3>
+                <p className="text-sm text-ink-500 dark:text-ink-400 mt-2 leading-relaxed">
+                  Monitor campaign success directly from emails. Track unique banner impressions, link clicks, and overall engagement graphs.
+                </p>
+              </div>
+              <div className="mt-auto pt-6 border-t border-ink-200/50 dark:border-ink-800/30">
+                <div className="bg-white dark:bg-ink-900 p-4 rounded-xl border border-ink-150 dark:border-ink-850/50 flex flex-col gap-2">
+                  <div className="flex justify-between items-center text-xs text-ink-450 mb-1">
+                    <span>Total Clicks Today</span>
+                    <span className="font-bold text-taskgo-600">3,420</span>
+                  </div>
+                  <div className="flex items-end gap-1.5 h-16 pt-4 justify-between border-b border-ink-100 dark:border-ink-800">
+                    {[35, 45, 60, 50, 75, 90, 85].map((h, i) => (
+                      <div
+                        key={i}
+                        className="bg-taskgo-500 hover:bg-taskgo-600 transition-colors w-full rounded-t-sm"
+                        style={{ height: `${h}%` }}
+                      />
+                    ))}
+                  </div>
+                  <div className="flex justify-between text-[8px] text-ink-400">
+                    <span>Mon</span>
+                    <span>Sun</span>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Card 5: Role & Department Permissions */}
+            <Reveal delay={0.25} className="bg-ink-50 dark:bg-ink-950 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col gap-4">
+              <div>
+                <h3 className="text-lg font-bold text-ink-900 dark:text-white">Department Separation</h3>
+                <p className="text-sm text-ink-500 dark:text-ink-400 mt-2 leading-relaxed">
+                  Create variations for specific teams. Give Sales scheduling booking links, and keep corporate disclaimers strict on Legal and HR signatures.
+                </p>
+              </div>
+              <div className="mt-auto pt-6 border-t border-ink-200/50 dark:border-ink-800/30">
+                <div className="bg-white dark:bg-ink-900 p-4 rounded-xl border border-ink-150 dark:border-ink-850/50 flex flex-col gap-2">
+                  {[
+                    { dept: "Sales Team", style: "Modern Style + Booking link" },
+                    { dept: "Legal & Compliance", style: "Standard layout + GDPR clause" },
+                  ].map((x, idx) => (
+                    <div key={idx} className="flex justify-between items-center text-[10px] border-b border-ink-100 dark:border-ink-800 last:border-0 pb-1.5 last:pb-0">
+                      <span className="font-bold text-ink-900 dark:text-white">{x.dept}</span>
+                      <span className="text-ink-400 text-[9px]">{x.style}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Why Teams Choose Stats */}
+      <section className="mx-auto max-w-[1200px] px-5 py-24 sm:px-8">
+        <div className="text-center max-w-xl mx-auto flex flex-col items-center">
+          <Reveal>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-ink-900 dark:text-white leading-tight">
+              Why Teams Choose Task Pilot
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mt-4 text-base text-ink-500 dark:text-ink-400">
+              High performance metrics driven by professional branding on every outgoing corporate mail.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { stat: "4.8%", title: "Marketing Banner CTR", desc: "Average click-through rate on interactive promotional banners." },
+            { stat: "3x", title: "Faster Onboarding Setup", desc: "Sync department templates in bulk using automated directories." },
+            { stat: "100%", title: "Brand Compliance", desc: "Signatures are locked dynamically across all office environments." },
+            { stat: "10k+", title: "Active Enterprises", desc: "Companies managing custom email signatures globally." },
+          ].map((item, i) => (
+            <Reveal
+              key={item.title}
+              delay={i * 0.05}
+              className="bg-white dark:bg-ink-900 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all"
+            >
+              <div className="text-3.5xl font-extrabold text-taskgo-600 dark:text-taskgo-400">{item.stat}</div>
+              <h4 className="text-sm font-bold text-ink-900 dark:text-white mt-4">{item.title}</h4>
+              <p className="text-xs text-ink-500 dark:text-ink-400 mt-2 leading-relaxed">{item.desc}</p>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* How it Works Section */}
+      <section className="border-t border-ink-200/50 bg-white dark:border-ink-800/50 dark:bg-ink-950 py-24">
+        <div className="mx-auto max-w-[1200px] px-5 sm:px-8">
+          <div className="text-center max-w-xl mx-auto flex flex-col items-center">
+            <Reveal>
+              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-ink-900 dark:text-white leading-tight">
+                Get Started In Just 3 Easy Steps
+              </h2>
+            </Reveal>
+            <Reveal delay={0.1}>
+              <p className="mt-4 text-base text-ink-500 dark:text-ink-400">
+                Get started in just 3-easy steps with a guided onboarding experience designed for speed and simplicity.
+              </p>
+            </Reveal>
+          </div>
+
+          <div className="mt-16 grid gap-10 lg:grid-cols-3">
+            {[
+              {
+                num: "01",
+                title: "Choose a Template Layout",
+                desc: "Select from our range of 8+ corporate, tested signature layouts designed for Word's email engine.",
+              },
+              {
+                num: "02",
+                title: "Style & Personalize Design",
+                desc: "Add your corporate logos, connect your booking links, and lock color accents to fit brand guidelines.",
+              },
+              {
+                num: "03",
+                title: "Deploy Globally or Copy",
+                desc: "Sync directly to GSuite & Office 365, or click copy to paste the HTML in under a minute.",
+              },
+            ].map((step, idx) => (
+              <Reveal
+                key={step.num}
+                delay={idx * 0.05}
+                className="bg-ink-50 dark:bg-ink-900 border border-ink-200/50 dark:border-ink-800/50 rounded-2xl p-6 relative flex flex-col gap-4"
+              >
+                <div className="h-10 w-10 rounded-full bg-taskgo-100 text-taskgo-700 dark:bg-taskgo-950/60 dark:text-taskgo-400 font-bold text-sm flex items-center justify-center">
+                  {step.num}
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-ink-900 dark:text-white leading-tight">{step.title}</h3>
+                  <p className="text-xs text-ink-500 dark:text-ink-400 mt-2 leading-relaxed">{step.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Success Stories */}
+      <section id="testimonials" className="mx-auto max-w-[1200px] px-5 py-24 sm:px-8">
+        <div className="text-center max-w-xl mx-auto flex flex-col items-center">
+          <Reveal>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-ink-900 dark:text-white leading-tight">
+              Real Results, Real Impact. <br />
+              Our Success Stories
+            </h2>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <p className="mt-4 text-base text-ink-500 dark:text-ink-400">
+              See how IT directors and marketing teams use TaskGo to enforce brand alignment.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="mt-16 grid gap-6 md:grid-cols-3">
+          {[
+            {
+              quote: "TaskGo has transformed how our team manages brand consistency. With 120+ employees, keeping signatures compliant used to be a nightmare.",
+              author: "Sarah Jenkins",
+              role: "VP of Product, TechCorp",
+              img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&q=80",
+              stars: 5,
+            },
+            {
+              quote: "The banner scheduling feature has allowed us to run seasonal marketing campaigns directly inside employee signatures. It has driven significant traffic.",
+              author: "David Chen",
+              role: "Marketing Lead, FlowAgency",
+              img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&q=80",
+              stars: 5,
+            },
+            {
+              quote: "Clean, responsive, and works perfectly in Outlook for Windows. The Google Workspace directory sync was set up in under 5 minutes.",
+              author: "Elena Rostova",
+              role: "Operations Director, StudioNine",
+              img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=80&q=80",
+              stars: 5,
+            },
+          ].map((test, i) => (
+            <Reveal
+              key={test.author}
+              delay={i * 0.05}
+              className="bg-white dark:bg-ink-900 border border-ink-200/60 dark:border-ink-800/60 rounded-2xl p-6 shadow-sm flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex gap-0.5 text-amber-400 mb-4">
+                  {Array.from({ length: test.stars }).map((_, idx) => (
+                    <Star key={idx} size={16} weight="fill" />
+                  ))}
+                </div>
+                <p className="text-sm italic text-ink-700 dark:text-ink-300 leading-relaxed font-medium">
+                  &ldquo;{test.quote}&rdquo;
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 mt-6 pt-4 border-t border-ink-100 dark:border-ink-800/50">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={test.img}
+                  alt={test.author}
+                  className="h-9 w-9 rounded-full object-cover shrink-0"
+                />
+                <div>
+                  <h5 className="text-xs font-bold text-ink-900 dark:text-white leading-none">{test.author}</h5>
+                  <span className="text-[10px] text-ink-500 dark:text-ink-400 mt-1 inline-block">{test.role}</span>
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA / Contact Section */}
+      <section id="contact" className="border-t border-ink-200 bg-ink-900 dark:border-ink-800 dark:bg-ink-950 py-20 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10 pointer-events-none">
+          <div className="absolute top-10 left-10 w-44 h-44 rounded-full bg-white blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 rounded-full bg-taskgo-400 blur-3xl" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-[800px] px-5 sm:px-8 text-center flex flex-col items-center">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-white leading-tight">
+            Ready to Boost Brand Consistency?
+          </h2>
+          <p className="text-base text-ink-300 mt-4 max-w-[50ch] leading-relaxed">
+            Join thousands of enterprises managing professional email signatures globally. Build yours free today.
+          </p>
+
+          <div className="w-full max-w-[480px] mt-8 flex flex-col sm:flex-row gap-3">
+            <input
+              type="email"
+              placeholder="Enter your work email"
+              className="h-12 flex-1 rounded-full border border-ink-800 bg-ink-950 px-5 text-sm text-white focus:outline-none focus:border-taskgo-500"
+            />
+            <Link
+              href="/generator"
+              className="h-12 px-7 rounded-full bg-taskgo-600 text-white font-semibold text-sm hover:bg-taskgo-700 transition-colors shadow-lg shadow-taskgo-600/20 shrink-0 flex items-center justify-center"
+            >
+              Get Started Free
+            </Link>
+          </div>
+
+          <div className="flex gap-4 items-center justify-center mt-6 text-xs text-ink-400">
+            <span className="flex items-center gap-1"><CheckCircle size={14} className="text-taskgo-500" /> No credit card required</span>
+            <span>•</span>
+            <span className="flex items-center gap-1"><CheckCircle size={14} className="text-taskgo-500" /> Free custom builder</span>
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}

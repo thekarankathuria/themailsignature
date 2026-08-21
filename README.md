@@ -1,4 +1,4 @@
-# Sendmark
+# Mail Signature
 
 A free email signature generator. Fill in your details, pick a template, copy a
 signature that survives Outlook.
@@ -37,6 +37,57 @@ to object storage means changing the write call and setting
 Uploads are also normalised: WebP and AVIF are converted to PNG, because
 Outlook cannot display either. GIFs pass through untouched so animation
 survives.
+
+
+## The marketing site
+
+Everything under `app/(site)/` is a clone of customesignature.com, re-skinned to a flat
+Gmail-red accent on a pure-white surface and rebranded **Mail Signature**. 34 pages: the
+homepage, About, Demo, Affiliate, Contact, Support, Tutorials, Browse 1000 Industries, four
+legal pages, and 21 `/solution/<slug>` pages served from one template.
+
+It is a **CSS-verbatim** clone, not a re-implementation. The original Webflow stylesheet
+ships as `app/ces.css` and every component emits the original class names, because that is
+the only way to match a 155 KB Webflow stylesheet exactly. Two consequences:
+
+- **Class names are load-bearing.** Renaming one silently breaks a layout rule.
+- **`app/ces.css` is generated. Never hand-edit it.** Hand-written overrides live in
+  `app/ces-extra.css`, which loads after it.
+
+The route group matters too: `app/(site)/layout.tsx` imports `ces.css`, while
+`app/generator/layout.tsx` imports `globals.css`. That keeps Tailwind's preflight away from
+the cloned CSS, which would otherwise reset half of it.
+
+### Regenerating the site's CSS and assets
+
+```bash
+node scripts/download-assets.mjs   # every page's assets -> public/ces, writes asset-map.json
+node scripts/download-bcdn.mjs     # the b-cdn.net videos (must run AFTER download-assets)
+node scripts/localize-css.mjs      # raw/site.css -> app/ces.css, urls rewritten to /ces
+node scripts/recolor-css.mjs       # accent ramp -> flat red, flattens gradients and glows
+node scripts/rebrand-lottie.mjs    # rewrites the brand text inside the Lottie JSONs
+node scripts/extract-solutions.mjs # rebuilds lib/ces/solutions.ts from the 21 saved pages
+```
+
+`download-assets.mjs` rebuilds `asset-map.json` from scratch, so re-running it drops the
+b-cdn video entries — always run `download-bcdn.mjs` after it.
+
+`scripts/prune-assets.mjs` reports (or with `--apply`, deletes) files under `public/ces`
+that nothing references.
+
+### Working with a section
+
+`scripts/extract-section.mjs <selector>` and `scripts/extract-any.mjs <page> <selector>`
+pull a section's exact HTML subtree plus every CSS rule that applies to it into
+`docs/research/extract/`. That is how every component here was specified, and how to spec
+a new one. `docs/research/BUILDER_BRIEF.md` holds the rules for porting one.
+
+### Known gaps
+
+`docs/research/BRANDED-ASSETS.md` lists the artwork that still carries the original brand:
+30 raster images and 9 videos have the old name baked into the pixels, and several Loom
+embeds still serve the original company's recordings. Lottie animations were rebranded
+programmatically because their text is JSON, not pixels.
 
 ## Commands
 
