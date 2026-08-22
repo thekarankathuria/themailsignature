@@ -2,13 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-
-function safeNext(next: string | undefined): string {
-  if (next && next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")) {
-    return next;
-  }
-  return "/generator";
-}
+import { safeNext } from "@/lib/safe-next";
 
 export async function login(input: {
   email: string;
