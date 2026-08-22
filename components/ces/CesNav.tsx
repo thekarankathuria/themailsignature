@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { CesWordmark } from "@/components/ces/CesWordmark";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { signOut } from "@/lib/supabase/actions";
 
 type SolutionLink = {
   href: string;
@@ -229,6 +231,7 @@ function DropdownLink({
 export function CesNav() {
   const [solutionsOpen, setSolutionsOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [authed, setAuthed] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const closeAll = useCallback(() => {
@@ -245,6 +248,18 @@ export function CesNav() {
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [solutionsOpen, menuOpen, closeAll]);
+
+  useEffect(() => {
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => setAuthed(!!data.user));
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthed(!!session?.user);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   // Click outside the dropdown closes it (Webflow behaviour).
   useEffect(() => {
@@ -472,16 +487,29 @@ export function CesNav() {
                 </a>
               </div>
               <div className="nav_button-wrapper">
-                <a href="https://app.mailsignature.com/signin" target="_blank" className="white_cta_btn">
-                  <div className="button-border-b">
-                    <div className="button-text-wrap-b">
-                      <div className="text-button">
-                        Log in
-                        <br />
+                {authed ? (
+                  <button type="button" onClick={() => signOut()} className="white_cta_btn">
+                    <div className="button-border-b">
+                      <div className="button-text-wrap-b">
+                        <div className="text-button">
+                          Log out
+                          <br />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </a>
+                  </button>
+                ) : (
+                  <Link href="/login" className="white_cta_btn">
+                    <div className="button-border-b">
+                      <div className="button-text-wrap-b">
+                        <div className="text-button">
+                          Log in
+                          <br />
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                )}
                 <a href="/generator" className="try-for-free_btn--b w-inline-block">
                   <div className="button-border is-small-17">
                     <div className="button-inner-2">
