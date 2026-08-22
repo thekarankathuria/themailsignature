@@ -26,7 +26,9 @@ export async function login(input: {
   redirect(safeNext(input.next));
 }
 
-export async function signup(input: { email: string; password: string }) {
+export async function signup(
+  input: { email: string; password: string }
+): Promise<{ error: string } | { success: true }> {
   const supabase = await createClient();
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
