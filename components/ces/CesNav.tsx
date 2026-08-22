@@ -292,6 +292,16 @@ export function CesNav() {
 
   const closeSolutions = () => setSolutionsOpen(false);
 
+  const handleSignOut = useCallback(async () => {
+    // Sign out on the browser client first so it fires SIGNED_OUT locally
+    // and onAuthStateChange flips `authed` immediately; the server action
+    // then clears the cookies and redirects. Otherwise this is a soft
+    // navigation and the nav keeps claiming the user is signed in until a
+    // hard reload.
+    await createClient().auth.signOut();
+    await signOut();
+  }, []);
+
   return (
     <div className="nav_fixed">
       <div
@@ -488,7 +498,7 @@ export function CesNav() {
               </div>
               <div className="nav_button-wrapper">
                 {authed ? (
-                  <button type="button" onClick={() => signOut()} className="white_cta_btn">
+                  <button type="button" onClick={handleSignOut} className="white_cta_btn">
                     <div className="button-border-b">
                       <div className="button-text-wrap-b">
                         <div className="text-button">

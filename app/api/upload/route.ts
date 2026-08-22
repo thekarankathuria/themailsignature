@@ -3,6 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { NextResponse } from "next/server";
 import sharp from "sharp";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -18,6 +19,13 @@ const MAX_BYTES = 4 * 1024 * 1024;
  * changing only the write and the returned base URL.
  */
 export async function POST(request: Request) {
+  const {
+    data: { user },
+  } = await (await createClient()).auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  }
+
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
 

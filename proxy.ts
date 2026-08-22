@@ -38,6 +38,10 @@ export async function proxy(request: NextRequest) {
   if (isProtected && !user) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    // Clear whatever query string the original request carried so /login
+    // only ever receives the `next` param set below, not e.g. an inherited
+    // `?error=1` that would render a spurious banner.
+    url.search = "";
     url.searchParams.set("next", request.nextUrl.pathname);
     return NextResponse.redirect(url);
   }
