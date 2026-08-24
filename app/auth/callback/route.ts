@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/safe-next";
+import { siteUrl } from "@/lib/env";
 
 /**
  * Behind a load balancer/proxy, `request.url`'s origin can be the internal
@@ -9,8 +10,8 @@ import { safeNext } from "@/lib/safe-next";
  * the forwarded headers, and only fall back to the request's own origin.
  */
 function resolveOrigin(request: Request, requestOrigin: string): string {
-  if (process.env.NEXT_PUBLIC_SITE_URL) {
-    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  if (process.env.NEXT_PUBLIC_SITE_URL?.trim()) {
+    return siteUrl();
   }
 
   const forwardedHost = request.headers.get("x-forwarded-host");

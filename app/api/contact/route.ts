@@ -1,25 +1,22 @@
 import { NextResponse } from "next/server";
+import { clientKey, rateLimit } from "@/lib/rate-limit";
+import { deliverContact, type ContactPayload } from "@/lib/contact/delivery";
 
 /**
  * POST /api/contact — receiver for the contact form in `components/ces/CesContactForm.tsx`.
  *
  * The original page posted to Webflow's own form collector, which does not exist here.
- * This handler validates the payload and reports the outcome; it deliberately does not
- * deliver the message anywhere yet — see the marked block below.
+ * This handler validates the payload and hands it to `deliverContact`, which either
+ * sends it through a configured provider or appends it to a local log. It never
+ * reports success for a message that went nowhere.
  */
+
+export const runtime = "nodejs";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type ContactPayload = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  companyWebsite: string;
-  purpose: string;
-  phone: string;
-  message: string;
-  optIn: boolean;
-};
+/** Five submissions per IP per ten minutes: generous for a human, useless for a bot. */
+const LIMIT = { limit: 5, windowMs: 10 * 60 * 1000 };
 
 function readString(source: Record<string, unknown>, key: string): string {
   const value = source[key];
@@ -58,6 +55,14 @@ function parse(body: unknown): { payload: ContactPayload } | { error: string } {
 }
 
 export async function POST(request: Request) {
+  const throttle = rateLimit(clientKey(request, "contact"), LIMIT);
+  if (!throttle.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many messages from this address. Try again shortly." },
+      { status: 429, headers: { "Retry-After": String(throttle.retryAfterSeconds) } },
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -70,18 +75,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 400 });
   }
 
-  // ---------------------------------------------------------------------------
-  // TODO — DELIVERY GOES HERE, and nowhere else.
-  //
-  // `result.payload` is validated and ready to send. Drop the provider call on the
-  // next line (Resend / Postmark / SendGrid / SMTP / a CRM webhook — whichever the
-  // project settles on), `await` it, and return a 502 with `{ ok: false }` if it
-  // throws so the form's `.w-form-fail` block still shows.
-  //
-  // Nothing is installed or configured for this yet: no mail dependency was added
-  // and no API key is read, so right now a valid submission is accepted and then
-  // discarded.
-  // ---------------------------------------------------------------------------
+  const delivery = await deliverContact(result.payload);
+  if (!delivery.ok) {
+    // Surface the failure so the form's `.w-form-fail` block shows. The reason
+    // is logged, not returned: it can carry provider detail.
+    console.error(`[contact] delivery failed via ${delivery.transport}: ${delivery.reason}`);
+    return NextResponse.json(
+      { ok: false, error: "We could not send that message. Please try again." },
+      { status: 502 },
+    );
+  }
 
   return NextResponse.json({ ok: true });
 }

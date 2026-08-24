@@ -43,3 +43,6 @@ next-env.d.ts
 
 # runtime uploads (hosted images)
 /public/u/
+
+# contact form fallback log (written when no mail provider is configured)
+/.contact-submissions.log

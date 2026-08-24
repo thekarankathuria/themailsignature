@@ -1,29 +1,33 @@
 import Link from "next/link";
-import Image from "next/image";
 
+/**
+ * Mail Signature wordmark for the builder chrome.
+ *
+ * Mirrors the lockup in `components/ces/CesWordmark` — a square mark holding
+ * three stacked mail rules, then two lines of letter-spaced uppercase — but
+ * built from Tailwind tokens rather than inline styles, because this one sits
+ * inside the generator, which has a light/dark toggle. `CesWordmark` hardcodes
+ * its palette for the marketing pages (which are light-only) and so cannot
+ * follow the theme here.
+ */
 export function Wordmark({ className = "" }: { className?: string }) {
   return (
     <Link
       href="/"
-      className={`group inline-flex items-center gap-2 text-[19px] font-bold tracking-tight text-ink-900 dark:text-ink-50 ${className}`}
+      aria-label="Mail Signature home"
+      className={`group inline-flex items-center gap-2.5 ${className}`}
     >
-      <div className="relative h-7 w-7 overflow-hidden rounded-lg bg-taskgo-600 flex items-center justify-center text-white shadow-sm shadow-taskgo-600/30">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="h-4 w-4"
-        >
-          <polyline points="20 6 9 17 4 12" />
-        </svg>
-      </div>
-      <span className="font-semibold tracking-tight text-xl text-ink-900 dark:text-white flex items-center">
-        Task<span className="text-taskgo-600 font-extrabold">Go</span>
-        <span className="text-ink-400 dark:text-ink-500 font-normal text-sm tracking-wide ml-1.5 border-l border-ink-200 dark:border-ink-800 pl-1.5 hidden sm:inline">Signatures</span>
+      <span
+        aria-hidden="true"
+        className="flex h-8 w-8 flex-col items-center justify-center gap-[3px] rounded-[3px] bg-ink-950 dark:bg-white"
+      >
+        <span className="block h-[2.6px] w-[18px] rounded-full bg-white dark:bg-ink-950" />
+        <span className="block h-[2.6px] w-[18px] rounded-full bg-white dark:bg-ink-950" />
+        <span className="block h-[2.6px] w-[12px] self-start ml-[7px] rounded-full bg-white dark:bg-ink-950" />
+      </span>
+      <span className="flex flex-col gap-[3px] leading-none text-ink-950 dark:text-white">
+        <span className="text-base font-semibold tracking-[0.18em]">MAIL</span>
+        <span className="text-[9px] font-medium tracking-[0.26em]">SIGNATURE</span>
       </span>
     </Link>
   );

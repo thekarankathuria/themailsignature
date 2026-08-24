@@ -442,7 +442,7 @@ export function CesNav() {
                                 </div>
                               </div>
                             </div>
-                            <a href="https://app.mailsignature.com/signin" target="_blank" className="white_cta_btn" onClick={closeSolutions}>
+                            <a href="/login" className="white_cta_btn" onClick={closeSolutions}>
                               <div className="button-border-b">
                                 <div className="button-text-wrap-b-3">
                                   <div className="text-button">
@@ -468,7 +468,7 @@ export function CesNav() {
                                 </div>
                               </div>
                             </div>
-                            <a href="https://app.mailsignature.com/signin" target="_blank" className="white_cta_btn" onClick={closeSolutions}>
+                            <a href="/login" className="white_cta_btn" onClick={closeSolutions}>
                               <div className="button-border-b">
                                 <div className="button-text-wrap-b-3">
                                   <div className="text-button">
@@ -484,10 +484,7 @@ export function CesNav() {
                   </nav>
                 </div>
                 <a href="#deliverability" className="nav_menu_link w-nav-link" onClick={closeAll}>
-                  Deliverablity
-                </a>
-                <a href="https://app.mailsignature.com/pricing?getstarted=true" className="nav_menu_link w-nav-link">
-                  Pricing
+                  Deliverability
                 </a>
                 <Link href="/about" className="nav_menu_link w-nav-link" onClick={closeAll}>
                   About

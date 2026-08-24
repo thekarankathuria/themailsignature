@@ -34,20 +34,11 @@ export function CesFooter() {
                       <Link href="/generator" className="footer-menu-link">
                         Email Signature Generator
                       </Link>
-                      <a
-                        href="https://app.mailsignature.com/pricing"
-                        className="footer-menu-link"
-                      >
-                        Pricing
-                      </a>
                       <Link href="/about" className="footer-menu-link">
                         About
                       </Link>
-                      <Link href="/affiliate" className="footer-menu-link">
-                        Join our Affiliate Program
-                      </Link>
                       <Link href="/contact-us" className="footer-menu-link">
-                        Contact Us(not support)
+                        Contact Us
                       </Link>
                     </div>
                   </div>
@@ -64,7 +55,7 @@ export function CesFooter() {
                         Tutorials
                       </Link>
                       <Link href="/contact-us" className="footer-menu-link">
-                        Contact Us(not support)
+                        Contact Us
                       </Link>
                     </div>
                   </div>

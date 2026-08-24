@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { safeNext } from "@/lib/safe-next";
+import { siteUrl } from "@/lib/env";
 
 export async function login(input: {
   email: string;
@@ -24,7 +25,7 @@ export async function signup(
   input: { email: string; password: string }
 ): Promise<{ error: string } | { success: true }> {
   const supabase = await createClient();
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const site = siteUrl();
 
   const { error } = await supabase.auth.signUp({
     email: input.email,

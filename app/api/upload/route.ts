@@ -1,27 +1,42 @@
-import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
-import { join } from "node:path";
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 import { createClient } from "@/lib/supabase/server";
+import { clientKey, rateLimit } from "@/lib/rate-limit";
+import { isStoreFailure, storeImage } from "@/lib/storage/images";
 
 export const runtime = "nodejs";
 
 const MAX_BYTES = 4 * 1024 * 1024;
 
 /**
- * Images in a signature have to live at an absolute URL forever, because the
- * markup is copied into mail that outlives any redeploy. Files are stored
- * content-addressed so a given image always resolves to the same path and no
- * path is ever reused for different bytes.
+ * Twenty uploads per IP per ten minutes. Checked before the session lookup,
+ * because `getUser()` is itself a network round trip to Supabase and should
+ * not be floodable by an unauthenticated caller.
+ */
+const LIMIT = { limit: 20, windowMs: 10 * 60 * 1000 };
+
+/**
+ * POST /api/upload — hosting for the images embedded in a signature.
  *
- * Backed by the local filesystem here. Swapping this for object storage means
- * changing only the write and the returned base URL.
+ * Normalisation happens here; *where* the bytes land is `lib/storage/images.ts`,
+ * because that choice is a deployment concern the route should not encode.
+ *
+ * WebP and AVIF become PNG because Outlook cannot display either. GIFs pass
+ * through untouched so animation survives.
  */
 export async function POST(request: Request) {
+  const throttle = rateLimit(clientKey(request, "upload"), LIMIT);
+  if (!throttle.ok) {
+    return NextResponse.json(
+      { error: "Too many uploads. Try again shortly." },
+      { status: 429, headers: { "Retry-After": String(throttle.retryAfterSeconds) } },
+    );
+  }
+
+  const supabase = await createClient();
   const {
     data: { user },
-  } = await (await createClient()).auth.getUser();
+  } = await supabase.auth.getUser();
   if (!user) {
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   }
@@ -44,24 +59,23 @@ export async function POST(request: Request) {
 
   let output = input;
   let ext = "png";
+  let contentType = "image/png";
 
   if (file.type === "image/gif") {
     // Left untouched so animation survives.
-    output = input;
     ext = "gif";
+    contentType = "image/gif";
   } else {
     try {
       const image = sharp(input, { failOn: "error" });
       const meta = await image.metadata();
       if (!meta.width) throw new Error("unreadable");
 
-      // Outlook cannot display WebP or AVIF, so everything else becomes PNG.
       let pipeline = image;
       if (meta.width > maxWidth * 2) {
         pipeline = pipeline.resize({ width: maxWidth * 2, withoutEnlargement: true });
       }
       output = await pipeline.png({ compressionLevel: 9 }).toBuffer();
-      ext = "png";
     } catch {
       return NextResponse.json(
         { error: "That file could not be read as an image." },
@@ -70,11 +84,21 @@ export async function POST(request: Request) {
     }
   }
 
-  const hash = createHash("sha256").update(output).digest("hex").slice(0, 32);
-  const dir = join(process.cwd(), "public", "u");
-  await mkdir(dir, { recursive: true });
-  await writeFile(join(dir, `${hash}.${ext}`), output);
+  const stored = await storeImage({
+    request,
+    supabase,
+    bytes: output,
+    ext,
+    contentType,
+  });
 
-  const origin = process.env.NEXT_PUBLIC_ASSET_BASE || new URL(request.url).origin;
-  return NextResponse.json({ url: `${origin.replace(/\/$/, "")}/u/${hash}.${ext}` });
+  if (isStoreFailure(stored)) {
+    console.error(`[upload] ${stored.error}`);
+    return NextResponse.json(
+      { error: "That image could not be stored. Please try again." },
+      { status: stored.status },
+    );
+  }
+
+  return NextResponse.json({ url: stored.url });
 }

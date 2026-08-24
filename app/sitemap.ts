@@ -13,7 +13,6 @@ const PAGES: Array<[path: string, priority: number]> = [
   ["/support", 0.6],
   ["/tutorials", 0.6],
   ["/contact-us", 0.6],
-  ["/affiliate", 0.5],
   ["/terms-of-use", 0.3],
   ["/privacypolicy", 0.3],
   ["/cookies-policy", 0.3],
