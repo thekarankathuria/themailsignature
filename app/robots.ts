@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://mailsignature.com";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://themailsignature.com";
 
 export default function robots(): MetadataRoute.Robots {
   return {

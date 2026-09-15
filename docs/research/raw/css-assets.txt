@@ -1,9 +1,0 @@
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/687659c06cebc3897039c06d_Switzer-Regular.otf
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/687659c0f21875484d330b0d_Switzer-Medium.otf
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/687659c137e90d0a6eaf6c06_Switzer-Semibold.otf
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/687659c1e124298a6bd8eb3d_Switzer-Extrabold.otf
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/687a494898789cdaceb20109_button.svg
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/687a494898789cdaceb20110_Frame%201707479283.webp
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/688b5f5caf6a36573ab24108_Container.avif
-https://cdn.prod.website-files.com/68765933b481b51000732c9d/6979a000fbc3fa9369ff753d_Features%20section.avif
-https://d3e54v103j8qbb.cloudfront.net/static/custom-checkbox-checkmark.589d534424.svg

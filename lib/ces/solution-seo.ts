@@ -8,7 +8,7 @@
  * improved strings live here and `app/(site)/solution/[slug]/page.tsx` prefers them.
  *
  * House rules for anything added here:
- *   - `title` is used as an ABSOLUTE title (no `| Mail Signature` suffix), so it must stay
+ *   - `title` is used as an ABSOLUTE title (no `| TheMailSignature` suffix), so it must stay
  *     under 60 characters on its own and lead with the industry, then the head term.
  *   - `description` must be under 155 characters and unique across the set.
  * `npm run build` does not enforce either; the route-level check in the report does.

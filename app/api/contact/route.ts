@@ -3,9 +3,8 @@ import { clientKey, rateLimit } from "@/lib/rate-limit";
 import { deliverContact, type ContactPayload } from "@/lib/contact/delivery";
 
 /**
- * POST /api/contact — receiver for the contact form in `components/ces/CesContactForm.tsx`.
+ * POST /api/contact — receiver for the Phase 2 contact form at `app/(site)/contact`.
  *
- * The original page posted to Webflow's own form collector, which does not exist here.
  * This handler validates the payload and hands it to `deliverContact`, which either
  * sends it through a configured provider or appends it to a local log. It never
  * reports success for a message that went nowhere.

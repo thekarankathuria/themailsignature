@@ -1,20 +1,17 @@
 import Link from "next/link";
 
 /**
- * Mail Signature wordmark for the builder chrome.
+ * TheMailSignature wordmark for the builder chrome.
  *
- * Mirrors the lockup in `components/ces/CesWordmark` — a square mark holding
- * three stacked mail rules, then two lines of letter-spaced uppercase — but
- * built from Tailwind tokens rather than inline styles, because this one sits
- * inside the generator, which has a light/dark toggle. `CesWordmark` hardcodes
- * its palette for the marketing pages (which are light-only) and so cannot
- * follow the theme here.
+ * A square mark holding three stacked mail rules, then two lines of
+ * letter-spaced uppercase, built from Tailwind tokens so it can follow the
+ * generator's light/dark toggle.
  */
 export function Wordmark({ className = "" }: { className?: string }) {
   return (
     <Link
       href="/"
-      aria-label="Mail Signature home"
+      aria-label="TheMailSignature home"
       className={`group inline-flex items-center gap-2.5 ${className}`}
     >
       <span
