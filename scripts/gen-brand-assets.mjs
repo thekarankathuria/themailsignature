@@ -44,12 +44,40 @@ const knockout = await sharp(whiteFill, {
 await sharp(knockout).resize({ width: 560 }).png({ compressionLevel: 9 })
   .toFile(`${OUT}/wordmark-light.png`);
 
-// Square mark: the envelope glyph sits in the left-centre third of the lockup.
-const markSide = trimmedHeight;
-const markLeft = Math.round(trimmedWidth * 0.22);
-await sharp(trimmed)
-  .extract({ left: markLeft, top: 0, width: markSide, height: markSide })
-  .resize(512, 512, { fit: "contain", background: "#ffffff" })
+// Square mark: crop a generous region around the envelope and its "m"-shaped
+// signature stroke, `.trim()` that region down to the actual ink, then pad it
+// onto a square white canvas so nothing touches the edges.
+//
+// Fix round 1: a fixed guessed square here previously sliced the stroke off
+// mid-line (right-edge ink measured at commit 15035df). The envelope begins
+// right after "The" (a genuine white gap in the trimmed source at columns
+// 246-254) and the stroke's second hump tapers to a natural point before it
+// rises into the "S" of "Signature" -- past that point the ink is a
+// continuous, un-terminated line into the lettering (no white gap separates
+// them; confirmed by column-scanning the source), so any crop that includes
+// part of it is a slice of the "S", not a distinct glyph. Envelope + the
+// complete two-hump stroke was chosen as the mark over the envelope alone: it
+// is more distinctive at 512px and, unlike the "S", it does have a genuine
+// endpoint (a taper) to crop to.
+const markGenerousLeft = Math.round(trimmedWidth * 0.221); // just past "The"
+const markGenerousRight = Math.round(trimmedWidth * 0.451); // past the stroke's taper, short of the "S"
+const markGenerous = await sharp(trimmed)
+  .extract({
+    left: markGenerousLeft,
+    top: 0,
+    width: markGenerousRight - markGenerousLeft,
+    height: trimmedHeight,
+  })
+  .toBuffer();
+const markHugged = await sharp(markGenerous).trim({ threshold: 12 }).toBuffer();
+
+const MARK_PADDING = 0.08; // fraction of the 512px canvas kept empty on each side
+const markInner = Math.round(512 * (1 - 2 * MARK_PADDING));
+const markResized = await sharp(markHugged)
+  .resize(markInner, markInner, { fit: "contain", background: "#ffffff" })
+  .toBuffer();
+await sharp({ create: { width: 512, height: 512, channels: 4, background: "#ffffff" } })
+  .composite([{ input: markResized, gravity: "centre" }])
   .png({ compressionLevel: 9 })
   .toFile(`${OUT}/mark.png`);
 
