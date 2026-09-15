@@ -46,3 +46,6 @@ next-env.d.ts
 
 # contact form fallback log (written when no mail provider is configured)
 /.contact-submissions.log
+
+# visual brainstorming companion (mockups)
+/.superpowers/
