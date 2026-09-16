@@ -110,6 +110,32 @@ for (const industry of INDUSTRIES) {
   }
 }
 
+// 6. Sample accents must be readable where the template draws them: on white,
+// or on the Slate template's dark card.
+const SLATE_CARD = "#141619";
+function luminance(hex: string): number {
+  const channel = (i: number) => {
+    const c = parseInt(hex.slice(i, i + 2), 16) / 255;
+    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * channel(1) + 0.7152 * channel(3) + 0.0722 * channel(5);
+}
+function contrast(a: string, b: string): number {
+  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
+  return (hi + 0.05) / (lo + 0.05);
+}
+const slatePeople = new Set([
+  "tpl-slate",
+  ...INDUSTRIES.filter((i) => i.templateId === "slate").map((i) => i.slug),
+]);
+for (const person of Object.values(SAMPLE_PEOPLE)) {
+  const ground = slatePeople.has(person.key) ? SLATE_CARD : "#FFFFFF";
+  const ratio = contrast(person.accent, ground);
+  if (ratio < 4.5) {
+    fail(`sample ${person.key}: accent ${person.accent} is ${ratio.toFixed(2)}:1 on ${ground} (min 4.5)`);
+  }
+}
+
 // 4. Reports.
 const unshipped = Object.entries(CLAIMS)
   .filter(([, c]) => c.shipsIn > SHIPPED_THROUGH_PHASE)

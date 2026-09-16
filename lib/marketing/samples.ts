@@ -54,7 +54,9 @@ export function sampleSignature(
     logoLink: site,
     photoUrl: `/samples/${person.key}-avatar.png`,
     bannerUrl: templateId === "broadcast" ? "/samples/banner.png" : "",
-    bannerLink: templateId === "broadcast" ? site : "",
+    // Unlinked: the engine gives banners empty alt text, so a linked banner
+    // would be an unnamed link (see the Phase 3 follow-up in the progress notes).
+    bannerLink: "",
     ctaText: person.cta?.text ?? "",
     ctaUrl: person.cta ? site : "",
     meetingUrl: "",
@@ -66,6 +68,9 @@ export function sampleSignature(
     templateId,
     accent: person.accent,
     linkColor: person.accent,
+    // The engine's default grey is 4.2:1 on white; samples on our own pages
+    // must meet WCAG AA, so they use a slightly darker one.
+    mutedColor: "#5F6570",
   };
   return { data, style };
 }

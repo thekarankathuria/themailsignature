@@ -20,7 +20,7 @@ export default function TemplatesPage() {
       </Section>
       <Section>
         <div className="grid gap-6 md:grid-cols-2">
-          {TEMPLATES.map((t) => <TemplateCard key={t.id} templateId={t.id} />)}
+          {TEMPLATES.map((t) => <TemplateCard key={t.id} templateId={t.id} headingLevel="h2" />)}
         </div>
       </Section>
       <CtaBanner

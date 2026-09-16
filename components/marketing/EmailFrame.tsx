@@ -8,7 +8,7 @@ export function EmailFrame({ subject, children }: { subject: string; children: R
         <span className="size-3 rounded-full bg-ink-300" />
       </div>
       <div className="space-y-1 border-b border-ink-100 px-5 py-3 text-sm text-ink-600">
-        <p><span className="text-ink-400">Subject:</span> {subject}</p>
+        <p><span className="text-ink-500">Subject:</span> {subject}</p>
       </div>
       <div className="px-5 py-5">
         <div aria-hidden="true" className="space-y-2">

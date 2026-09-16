@@ -21,7 +21,7 @@ export default function HelpPage() {
         <nav aria-label="Email clients" className="mx-auto mt-10 grid max-w-4xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {CLIENT_GROUPS.map((group) => (
             <div key={group}>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-ink-500">{group}</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-ink-600">{group}</h2>
               <ul className="mt-2 space-y-1">
                 {CLIENTS.filter((c) => c.group === group).map((client) => (
                   <li key={client.id}>

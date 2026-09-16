@@ -3,7 +3,14 @@ import { TEMPLATE_BY_ID } from "@/lib/signature/templates";
 import { TEMPLATE_SAMPLES } from "@/lib/marketing/samples";
 import { SignaturePreview } from "./SignaturePreview";
 
-export function TemplateCard({ templateId }: { templateId: string }) {
+export function TemplateCard({
+  templateId,
+  headingLevel = "h3",
+}: {
+  templateId: string;
+  headingLevel?: "h2" | "h3";
+}) {
+  const Heading = headingLevel;
   const template = TEMPLATE_BY_ID[templateId];
   if (!template) throw new Error(`Unknown template: ${templateId}`);
   return (
@@ -12,7 +19,7 @@ export function TemplateCard({ templateId }: { templateId: string }) {
         <SignaturePreview personKey={TEMPLATE_SAMPLES[templateId]} templateId={templateId} />
       </div>
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-semibold text-navy-900">{template.name}</h3>
+        <Heading className="font-semibold text-navy-900">{template.name}</Heading>
         <p className="mt-1 flex-1 text-sm leading-relaxed text-ink-600">{template.blurb}</p>
         <Link
           href={`/editor?template=${template.id}`}

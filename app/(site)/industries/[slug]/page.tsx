@@ -60,7 +60,7 @@ export default async function IndustryPage({ params }: Props) {
         }}
       />
       <Section tone="tint">
-        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-ink-500">
+        <nav aria-label="Breadcrumb" className="mb-6 text-sm text-ink-600">
           <Link href="/industries" className="hover:text-navy-900">Industries</Link>
           <span aria-hidden="true"> / </span>
           <span aria-current="page" className="text-navy-900">{industry.name}</span>

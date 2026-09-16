@@ -46,7 +46,7 @@ export function PricingCards({ plans }: { plans: Plan[] }) {
                 plan.highlighted ? "border-blue-brand-600 shadow-lg shadow-blue-brand-600/10" : "border-ink-200"
               }`}
             >
-              <h3 id={titleId} className="text-lg font-semibold text-navy-900">{plan.name}</h3>
+              <h2 id={titleId} className="text-lg font-semibold text-navy-900">{plan.name}</h2>
               <p className="mt-1 text-ink-600">{plan.tagline}</p>
               <p className="mt-6 flex items-baseline gap-1">
                 <span className="text-4xl font-bold text-navy-900">{formatPrice(price)}</span>

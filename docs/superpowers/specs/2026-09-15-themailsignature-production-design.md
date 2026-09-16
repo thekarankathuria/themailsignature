@@ -247,6 +247,7 @@ pre-launch checklist run against staging.
 - [ ] Legal placeholders filled and reviewed
 - [ ] Analytics with consent; cookie policy matches what is actually set
 - [ ] `robots.txt` allows indexing; sitemap submitted to Search Console
+- [ ] `npm run check:launch` passes (all cited claims shipped, no placeholders, final prices)
 
 ## 8. Open questions
 
