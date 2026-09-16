@@ -44,10 +44,13 @@ create the test account that unblocks the editor screenshots.
 - `SignatureStyle.statusDot: "none" | "static" | "blink"` — a small dot on the
   photo corner (Tech Startup) or beside the name; colour `statusColor`
   (default `#22A55B`).
+- `SignatureStyle.contactIcons: "none" | "ink" | "muted" | "light"` — small
+  phone / email / web / location icons in front of contact lines (PNG,
+  `public/i/contact/<tone>/<kind>.png`), replacing the letter labels when set.
 - `SignatureStyle.secondaryFont: FontKey` — used for names and side text in
   serif-led layouts; defaults to `font`.
 - Defaults: `sideText: ""`, `iconAnimation: "none"`, `statusDot: "none"`,
-  `statusColor: "#22A55B"`, `secondaryFont` = `DEFAULT_STYLE.font`. The builder
+  `statusColor: "#22A55B"`, `contactIcons: "none"`, `secondaryFont` = `DEFAULT_STYLE.font`. The builder
   already merges saved drafts over defaults, so old drafts keep working.
 - `TemplateMeta` gains `tier: "free" | "pro"`, `tags: StyleTag[]`
   (`"minimal" | "classic" | "bold" | "dark" | "creative"`), and
@@ -55,10 +58,11 @@ create the test account that unblocks the editor screenshots.
 
 ### 4.2 Layouts
 
-The 8 existing renderers stay. `lib/signature/templates.ts` is split into
-`lib/signature/templates/` (one file per family plus `index.ts` exporting the
-same `RENDERERS`, `TEMPLATES`, `TEMPLATE_BY_ID`), because 20 renderers do not
-fit one readable file. New layouts, all Pro:
+The 8 existing renderers stay in `lib/signature/templates.ts`, which keeps
+exporting `RENDERERS`, `TEMPLATES` and `TEMPLATE_BY_ID`. New layouts live one
+per file in `lib/signature/designer/`, sharing helpers from
+`lib/signature/designer/kit.ts`, and `templates.ts` registers them. New
+layouts, all Pro:
 
 | id | Name | Distinctive feature |
 |---|---|---|
