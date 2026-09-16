@@ -49,3 +49,6 @@ next-env.d.ts
 
 # visual brainstorming companion (mockups)
 /.superpowers/
+
+# layout review sheets
+/.review
