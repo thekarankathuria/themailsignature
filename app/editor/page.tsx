@@ -12,15 +12,23 @@ export const metadata: Metadata = {
   alternates: { canonical: "/editor" },
 };
 
-export default async function EditorPage() {
+export default async function EditorPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { template } = await searchParams;
+  const templateId = typeof template === "string" ? template : undefined;
+
   if (!user) {
-    redirect("/login?next=/editor");
+    const next = templateId ? `/editor?template=${encodeURIComponent(templateId)}` : "/editor";
+    redirect(`/login?next=${encodeURIComponent(next)}`);
   }
 
-  return <Builder />;
+  return <Builder initialTemplate={templateId} />;
 }

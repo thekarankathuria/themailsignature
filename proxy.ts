@@ -43,7 +43,7 @@ export async function proxy(request: NextRequest) {
     // only ever receives the `next` param set below, not e.g. an inherited
     // `?error=1` that would render a spurious banner.
     url.search = "";
-    url.searchParams.set("next", request.nextUrl.pathname);
+    url.searchParams.set("next", request.nextUrl.pathname + request.nextUrl.search);
     return NextResponse.redirect(url);
   }
 
