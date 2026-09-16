@@ -1,21 +1,34 @@
-import type { Metadata } from "next";
+import { CtaBanner } from "@/components/marketing/CtaBanner";
+import { Section } from "@/components/marketing/Section";
+import { SectionHeading } from "@/components/marketing/SectionHeading";
+import { ABOUT } from "@/lib/marketing/about";
+import { pageMetadata } from "@/lib/marketing/pages";
 
-export const metadata: Metadata = {
-  title: { absolute: "About | TheMailSignature" },
-  description:
-    "Create an email signature that renders correctly in Gmail, Outlook and Apple Mail. Free, no account needed to start.",
-  alternates: { canonical: "/about" },
-};
+export const metadata = pageMetadata("about");
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-24">
-      <h1 className="text-4xl font-bold tracking-tight text-navy-900">
-        About
-      </h1>
-      <p className="mt-4 text-lg text-slate-600">
-        An email signature that renders correctly everywhere.
-      </p>
-    </div>
+    <>
+      <Section tone="tint">
+        <SectionHeading as="h1" eyebrow="About" title={ABOUT.title} lede={ABOUT.lede} />
+      </Section>
+      <Section>
+        <div className="mx-auto max-w-3xl space-y-12">
+          {ABOUT.sections.map((section) => (
+            <section key={section.heading}>
+              <h2 className="text-2xl font-bold text-navy-900">{section.heading}</h2>
+              {section.body.map((paragraph) => (
+                <p key={paragraph} className="mt-4 leading-relaxed text-ink-700">{paragraph}</p>
+              ))}
+            </section>
+          ))}
+        </div>
+      </Section>
+      <CtaBanner
+        title="See it for yourself"
+        body="Build a signature and paste it into your email client."
+        cta={{ label: "Create your signature", href: "/editor" }}
+      />
+    </>
   );
 }

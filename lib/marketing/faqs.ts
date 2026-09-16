@@ -84,5 +84,36 @@ export const FAQS: Record<"home" | "pricing" | "teams" | "help", Faq[]> = {
       claims: ["roles", "self-serve-billing"],
     },
   ],
-  help: [],
+  help: [
+    {
+      q: "My images do not show for the people I email",
+      a: "Your images are hosted for you, but some email clients block images until the recipient allows them. Ask a colleague to check whether their client shows a \"download images\" prompt.",
+      claims: ["image-hosting"],
+    },
+    {
+      q: "Outlook adds extra space or changes the layout",
+      a: "Paste the signature with the Copy signature button rather than pasting HTML source. Signatures are built from tables so Outlook keeps their layout.",
+      claims: ["renders-everywhere", "copy-export"],
+    },
+    {
+      q: "My signature looks different on my phone",
+      a: "Mobile mail apps often use their own signature setting. Set the signature inside the app as well, or turn off the app's default signature.",
+      claims: ["install-guides"],
+    },
+    {
+      q: "I see code instead of my design",
+      a: "That happens when HTML source is pasted into a client that expects a rendered signature. Use Copy signature for Gmail, Outlook and Apple Mail, and keep HTML source for clients whose guide asks for it.",
+      claims: ["copy-export"],
+    },
+    {
+      q: "Can I use the same signature in several email clients?",
+      a: "Yes. Copy it once and add it to each client using that client's guide above. Social icons and images are hosted, so they display the same everywhere.",
+      claims: ["copy-export", "social-icons", "image-hosting"],
+    },
+    {
+      q: "How do I update my signature later?",
+      a: "Open your saved signature in the editor, make the change, and copy it into your email client again.",
+      claims: ["saved-signatures"],
+    },
+  ],
 };
