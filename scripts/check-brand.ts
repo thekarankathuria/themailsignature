@@ -22,6 +22,7 @@ const EXPECTED: Array<{ file: string; width: number; height?: number }> = [
   { file: "public/brand/wordmark.png", width: 560 },
   { file: "public/brand/wordmark@2x.png", width: 1120 },
   { file: "public/brand/wordmark-light.png", width: 560 },
+  { file: "public/brand/wordmark-light@2x.png", width: 1120 },
   { file: "public/brand/mark.png", width: 512, height: 512 },
   { file: "public/brand/icon-192.png", width: 192, height: 192 },
   { file: "public/brand/icon-512.png", width: 512, height: 512 },
@@ -99,6 +100,7 @@ const BACKGROUND_OF: Record<string, "white" | "navy" | "alpha"> = {
   "public/brand/wordmark.png": "white",
   "public/brand/wordmark@2x.png": "white",
   "public/brand/wordmark-light.png": "alpha",
+  "public/brand/wordmark-light@2x.png": "alpha",
   "public/brand/mark.png": "white",
   "public/brand/icon-192.png": "white",
   "public/brand/icon-512.png": "white",
@@ -225,9 +227,10 @@ async function main() {
     }
   }
 
-  if (existsSync("public/brand/wordmark-light.png")) {
-    for (const msg of await checkKnockout("public/brand/wordmark-light.png")) {
-      failures.push(`public/brand/wordmark-light.png: ${msg}`);
+  for (const file of ["public/brand/wordmark-light.png", "public/brand/wordmark-light@2x.png"]) {
+    if (!existsSync(file)) continue;
+    for (const msg of await checkKnockout(file)) {
+      failures.push(`${file}: ${msg}`);
     }
   }
 

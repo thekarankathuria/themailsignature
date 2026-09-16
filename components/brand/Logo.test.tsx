@@ -23,4 +23,29 @@ describe("Logo", () => {
     expect(img.getAttribute("src")).toContain("wordmark");
     expect(img.getAttribute("src")).not.toContain("light");
   });
+
+  it("offers a retina source for the knockout wordmark too", () => {
+    render(<Logo tone="light" />);
+    expect(screen.getByAltText("TheMailSignature")).toHaveAttribute(
+      "srcset",
+      expect.stringContaining("wordmark-light@2x.png 2x"),
+    );
+  });
+
+  it("sets intrinsic width and height so the image reserves its layout box before loading", () => {
+    render(<Logo height={28} />);
+    const img = screen.getByAltText("TheMailSignature");
+    // Real asset is 560x128 (aspect ratio 4.375:1) — see
+    // scripts/gen-brand-assets.mjs. width must scale with the requested
+    // render height, not be left for the browser to guess post-load.
+    expect(img).toHaveAttribute("height", "28");
+    expect(img).toHaveAttribute("width", "123");
+  });
+
+  it("scales the intrinsic width with a custom render height", () => {
+    render(<Logo height={56} />);
+    const img = screen.getByAltText("TheMailSignature");
+    expect(img).toHaveAttribute("height", "56");
+    expect(img).toHaveAttribute("width", "245");
+  });
 });

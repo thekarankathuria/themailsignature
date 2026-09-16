@@ -141,6 +141,16 @@ const CONTRAST_CHECKS: ContrastCheck[] = [
   // slider accent — all non-text UI, rendered inside Panel's dark:bg-ink-900.
   { label: "toggle/ring/accent, light mode", fg: "color-blue-brand-600", bg: WHITE, min: 3 },
   { label: "toggle/ring/accent, dark mode", fg: "color-blue-brand-400", bg: "color-ink-900", min: 3 },
+  // SiteFooter (components/site/SiteFooter.tsx) is bg-navy-900 throughout —
+  // every foreground token it actually places on that surface, so a future
+  // palette edit cannot silently drop the footer below AA. Computed ratios
+  // (task-5): white 15.77:1, navy-100 11.70:1, navy-200 8.40:1, navy-300
+  // 5.02:1 — all clear the 4.5:1 body-text threshold, so no lighter step was
+  // needed for any of them.
+  { label: "footer body text (navy-100) on navy-900", fg: "color-navy-100", bg: "color-navy-900", min: 4.5 },
+  { label: "footer tagline (navy-200) on navy-900", fg: "color-navy-200", bg: "color-navy-900", min: 4.5 },
+  { label: "footer column headings/copyright (navy-300) on navy-900", fg: "color-navy-300", bg: "color-navy-900", min: 4.5 },
+  { label: "footer link hover (white) on navy-900", fg: WHITE, bg: "color-navy-900", min: 4.5 },
 ];
 
 function resolve(key: string): string | undefined {

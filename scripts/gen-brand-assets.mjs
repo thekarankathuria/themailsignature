@@ -43,6 +43,8 @@ const knockout = await sharp(whiteFill, {
   .toBuffer();
 await sharp(knockout).resize({ width: 560 }).png({ compressionLevel: 9 })
   .toFile(`${OUT}/wordmark-light.png`);
+await sharp(knockout).resize({ width: 1120 }).png({ compressionLevel: 9 })
+  .toFile(`${OUT}/wordmark-light@2x.png`);
 
 // Square mark: crop a generous region around the envelope and its "m"-shaped
 // signature stroke, `.trim()` that region down to the actual ink, then pad it
