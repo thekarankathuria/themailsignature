@@ -36,7 +36,32 @@ export const FAQS: Record<"home" | "pricing" | "teams" | "help", Faq[]> = {
       claims: ["team-invites", "company-template"],
     },
   ],
-  pricing: [],
+  pricing: [
+    {
+      q: "Can I switch plans later?",
+      a: "Yes. Upgrade, downgrade or cancel from your billing settings at any time. A cancelled plan stays active until the end of the period you paid for.",
+      claims: ["self-serve-billing"],
+    },
+    {
+      q: "What happens to my signatures if I downgrade to Free?",
+      a: "Nothing is deleted. The Free plan keeps one saved signature editable; any others stay in your account until you upgrade again or remove them.",
+      claims: ["free-one-signature", "saved-signatures"],
+    },
+    {
+      q: "How do Business seats work?",
+      a: "You pay for each teammate who has a seat, with a minimum of three. Add seats when you invite more people and remove them when someone leaves.",
+      claims: ["team-invites"],
+    },
+    {
+      q: "What is the link on Free signatures?",
+      a: "Signatures made on the Free plan end with a small \"Made with TheMailSignature\" link. Pro and Business signatures do not include it.",
+      claims: ["free-footer-link", "no-footer-link"],
+    },
+    {
+      q: "Which currency are prices in?",
+      a: "Prices are shown in US dollars. Sales tax or VAT may be added at checkout depending on where you are.",
+    },
+  ],
   teams: [],
   help: [],
 };
