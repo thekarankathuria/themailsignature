@@ -43,7 +43,7 @@ export function TemplateGrid({
             className={cx(
               "group flex flex-col overflow-hidden rounded-[14px] border text-left transition-colors",
               active
-                ? "border-blue-brand-600 ring-1 ring-blue-brand-600"
+                ? "border-blue-brand-600 ring-1 ring-blue-brand-600 dark:border-blue-brand-400 dark:ring-blue-brand-400"
                 : "border-ink-200 hover:border-ink-300 dark:border-ink-800 dark:hover:border-ink-700",
             )}
           >

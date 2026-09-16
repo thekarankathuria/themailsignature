@@ -86,7 +86,7 @@ export function GraphicsPanel({ data, set, style, setStyle }: PanelProps) {
             {(id) => (
               <input id={id} type="range" min={60} max={280} step={4} value={data.logoWidth}
                 onChange={(e) => set({ logoWidth: Number(e.target.value) })}
-                className="mt-2 w-full accent-blue-brand-600" />
+                className="mt-2 w-full accent-blue-brand-600 dark:accent-blue-brand-400" />
             )}
           </Field>
           <TextInput label="Logo links to" value={data.logoLink} onChange={(v) => set({ logoLink: v })} placeholder="Defaults to your website" />
@@ -100,7 +100,7 @@ export function GraphicsPanel({ data, set, style, setStyle }: PanelProps) {
             {(id) => (
               <input id={id} type="range" min={56} max={160} step={4} value={data.photoSize}
                 onChange={(e) => set({ photoSize: Number(e.target.value) })}
-                className="mt-2 w-full accent-blue-brand-600" />
+                className="mt-2 w-full accent-blue-brand-600 dark:accent-blue-brand-400" />
             )}
           </Field>
           <Segmented<PhotoShape>
@@ -129,7 +129,7 @@ export function GraphicsPanel({ data, set, style, setStyle }: PanelProps) {
             {(id) => (
               <input id={id} type="range" min={240} max={600} step={10} value={data.bannerWidth}
                 onChange={(e) => set({ bannerWidth: Number(e.target.value) })}
-                className="mt-2 w-full accent-blue-brand-600" />
+                className="mt-2 w-full accent-blue-brand-600 dark:accent-blue-brand-400" />
             )}
           </Field>
           <TextInput label="Banner links to" value={data.bannerLink} onChange={(v) => set({ bannerLink: v })} placeholder="northbeam.studio/spring" />
@@ -164,7 +164,7 @@ export function StylePanel({ style, setStyle }: PanelProps) {
           {(id) => (
             <input id={id} type="range" min={11} max={18} step={1} value={style.fontSize}
               onChange={(e) => setStyle({ fontSize: Number(e.target.value) })}
-              className="mt-2 w-full accent-blue-brand-600" />
+              className="mt-2 w-full accent-blue-brand-600 dark:accent-blue-brand-400" />
           )}
         </Field>
       </div>
@@ -199,7 +199,7 @@ export function StylePanel({ style, setStyle }: PanelProps) {
           {(id) => (
             <input id={id} type="range" min={16} max={32} step={2} value={style.iconSize}
               onChange={(e) => setStyle({ iconSize: Number(e.target.value) })}
-              className="mt-1 w-full accent-blue-brand-600" />
+              className="mt-1 w-full accent-blue-brand-600 dark:accent-blue-brand-400" />
           )}
         </Field>
       </div>

@@ -240,7 +240,7 @@ export function Toggle({
         onClick={() => onChange(!checked)}
         className={cx(
           "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition-colors",
-          checked ? "bg-blue-brand-600" : "bg-ink-300 dark:bg-ink-700",
+          checked ? "bg-blue-brand-600 dark:bg-blue-brand-400" : "bg-ink-300 dark:bg-ink-700",
         )}
       >
         <span
