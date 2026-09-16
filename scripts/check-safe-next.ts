@@ -31,10 +31,10 @@ const REJECTED = [
 
 for (const input of REJECTED) {
   const result = safeNext(input);
-  check(`rejects ${JSON.stringify(input)} -> /generator`, result === "/generator");
+  check(`rejects ${JSON.stringify(input)} -> /editor`, result === "/editor");
 }
 
-const PASSED_THROUGH = ["/generator", "/generator?a=b"];
+const PASSED_THROUGH = ["/editor", "/editor?a=b"];
 
 for (const input of PASSED_THROUGH) {
   const result = safeNext(input);
