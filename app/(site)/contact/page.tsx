@@ -1,21 +1,33 @@
-import type { Metadata } from "next";
+import { ContactForm } from "@/components/marketing/ContactForm";
+import { Section } from "@/components/marketing/Section";
+import { SectionHeading } from "@/components/marketing/SectionHeading";
+import { COMPANY } from "@/lib/marketing/company";
+import { pageMetadata } from "@/lib/marketing/pages";
+import Link from "next/link";
 
-export const metadata: Metadata = {
-  title: { absolute: "Contact | TheMailSignature" },
-  description:
-    "Create an email signature that renders correctly in Gmail, Outlook and Apple Mail. Free, no account needed to start.",
-  alternates: { canonical: "/contact" },
-};
+export const metadata = pageMetadata("contact");
 
 export default function ContactPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-24">
-      <h1 className="text-4xl font-bold tracking-tight text-navy-900">
-        Contact
-      </h1>
-      <p className="mt-4 text-lg text-slate-600">
-        An email signature that renders correctly everywhere.
-      </p>
-    </div>
+    <Section tone="tint">
+      <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
+        <div>
+          <SectionHeading
+            as="h1"
+            align="left"
+            eyebrow="Contact"
+            title="Talk to us"
+            lede="Questions about your signature, billing or setting up a team? Send a message and we will reply by email."
+          />
+          <p className="mt-6 text-ink-600">Typical reply time: {COMPANY.responseTime}.</p>
+          <p className="mt-2 text-ink-600">
+            Setting up a signature? The <Link href="/help" className="font-semibold text-blue-brand-600 hover:text-blue-brand-700">help guides</Link> may answer it faster.
+          </p>
+        </div>
+        <div className="rounded-card border border-ink-200 bg-white p-6 sm:p-8">
+          <ContactForm />
+        </div>
+      </div>
+    </Section>
   );
 }
