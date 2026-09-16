@@ -10,7 +10,7 @@ import {
 } from "react";
 import { Button, Panel } from "@/components/ui";
 import { ThemeToggle } from "@/components/site/ThemeToggle";
-import { Wordmark } from "@/components/site/Wordmark";
+import { Logo } from "@/components/brand/Logo";
 import {
   DEFAULT_DATA,
   DEFAULT_STYLE,
@@ -140,7 +140,7 @@ export function Builder() {
     <div className="min-h-[100dvh] bg-ink-50 dark:bg-ink-950">
       <header className="sticky top-0 z-30 border-b border-ink-200 bg-ink-50/85 backdrop-blur dark:border-ink-800 dark:bg-ink-950/85">
         <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:px-6">
-          <Wordmark />
+          <Logo />
           <span className="hidden text-sm text-ink-500 sm:inline dark:text-ink-400">
             Signature builder
           </span>

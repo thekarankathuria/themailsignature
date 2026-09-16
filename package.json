@@ -9,7 +9,8 @@
     "lint": "eslint",
     "icons": "node scripts/gen-social-icons.mjs",
     "brand": "node scripts/gen-brand-assets.mjs",
-    "test": "tsx scripts/check-render.ts && tsx scripts/check-safe-next.ts && tsx scripts/check-hardening.ts && tsx scripts/check-content.ts && tsx scripts/check-brand.ts && tsx scripts/check-tokens.ts"
+    "test": "tsx scripts/check-render.ts && tsx scripts/check-safe-next.ts && tsx scripts/check-hardening.ts && tsx scripts/check-content.ts && tsx scripts/check-brand.ts && tsx scripts/check-tokens.ts && vitest run",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -23,16 +24,21 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.3.1",
+    "jsdom": "^26.1.0",
     "node-html-parser": "^9.0.1",
     "sharp": "^0.35.3",
     "simple-icons": "^13.21.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.12",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^3.2.7"
   }
 }
