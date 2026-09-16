@@ -3,6 +3,7 @@
  * they are built, so the guard scripts see all of them.
  */
 import * as faqs from "./faqs";
+import * as home from "./home";
 import * as pages from "./pages";
 
-export const CONTENT_MODULES: Record<string, unknown> = { faqs, pages };
+export const CONTENT_MODULES: Record<string, unknown> = { faqs, home, pages };

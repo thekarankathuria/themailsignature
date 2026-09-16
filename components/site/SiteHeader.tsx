@@ -42,7 +42,7 @@ export function SiteHeader() {
           </Link>
           <Link
             href="/editor"
-            className="rounded-[10px] bg-blue-brand-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-brand-700"
+            className="whitespace-nowrap rounded-[10px] bg-blue-brand-600 px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-blue-brand-700 sm:px-4"
           >
             Create my signature
           </Link>

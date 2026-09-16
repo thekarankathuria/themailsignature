@@ -14,6 +14,12 @@ export const metadata: Metadata = {
   description:
     "Create a professional email signature that renders correctly in Gmail, Outlook and Apple Mail.",
   robots: { index: true, follow: true },
+  openGraph: {
+    siteName: "TheMailSignature",
+    type: "website",
+    images: [{ url: "/brand/og.png", width: 1200, height: 630, alt: "TheMailSignature" }],
+  },
+  twitter: { card: "summary_large_image", images: ["/brand/og.png"] },
 };
 
 export default function RootLayout({

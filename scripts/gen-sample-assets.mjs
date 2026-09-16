@@ -26,11 +26,14 @@ for (const p of people) {
   const mark = initials(companyWords);
   const shortName = companyWords.filter((w) => !FILLER.has(w.toLowerCase())).slice(0, 2).join(" ");
 
+  // Arial averages ~0.6em per character; shrink long names to fit the 178px text area.
+  const nameSize = Math.min(22, Math.floor(178 / (shortName.length * 0.6)));
+
   const logo = `<svg xmlns="http://www.w3.org/2000/svg" width="264" height="88">
     <rect x="4" y="12" width="64" height="64" rx="14" fill="${p.accent}"/>
     <text x="36" y="54" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700"
       fill="#fff" text-anchor="middle">${escapeXml(mark)}</text>
-    <text x="82" y="53" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700"
+    <text x="82" y="52" font-family="Arial, Helvetica, sans-serif" font-size="${nameSize}" font-weight="700"
       fill="#1E2126">${escapeXml(shortName)}</text>
   </svg>`;
   await sharp(Buffer.from(logo)).png({ compressionLevel: 9 }).toFile(`${OUT}/${p.key}-logo.png`);

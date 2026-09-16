@@ -84,6 +84,12 @@ export function pageMetadata(key: PageKey): Metadata {
     title: { absolute: title },
     description,
     alternates: { canonical: path },
-    openGraph: { title, description, url: path, type: "website" },
+    openGraph: {
+      title,
+      description,
+      url: path,
+      type: "website",
+      images: [{ url: "/brand/og.png", width: 1200, height: 630, alt: "TheMailSignature" }],
+    },
   };
 }
