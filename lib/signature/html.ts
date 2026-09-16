@@ -173,6 +173,7 @@ export function textCell(
     extra?: string;
     colspan?: number;
     valign?: string;
+    font?: FontKey;
   } = {},
 ): string {
   const size = opts.size ?? style.fontSize;
@@ -181,7 +182,7 @@ export function textCell(
   const valign = opts.valign ? ` valign="${opts.valign}"` : "";
   const align = opts.align ? `text-align:${opts.align};` : "";
   const ls = opts.letterSpacing ? `letter-spacing:${opts.letterSpacing};` : "";
-  return `<td${span}${valign} style="font-family:${FONT_STACKS[style.font]};font-size:${size}px;line-height:${lh}px;color:${opts.color ?? style.textColor};font-weight:${opts.weight ?? 400};${align}${ls}mso-line-height-rule:exactly;${opts.extra ?? ""}">${content}</td>`;
+  return `<td${span}${valign} style="font-family:${FONT_STACKS[opts.font ?? style.font]};font-size:${size}px;line-height:${lh}px;color:${opts.color ?? style.textColor};font-weight:${opts.weight ?? 400};${align}${ls}mso-line-height-rule:exactly;${opts.extra ?? ""}">${content}</td>`;
 }
 
 export function radiusFor(shape: string, size: number): number {

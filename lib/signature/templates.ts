@@ -379,46 +379,73 @@ export const RENDERERS: Record<string, Renderer> = {
   split,
 };
 
+/** Layouts available on the Free plan. Everything else is Pro. */
+export const FREE_TEMPLATE_IDS: readonly string[] = ["meridian", "stack", "portrait", "minimal"];
+
 export const TEMPLATES: TemplateMeta[] = [
   {
     id: "meridian",
+    tier: "free",
+    group: "classic",
+    tags: ["classic"],
     name: "Meridian",
     blurb: "Media column, accent rule, details right. The safe workhorse.",
   },
   {
     id: "stack",
+    tier: "free",
+    group: "classic",
+    tags: ["minimal", "classic"],
     name: "Stack",
     blurb: "One column, logo on top. Narrowest footprint on mobile.",
   },
   {
     id: "ledger",
+    tier: "pro",
+    group: "classic",
+    tags: ["classic"],
     name: "Ledger",
     blurb: "Name and logo across the top, contact details in two columns.",
   },
   {
     id: "portrait",
+    tier: "free",
+    group: "classic",
+    tags: ["classic"],
     name: "Portrait",
     blurb: "Headshot beside the name, details beneath.",
     styleHints: { photoShape: "circle" },
   },
   {
     id: "slate",
+    tier: "pro",
+    group: "classic",
+    tags: ["dark", "bold"],
     name: "Slate",
     blurb: "Dark card with an accent edge. Manages its own text colours.",
   },
   {
     id: "minimal",
+    tier: "free",
+    group: "classic",
+    tags: ["minimal"],
     name: "Minimal",
     blurb: "Text and a single accent bar. No images at all.",
     omits: ["photo", "logo"],
   },
   {
     id: "broadcast",
+    tier: "pro",
+    group: "classic",
+    tags: ["bold"],
     name: "Broadcast",
     blurb: "Built around a full-width banner for campaigns.",
   },
   {
     id: "split",
+    tier: "pro",
+    group: "classic",
+    tags: ["classic"],
     name: "Split",
     blurb: "Details left, logo right, social and button on one baseline.",
   },

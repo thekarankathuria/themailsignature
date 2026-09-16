@@ -27,6 +27,11 @@ export const DEFAULT_STYLE: SignatureStyle = {
   showDivider: true,
   showLabels: true,
   uppercaseName: false,
+  iconAnimation: "none",
+  statusDot: "none",
+  statusColor: "#22A55B",
+  contactIcons: "none",
+  secondaryFont: "arial",
 };
 
 export const DEFAULT_DATA: SignatureData = {
@@ -62,6 +67,7 @@ export const DEFAULT_DATA: SignatureData = {
   ctaUrl: "",
 
   tagline: "",
+  sideText: "",
   disclaimer: "",
   greenFooter: false,
 

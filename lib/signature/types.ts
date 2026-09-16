@@ -70,6 +70,8 @@ export interface SignatureData {
 
   // Extras
   tagline: string;
+  /** Up to four short lines for layouts with a side column. */
+  sideText: string;
   disclaimer: string;
   greenFooter: boolean;
 
@@ -97,6 +99,11 @@ export type IconStyle =
   | "glyphDark"
   | "glyphLight";
 
+export type IconAnimation = "none" | "pulse" | "bounce" | "wiggle";
+export type StatusDot = "none" | "static" | "blink";
+export type ContactIconTone = "none" | "ink" | "muted" | "light";
+export type StyleTag = "minimal" | "classic" | "bold" | "dark" | "creative";
+
 export type Density = "compact" | "cozy" | "roomy";
 export type PhotoShape = "square" | "rounded" | "circle";
 
@@ -116,6 +123,14 @@ export interface SignatureStyle {
   showDivider: boolean;
   showLabels: boolean;
   uppercaseName: boolean;
+  /** Animated GIF social icons instead of static PNGs. */
+  iconAnimation: IconAnimation;
+  statusDot: StatusDot;
+  statusColor: string;
+  /** Icons in front of contact lines; "none" keeps the letter labels. */
+  contactIcons: ContactIconTone;
+  /** Display font for names and side text in serif-led layouts. */
+  secondaryFont: FontKey;
 }
 
 export interface RenderContext {
@@ -127,6 +142,11 @@ export interface TemplateMeta {
   id: string;
   name: string;
   blurb: string;
+  tier: "free" | "pro";
+  group: "classic" | "designer";
+  tags: StyleTag[];
+  /** Optional fields this layout knows how to show. */
+  supports?: Array<"sideText" | "statusDot">;
   /** Fields the template ignores, so the builder can grey them out. */
   omits?: Array<"photo" | "logo" | "banner">;
   /** Sensible style overrides applied when the template is selected. */
