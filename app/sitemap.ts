@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { INDUSTRIES } from "@/lib/marketing/industries";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://themailsignature.com";
 
@@ -19,9 +20,16 @@ const PAGES: Array<[path: string, priority: number]> = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  return PAGES.map(([path, priority]) => ({
-    url: `${SITE}${path}`,
-    changeFrequency: "weekly" as const,
-    priority,
-  }));
+  return [
+    ...PAGES.map(([path, priority]) => ({
+      url: `${SITE}${path}`,
+      changeFrequency: "weekly" as const,
+      priority,
+    })),
+    ...INDUSTRIES.map((industry) => ({
+      url: `${SITE}/industries/${industry.slug}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  ];
 }

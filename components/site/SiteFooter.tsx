@@ -39,7 +39,7 @@ const COLUMNS: Array<{ title: string; links: Array<{ label: string; href: string
  */
 export function SiteFooter() {
   return (
-    <footer className="mt-24 border-t border-ink-200 bg-navy-900 text-navy-100">
+    <footer className="border-t border-ink-200 bg-navy-900 text-navy-100">
       <Container className="grid gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <Logo tone="light" height={26} />

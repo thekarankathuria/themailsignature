@@ -1,21 +1,37 @@
-import type { Metadata } from "next";
+import Link from "next/link";
+import { Section } from "@/components/marketing/Section";
+import { SectionHeading } from "@/components/marketing/SectionHeading";
+import { INDUSTRIES } from "@/lib/marketing/industries";
+import { pageMetadata } from "@/lib/marketing/pages";
 
-export const metadata: Metadata = {
-  title: { absolute: "Signatures by Industry | TheMailSignature" },
-  description:
-    "Create an email signature that renders correctly in Gmail, Outlook and Apple Mail. Free, no account needed to start.",
-  alternates: { canonical: "/industries" },
-};
+export const metadata = pageMetadata("industries");
 
 export default function IndustriesPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-24">
-      <h1 className="text-4xl font-bold tracking-tight text-navy-900">
-        Industries
-      </h1>
-      <p className="mt-4 text-lg text-slate-600">
-        An email signature that renders correctly everywhere.
-      </p>
-    </div>
+    <>
+      <Section tone="tint">
+        <SectionHeading
+          as="h1"
+          eyebrow="Industries"
+          title="Signature advice for your line of work"
+          lede="What a lawyer needs in a signature is different from what a realtor or a teacher needs. Pick your field for practical tips and a live example."
+        />
+      </Section>
+      <Section>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {INDUSTRIES.map((industry) => (
+            <li key={industry.slug}>
+              <Link
+                href={`/industries/${industry.slug}`}
+                className="block h-full rounded-card border border-ink-200 p-6 transition-colors hover:border-blue-brand-600"
+              >
+                <h2 className="font-semibold text-navy-900">{industry.name}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-ink-600">{industry.hook}</p>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Section>
+    </>
   );
 }

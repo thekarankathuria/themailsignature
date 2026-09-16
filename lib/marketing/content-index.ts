@@ -4,7 +4,8 @@
  */
 import * as faqs from "./faqs";
 import * as home from "./home";
+import * as industries from "./industries";
 import * as pages from "./pages";
 import * as teams from "./teams";
 
-export const CONTENT_MODULES: Record<string, unknown> = { faqs, home, pages, teams };
+export const CONTENT_MODULES: Record<string, unknown> = { faqs, home, industries, pages, teams };

@@ -18,6 +18,9 @@ import { COMPANY, PLACEHOLDER_PREFIX } from "../lib/marketing/company";
 import { industrySeo } from "../lib/marketing/industry-seo";
 import * as pricing from "../lib/pricing";
 import { CONTENT_MODULES } from "../lib/marketing/content-index";
+import { INDUSTRIES } from "../lib/marketing/industries";
+import { SAMPLE_PEOPLE } from "../lib/marketing/samples";
+import { TEMPLATE_BY_ID } from "../lib/signature/templates";
 
 const failures: string[] = [];
 const fail = (message: string) => failures.push(message);
@@ -83,6 +86,29 @@ function scan(path: string) {
   }
 }
 for (const root of SCAN) scan(root);
+
+// 5. Industry pages.
+const seoSlugs = Object.keys(industrySeo).sort();
+const pageSlugs = INDUSTRIES.map((i) => i.slug).sort();
+if (JSON.stringify(seoSlugs) !== JSON.stringify(pageSlugs)) {
+  fail(`industries: slugs ${pageSlugs.join(",")} do not match industry-seo.ts ${seoSlugs.join(",")}`);
+}
+const intros = new Set<string>();
+for (const industry of INDUSTRIES) {
+  const where = `industry ${industry.slug}`;
+  if (intros.has(industry.intro)) fail(`${where}: intro duplicates another industry`);
+  intros.add(industry.intro);
+  if (industry.intro.length < 250) fail(`${where}: intro is under 250 chars`);
+  if (industry.include.length < 4 || industry.include.length > 6) fail(`${where}: needs 4-6 include tips`);
+  if (industry.avoid.length !== 3) fail(`${where}: needs exactly 3 mistakes`);
+  if (industry.faqs.length !== 3) fail(`${where}: needs exactly 3 FAQs`);
+  if (!TEMPLATE_BY_ID[industry.templateId]) fail(`${where}: unknown template ${industry.templateId}`);
+  if (!SAMPLE_PEOPLE[industry.slug]) fail(`${where}: no sample person`);
+  if (industry.related.length !== 3) fail(`${where}: needs exactly 3 related industries`);
+  for (const slug of industry.related) {
+    if (slug === industry.slug || !pageSlugs.includes(slug)) fail(`${where}: bad related slug ${slug}`);
+  }
+}
 
 // 4. Reports.
 const unshipped = Object.entries(CLAIMS)
