@@ -3,11 +3,10 @@ import type { NextConfig } from "next";
 /**
  * Response headers applied to every route.
  *
- * Deliberately NOT included: Content-Security-Policy. The marketing site is a
- * CSS-verbatim Webflow clone that relies on inline styles and third-party
- * embeds (Loom, b-cdn video), so a strict policy would break layout and media
- * rather than protect anything. Adding one means first inventorying those
- * origins and running it `Content-Security-Policy-Report-Only` for a while.
+ * Deliberately NOT included yet: Content-Security-Policy. Adding one means
+ * first inventorying every origin the app loads from (Supabase, uploaded
+ * images, later Stripe) and running it `Content-Security-Policy-Report-Only`
+ * for a while; that is scheduled for launch hardening (Phase 6).
  * Shipping a CSP that has to be disabled at the first bug report is worse than
  * shipping none, so it is a tracked follow-up, not a one-line addition.
  */
@@ -47,6 +46,23 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+    ];
+  },
+
+  // Every URL the previous site exposed is indexed somewhere; each one moves
+  // permanently to its new home. scripts/check-redirects.ts guards this list.
+  async redirects() {
+    return [
+      { source: "/generator", destination: "/editor", permanent: true },
+      { source: "/solution/:slug", destination: "/industries/:slug", permanent: true },
+      { source: "/contact-us", destination: "/contact", permanent: true },
+      { source: "/privacypolicy", destination: "/legal/privacy", permanent: true },
+      { source: "/terms-of-use", destination: "/legal/terms", permanent: true },
+      { source: "/cookies-policy", destination: "/legal/cookies", permanent: true },
+      { source: "/user-data-deletion", destination: "/legal/data-deletion", permanent: true },
+      { source: "/browse-1000-industries", destination: "/industries", permanent: true },
+      { source: "/support", destination: "/help", permanent: true },
+      { source: "/tutorials", destination: "/help", permanent: true },
     ];
   },
 };
