@@ -22,11 +22,9 @@ export type ContactPayload = {
   firstName: string;
   lastName: string;
   email: string;
-  companyWebsite: string;
-  purpose: string;
-  phone: string;
+  company: string;
+  topic: string;
   message: string;
-  optIn: boolean;
 };
 
 export type DeliveryResult =
@@ -39,10 +37,8 @@ function asPlainText(payload: ContactPayload): string {
   return [
     `Name:    ${payload.firstName} ${payload.lastName}`,
     `Email:   ${payload.email}`,
-    `Phone:   ${payload.phone}`,
-    `Company: ${payload.companyWebsite || "(not given)"}`,
-    `Purpose: ${payload.purpose}`,
-    `Opt-in:  ${payload.optIn ? "yes" : "no"}`,
+    `Company: ${payload.company || "(not given)"}`,
+    `Topic:   ${payload.topic}`,
     "",
     payload.message,
   ].join("\n");
@@ -72,7 +68,7 @@ async function viaResend(
         from: process.env.CONTACT_FROM_EMAIL?.trim() || "onboarding@resend.dev",
         to: [to],
         reply_to: payload.email,
-        subject: `Contact form: ${payload.purpose} - ${payload.firstName} ${payload.lastName}`,
+        subject: `Contact form: ${payload.topic} - ${payload.firstName} ${payload.lastName}`,
         text: asPlainText(payload),
       }),
     });
