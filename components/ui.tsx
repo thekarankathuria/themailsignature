@@ -240,7 +240,7 @@ export function Toggle({
         onClick={() => onChange(!checked)}
         className={cx(
           "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition-colors",
-          checked ? "bg-brand-600" : "bg-ink-300 dark:bg-ink-700",
+          checked ? "bg-blue-brand-600" : "bg-ink-300 dark:bg-ink-700",
         )}
       >
         <span
@@ -363,7 +363,7 @@ export function Button({
 }) {
   const variants = {
     primary:
-      "bg-brand-600 text-white hover:bg-brand-700 active:translate-y-px disabled:bg-brand-600/50",
+      "bg-blue-brand-600 text-white hover:bg-blue-brand-700 active:translate-y-px disabled:bg-blue-brand-600/50",
     secondary:
       "border border-ink-200 bg-white text-ink-800 hover:border-ink-300 hover:bg-ink-50 active:translate-y-px " +
       "dark:border-ink-800 dark:bg-ink-900 dark:text-ink-100 dark:hover:bg-ink-800",

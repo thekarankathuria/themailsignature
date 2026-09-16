@@ -31,7 +31,7 @@ export default async function LoginPage({
       <LoginForm next={next} />
       <p className="text-center text-sm text-ink-600 dark:text-ink-400">
         No account?{" "}
-        <Link href="/signup" className="font-medium text-brand-600">
+        <Link href="/signup" className="font-medium text-blue-brand-600">
           Sign up
         </Link>
       </p>

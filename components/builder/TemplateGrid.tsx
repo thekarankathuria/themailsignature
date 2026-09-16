@@ -43,7 +43,7 @@ export function TemplateGrid({
             className={cx(
               "group flex flex-col overflow-hidden rounded-[14px] border text-left transition-colors",
               active
-                ? "border-brand-600 ring-1 ring-brand-600"
+                ? "border-blue-brand-600 ring-1 ring-blue-brand-600"
                 : "border-ink-200 hover:border-ink-300 dark:border-ink-800 dark:hover:border-ink-700",
             )}
           >
@@ -58,7 +58,7 @@ export function TemplateGrid({
               <span
                 className={cx(
                   "text-xs font-semibold",
-                  active ? "text-brand-700 dark:text-brand-300" : "text-ink-900 dark:text-ink-100",
+                  active ? "text-blue-brand-700 dark:text-blue-brand-300" : "text-ink-900 dark:text-ink-100",
                 )}
               >
                 {t.name}

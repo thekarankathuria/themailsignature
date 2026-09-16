@@ -9,7 +9,7 @@
     "lint": "eslint",
     "icons": "node scripts/gen-social-icons.mjs",
     "brand": "node scripts/gen-brand-assets.mjs",
-    "test": "tsx scripts/check-render.ts && tsx scripts/check-safe-next.ts && tsx scripts/check-hardening.ts && tsx scripts/check-content.ts && tsx scripts/check-brand.ts"
+    "test": "tsx scripts/check-render.ts && tsx scripts/check-safe-next.ts && tsx scripts/check-hardening.ts && tsx scripts/check-content.ts && tsx scripts/check-brand.ts && tsx scripts/check-tokens.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
