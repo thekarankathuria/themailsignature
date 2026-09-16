@@ -1,4 +1,4 @@
-# Mail Signature
+# TheMailSignature
 
 A free email signature generator. Fill in your details, pick a template, copy a
 signature that survives Outlook.
@@ -56,62 +56,30 @@ survives.
 
 ## The marketing site
 
-Everything under `app/(site)/` is a clone of customesignature.com, re-skinned to a flat
-Gmail-red accent on a pure-white surface and rebranded **Mail Signature**. 33 pages: the
-homepage, About, Demo, Contact, Support, Tutorials, Browse 1000 Industries, four legal
-pages, and 21 `/solution/<slug>` pages served from one template.
+`app/(site)/` is original work for TheMailSignature. It uses the Tailwind token
+set in `app/globals.css` (navy `#0B1F52`, blue `#0050B8`) and the shared shell in
+`components/site/` (`SiteHeader`, `SiteFooter`, `Container`). There is no second
+stylesheet and no cloned markup: the former Webflow clone was removed in Phase 1,
+and `scripts/check-content.ts` fails the test run if any of its strings return.
+The page bodies are placeholders until Phase 2 writes the real copy.
 
-The affiliate page was removed: its signup CTAs pointed at the cloned company's own
-Rewardful account, so every would-be affiliate was being enrolled in *their* programme.
-Restoring it means adding a real affiliate provider first.
+Every URL the previous site exposed (`/generator`, `/solution/<slug>`,
+`/contact-us`, `/privacypolicy`, ...) redirects permanently to its new home via
+`redirects()` in `next.config.ts`; `scripts/check-redirects.ts` guards the list.
 
-It is a **CSS-verbatim** clone, not a re-implementation. The original Webflow stylesheet
-ships as `app/ces.css` and every component emits the original class names, because that is
-the only way to match a 155 KB Webflow stylesheet exactly. Two consequences:
-
-- **Class names are load-bearing.** Renaming one silently breaks a layout rule.
-- **`app/ces.css` is generated. Never hand-edit it.** Hand-written overrides live in
-  `app/ces-extra.css`, which loads after it.
-
-The route group matters too: `app/(site)/layout.tsx` imports `ces.css`, while
-`app/generator/layout.tsx` imports `globals.css`. That keeps Tailwind's preflight away from
-the cloned CSS, which would otherwise reset half of it.
-
-### Regenerating the site's CSS and assets
+Brand rasters are generated from `public/brand/logo-source.png`:
 
 ```bash
-node scripts/download-assets.mjs   # every page's assets -> public/ces, writes asset-map.json
-node scripts/download-bcdn.mjs     # the b-cdn.net videos (must run AFTER download-assets)
-node scripts/localize-css.mjs      # raw/site.css -> app/ces.css, urls rewritten to /ces
-node scripts/recolor-css.mjs       # accent ramp -> flat red, flattens gradients and glows
-node scripts/rebrand-lottie.mjs    # rewrites the brand text inside the Lottie JSONs
-node scripts/extract-solutions.mjs # rebuilds lib/ces/solutions.ts from the 21 saved pages
+npm run brand   # wordmark, knockout, square mark, icons, OG card
 ```
 
-`download-assets.mjs` rebuilds `asset-map.json` from scratch, so re-running it drops the
-b-cdn video entries — always run `download-bcdn.mjs` after it.
-
-`scripts/prune-assets.mjs` reports (or with `--apply`, deletes) files under `public/ces`
-that nothing references.
-
-### Working with a section
-
-`scripts/extract-section.mjs <selector>` and `scripts/extract-any.mjs <page> <selector>`
-pull a section's exact HTML subtree plus every CSS rule that applies to it into
-`docs/research/extract/`. That is how every component here was specified, and how to spec
-a new one. `docs/research/BUILDER_BRIEF.md` holds the rules for porting one.
-
-### Known gaps
-
-`docs/research/BRANDED-ASSETS.md` lists the artwork that still carries the original brand:
-30 raster images and 9 videos have the old name baked into the pixels, and several Loom
-embeds still serve the original company's recordings. Lottie animations were rebranded
-programmatically because their text is JSON, not pixels.
+The production plan, phase by phase, is in
+`docs/superpowers/specs/2026-09-15-themailsignature-production-design.md`.
 
 ## Running it locally
 
-The generator is behind a Supabase session, so the app needs credentials before
-`/generator` will load. Without them `proxy.ts` throws and every matched route
+The editor is behind a Supabase session, so the app needs credentials before
+`/editor` will load. Without them `proxy.ts` throws and every matched route
 returns a blank 500.
 
 ```bash
@@ -147,11 +115,14 @@ an unreadable stack trace.
 ```bash
 npm run dev     # http://localhost:3000
 npm run build
-npm test        # render safety, open-redirect guard, rate limiter, env guard
+npm test        # every suite below, then the Vitest component tests
+npm run lint
 npm run icons   # regenerate the social icon PNGs
+npm run brand   # regenerate the brand rasters
 ```
 
-`npm test` runs three suites:
+`npm test` runs seven node suites, then the Vitest component tests
+(`components/**/*.test.tsx`):
 
 - `check-render.ts` renders all eight templates against a hostile payload and
   asserts that no script element, event handler, or dangerous URL scheme
@@ -163,23 +134,33 @@ npm run icons   # regenerate the social icon PNGs
 - `check-hardening.ts` covers the rate limiter's boundary (it must refuse
   *after* the allowance, not at it), window expiry, key scoping, and the env
   guard's error message.
+- `check-content.ts` fails if any string from the removed clone reappears.
+- `check-brand.ts` checks the generated brand rasters exist and are not blank.
+- `check-tokens.ts` checks the colour tokens and their contrast.
+- `check-redirects.ts` checks every legacy URL still has a permanent redirect.
 
 ## Layout
 
 ```
 app/
-  page.tsx              marketing page
-  generator/page.tsx    the builder
+  (site)/               marketing pages, shared header/footer shell
+  (auth)/               login, signup
+  editor/page.tsx       the builder
   api/upload/route.ts   content-addressed image hosting
+  api/contact/route.ts  contact form delivery
 components/
+  brand/                Logo lockup
   builder/              panels, preview, export, template grid
-  site/                 wordmark, theme toggle
+  site/                 header, footer, container, theme toggle
 lib/
   signature/            the render engine (no React, no DOM)
+  marketing/            industry page SEO data
+  supabase/             client factories and auth actions
   clipboard.ts          rich-HTML clipboard write with a legacy fallback
 scripts/
   gen-social-icons.mjs  simple-icons to PNG
-  check-render.ts       the test above
+  gen-brand-assets.mjs  logo to brand rasters
+  check-*.ts            the test suites above
 ```
 
 ## Notes
@@ -190,7 +171,7 @@ scripts/
 - `simple-icons` is pinned to v13 because LinkedIn and Slack were removed from
   later releases over trademark policy.
 - The builder keeps its form state in `localStorage`; signature details are
-  never stored server-side. Accounts exist only to gate `/generator` and
+  never stored server-side. Accounts exist only to gate `/editor` and
   `/api/upload` — Supabase holds the credential, and nothing else.
 - Public POST routes are rate limited in `lib/rate-limit.ts`: 5 contact messages
   and 20 uploads per IP per ten minutes. The counter lives in one process's
@@ -201,7 +182,6 @@ scripts/
   `.contact-submissions.log` and the route reports a real failure if even that
   does not work.
 - `next.config.ts` sets nosniff, a referrer policy, `X-Frame-Options: DENY`, a
-  permissions policy and HSTS. It deliberately sets **no** Content-Security-Policy:
-  the cloned Webflow CSS leans on inline styles and third-party embeds, so a
-  strict policy would break layout before it protected anything. Adding one
-  means inventorying those origins and running it report-only first.
+  permissions policy and HSTS. It sets **no** Content-Security-Policy yet: adding
+  one means inventorying every origin the app loads from and running it
+  report-only first, which is scheduled for launch hardening (Phase 6).
