@@ -1,21 +1,33 @@
-import type { Metadata } from "next";
+import { CtaBanner } from "@/components/marketing/CtaBanner";
+import { Section } from "@/components/marketing/Section";
+import { SectionHeading } from "@/components/marketing/SectionHeading";
+import { TemplateCard } from "@/components/marketing/TemplateCard";
+import { pageMetadata } from "@/lib/marketing/pages";
+import { TEMPLATES } from "@/lib/signature/templates";
 
-export const metadata: Metadata = {
-  title: { absolute: "Email Signature Templates | TheMailSignature" },
-  description:
-    "Create an email signature that renders correctly in Gmail, Outlook and Apple Mail. Free, no account needed to start.",
-  alternates: { canonical: "/templates" },
-};
+export const metadata = pageMetadata("templates");
 
 export default function TemplatesPage() {
   return (
-    <div className="mx-auto max-w-3xl px-6 py-24">
-      <h1 className="text-4xl font-bold tracking-tight text-navy-900">
-        Templates
-      </h1>
-      <p className="mt-4 text-lg text-slate-600">
-        An email signature that renders correctly everywhere.
-      </p>
-    </div>
+    <>
+      <Section tone="tint">
+        <SectionHeading
+          as="h1"
+          eyebrow="Templates"
+          title="Eight signature layouts, all built for Outlook"
+          lede="Every template is made of HTML tables with inline styles, the only format Outlook for Windows renders reliably. The examples below are live renders, not images. Open one in the editor and replace the details with yours."
+        />
+      </Section>
+      <Section>
+        <div className="grid gap-6 md:grid-cols-2">
+          {TEMPLATES.map((t) => <TemplateCard key={t.id} templateId={t.id} />)}
+        </div>
+      </Section>
+      <CtaBanner
+        title="Not sure which one?"
+        body="Start with any template. You can switch layouts in the editor at any time without retyping your details."
+        cta={{ label: "Open the editor", href: "/editor" }}
+      />
+    </>
   );
 }
