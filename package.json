@@ -10,6 +10,8 @@
     "icons": "node scripts/gen-social-icons.mjs",
     "brand": "node scripts/gen-brand-assets.mjs",
     "samples": "node scripts/gen-sample-assets.mjs",
+    "contact-icons": "node scripts/gen-contact-icons.mjs",
+    "anim": "node scripts/gen-animated-icons.mjs",
     "test": "tsx scripts/check-render.ts && tsx scripts/check-safe-next.ts && tsx scripts/check-hardening.ts && tsx scripts/check-content.ts && tsx scripts/check-brand.ts && tsx scripts/check-tokens.ts && tsx scripts/check-redirects.ts && tsx scripts/check-marketing.ts && vitest run",
     "test:unit": "vitest run",
     "check:launch": "tsx scripts/check-launch.ts",

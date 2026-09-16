@@ -15,6 +15,7 @@ import {
   textCell,
 } from "./html";
 import { SOCIALS } from "./social";
+import { contactIconPath, socialIconPath, type ContactKind } from "./assets";
 import type { RenderContext, SignatureData, SignatureStyle } from "./types";
 
 /* Identity ---------------------------------------------------------- */
@@ -61,6 +62,7 @@ export function roleHtml(data: SignatureData, style: SignatureStyle): string {
 
 interface ContactLine {
   label: string;
+  kind: ContactKind;
   html: string;
 }
 
@@ -73,12 +75,14 @@ export function contactLines(
   if (data.phone.trim()) {
     lines.push({
       label: "P",
+      kind: "phone",
       html: anchor(telUrl(data.phone), esc(data.phone.trim()), style.textColor),
     });
   }
   if (data.mobile.trim()) {
     lines.push({
       label: "M",
+      kind: "mobile",
       html: anchor(telUrl(data.mobile), esc(data.mobile.trim()), style.textColor),
     });
   }
@@ -86,6 +90,7 @@ export function contactLines(
     const href = mailUrl(data.email);
     lines.push({
       label: "E",
+      kind: "email",
       html: href
         ? anchor(href, esc(data.email.trim()), style.linkColor)
         : esc(data.email.trim()),
@@ -94,6 +99,7 @@ export function contactLines(
   if (data.website.trim()) {
     lines.push({
       label: "W",
+      kind: "web",
       html: anchor(
         safeUrl(data.website),
         esc(displayUrl(data.website)),
@@ -106,11 +112,13 @@ export function contactLines(
     .filter(Boolean)
     .join(", ");
   if (address) {
-    lines.push({ label: "A", html: esc(address) });
+    lines.push({ label: "A",
+      kind: "address", html: esc(address) });
   }
   if (data.meetingUrl.trim()) {
     lines.push({
       label: "B",
+      kind: "meeting",
       html: anchor(
         safeUrl(data.meetingUrl),
         esc(data.meetingLabel.trim() || "Book a meeting"),
@@ -121,23 +129,33 @@ export function contactLines(
   return lines;
 }
 
-/** Contact block as stacked rows, with optional single-letter labels. */
+/** Contact block as stacked rows, led by icons, letter labels, or nothing. */
 export function contactRows(
   data: SignatureData,
   style: SignatureStyle,
-  opts: { align?: string } = {},
+  opts: { align?: string; ctx?: RenderContext } = {},
 ): string {
   const lines = contactLines(data, style);
   if (!lines.length) return "";
   const size = Math.max(10, style.fontSize - 1);
   const lh = Math.round(size * 1.6);
+  const tone = style.contactIcons;
 
   return lines
     .map((line) => {
-      const label = style.showLabels
-        ? `<span style="color:${style.mutedColor};font-weight:700;">${line.label}</span><span style="color:${style.mutedColor};">&#58;&nbsp;</span>`
-        : "";
-      return `<tr>${textCell(label + line.html, style, {
+      let lead = "";
+      if (tone !== "none" && opts.ctx) {
+        lead = `${img({
+          src: contactIconPath(opts.ctx.assetBase, tone, line.kind),
+          width: 14,
+          height: 14,
+          alt: line.label,
+          extra: "display:inline-block;vertical-align:-2px;",
+        })}&nbsp;&nbsp;`;
+      } else if (style.showLabels) {
+        lead = `<span style="color:${style.mutedColor};font-weight:700;">${line.label}</span><span style="color:${style.mutedColor};">&#58;&nbsp;</span>`;
+      }
+      return `<tr>${textCell(lead + line.html, style, {
         size,
         lineHeight: lh,
         color: style.textColor,
@@ -226,13 +244,12 @@ export function socialRow(
   const active = SOCIALS.filter((s) => (data.social[s.key] ?? "").trim());
   if (!active.length) return "";
   const size = style.iconSize || 22;
-  const base = ctx.assetBase.replace(/\/$/, "");
 
   const cells = active
     .map((s) => {
       const href = safeUrl(data.social[s.key] as string);
       const icon = img({
-        src: `${base}/i/social/${style.iconStyle}/${s.slug}.png`,
+        src: socialIconPath(ctx.assetBase, style, s.slug),
         width: size,
         height: size,
         alt: s.label,
