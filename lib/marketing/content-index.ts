@@ -5,5 +5,6 @@
 import * as faqs from "./faqs";
 import * as home from "./home";
 import * as pages from "./pages";
+import * as teams from "./teams";
 
-export const CONTENT_MODULES: Record<string, unknown> = { faqs, home, pages };
+export const CONTENT_MODULES: Record<string, unknown> = { faqs, home, pages, teams };

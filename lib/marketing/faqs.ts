@@ -62,6 +62,27 @@ export const FAQS: Record<"home" | "pricing" | "teams" | "help", Faq[]> = {
       a: "Prices are shown in US dollars. Sales tax or VAT may be added at checkout depending on where you are.",
     },
   ],
-  teams: [],
+  teams: [
+    {
+      q: "Can members change the company template?",
+      a: "Members can fill in their own details. Anything an admin has locked, such as the logo, colours or disclaimer, stays as the admin set it.",
+      claims: ["company-template"],
+    },
+    {
+      q: "How are link clicks counted?",
+      a: "Links in team signatures pass through a short redirect that records the click and sends the reader straight on. No tracking pixels are added, and visitor IP addresses are never stored in readable form.",
+      claims: ["click-analytics", "no-tracking-pixels"],
+    },
+    {
+      q: "What is the minimum team size?",
+      a: "Business starts at three seats. You can add seats at any time as you invite more people.",
+      claims: ["team-invites"],
+    },
+    {
+      q: "Who can manage billing?",
+      a: "The workspace owner manages the plan, seats and payment details, and can cancel at any time.",
+      claims: ["roles", "self-serve-billing"],
+    },
+  ],
   help: [],
 };
