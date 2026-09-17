@@ -8,7 +8,7 @@ export const HOME: {
   hero: { eyebrow: string; title: string; lede: string; primary: Link; secondary: Link; claims: ClaimId[] };
   steps: { title: string; lede: string; items: Array<Step & { claims: ClaimId[] }> };
   features: { title: string; lede: string; items: Feature[] };
-  templates: { title: string; lede: string; ids: string[] };
+  templates: { title: string; lede: string; designIds: string[] };
   pricing: { title: string; lede: string };
   faq: { title: string };
   cta: { title: string; body: string; cta: Link };
@@ -87,8 +87,8 @@ export const HOME: {
   },
   templates: {
     title: "Start from a layout that already works",
-    lede: "These previews are rendered by the same engine that builds your signature.",
-    ids: ["meridian", "portrait", "slate", "split"],
+    lede: "Six designs for every industry, rendered by the same engine that builds your signature.",
+    designIds: ["lawyers-executive", "entrepreneurs-startup", "marketing-creative-agencies-studio", "real-estate-firms-colorblock"],
   },
   pricing: {
     title: "Free for one signature, simple when you need more",

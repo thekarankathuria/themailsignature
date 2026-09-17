@@ -8,7 +8,9 @@ import { FaqList } from "@/components/marketing/FaqList";
 import { JsonLd } from "@/components/marketing/JsonLd";
 import { Section } from "@/components/marketing/Section";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
-import { SignaturePreview } from "@/components/marketing/SignaturePreview";
+import { DesignCard } from "@/components/marketing/DesignCard";
+import { designHtml, toBrowserItem } from "@/lib/marketing/design-items";
+import { designsFor } from "@/lib/marketing/designs";
 import { INDUSTRIES, INDUSTRY_BY_SLUG } from "@/lib/marketing/industries";
 import { getIndustrySeo } from "@/lib/marketing/industry-seo";
 
@@ -45,6 +47,9 @@ export default async function IndustryPage({ params }: Props) {
   const { slug } = await params;
   const industry = INDUSTRY_BY_SLUG[slug];
   if (!industry) notFound();
+  const designs = designsFor(slug);
+  const free = designs.find((d) => d.tier === "free") ?? designs[0];
+  const showcase = designs.find((d) => d.tier === "pro") ?? free;
 
   return (
     <>
@@ -69,11 +74,11 @@ export default async function IndustryPage({ params }: Props) {
           <div>
             <SectionHeading as="h1" align="left" title={`Email signatures for ${industry.audience}`} lede={industry.intro} />
             <div className="mt-8">
-              <ButtonLink href={`/editor?template=${industry.templateId}`}>Start with this layout</ButtonLink>
+              <ButtonLink href={`/editor?design=${showcase.id}`}>Use this design</ButtonLink>
             </div>
           </div>
           <EmailFrame subject="Following up on our call">
-            <SignaturePreview personKey={industry.slug} templateId={industry.templateId} />
+            <div className="overflow-x-auto" dangerouslySetInnerHTML={{ __html: designHtml(showcase) }} />
           </EmailFrame>
         </div>
       </Section>
@@ -105,21 +110,37 @@ export default async function IndustryPage({ params }: Props) {
         </div>
       </Section>
 
-      <Section tone="tint">
+      <Section tone="tint" id="designs">
+        <SectionHeading
+          align="left"
+          title={`Six designs for ${industry.audience}`}
+          lede="Start with the free one, or pick a Pro design with more layout options and animation."
+        />
+        <ul className="mt-10 grid gap-6 md:grid-cols-2">
+          {designs.map((design) => (
+            <li key={design.id}>
+              <DesignCard item={toBrowserItem(design)} html={designHtml(design)} />
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 text-xs text-ink-600">Sample people, companies and photos are illustrative.</p>
+      </Section>
+
+      <Section>
         <SectionHeading title="Common questions" />
         <div className="mt-10">
           <FaqList items={industry.faqs} />
         </div>
       </Section>
 
-      <Section>
+      <Section tone="tint">
         <h2 className="text-xl font-bold text-navy-900">Related industries</h2>
         <ul className="mt-4 flex flex-wrap gap-3">
           {industry.related.map((relatedSlug) => (
             <li key={relatedSlug}>
               <Link
                 href={`/industries/${relatedSlug}`}
-                className="inline-block rounded-full border border-ink-200 px-4 py-2 text-sm font-medium text-navy-900 hover:border-navy-900"
+                className="inline-block rounded-full border border-ink-200 bg-white px-4 py-2 text-sm font-medium text-navy-900 hover:border-navy-900"
               >
                 {INDUSTRY_BY_SLUG[relatedSlug].name}
               </Link>
@@ -131,7 +152,7 @@ export default async function IndustryPage({ params }: Props) {
       <CtaBanner
         title={`Signatures for ${industry.audience}, ready in minutes`}
         body="Fill in your details, pick a layout and copy it into your email client."
-        cta={{ label: "Open the editor", href: `/editor?template=${industry.templateId}` }}
+        cta={{ label: "Start with the free design", href: `/editor?design=${free.id}` }}
       />
     </>
   );

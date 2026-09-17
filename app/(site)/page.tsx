@@ -9,7 +9,9 @@ import { Section } from "@/components/marketing/Section";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
 import { SignaturePreview } from "@/components/marketing/SignaturePreview";
 import { Steps } from "@/components/marketing/Steps";
-import { TemplateCard } from "@/components/marketing/TemplateCard";
+import { DesignCard } from "@/components/marketing/DesignCard";
+import { designHtml, toBrowserItem } from "@/lib/marketing/design-items";
+import { ALL_DESIGNS, DESIGN_BY_ID } from "@/lib/marketing/designs";
 import { FAQS } from "@/lib/marketing/faqs";
 import { HOME } from "@/lib/marketing/home";
 import { pageMetadata } from "@/lib/marketing/pages";
@@ -77,11 +79,15 @@ export default function HomePage() {
 
       <Section id="templates">
         <SectionHeading title={HOME.templates.title} lede={HOME.templates.lede} />
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {HOME.templates.ids.map((id) => <TemplateCard key={id} templateId={id} />)}
-        </div>
+        <ul className="mt-12 grid gap-6 md:grid-cols-2">
+          {HOME.templates.designIds.map((id) => (
+            <li key={id}>
+              <DesignCard item={toBrowserItem(DESIGN_BY_ID[id])} html={designHtml(DESIGN_BY_ID[id])} />
+            </li>
+          ))}
+        </ul>
         <div className="mt-10 flex justify-center">
-          <ButtonLink href="/templates" variant="secondary">See all templates</ButtonLink>
+          <ButtonLink href="/templates" variant="secondary">See all {ALL_DESIGNS.length} designs</ButtonLink>
         </div>
       </Section>
 

@@ -35,3 +35,13 @@ describe("designs", () => {
     }
   });
 });
+
+describe("homepage design strip", () => {
+  it("points at real designs from different industries, one animated", async () => {
+    const { HOME } = await import("./home");
+    const picked = HOME.templates.designIds.map((id) => DESIGN_BY_ID[id]);
+    expect(picked.every(Boolean)).toBe(true);
+    expect(new Set(picked.map((d) => d.industry)).size).toBe(picked.length);
+    expect(picked.some((d) => d.animated)).toBe(true);
+  });
+});

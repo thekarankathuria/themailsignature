@@ -10,6 +10,13 @@ const OUT = "public/samples";
 mkdirSync(OUT, { recursive: true });
 const people = JSON.parse(readFileSync("lib/marketing/sample-people.json", "utf8"));
 
+/** An opaque pale tint, so avatars read on dark cards as well as light ones. */
+const tint = (hex, amount) =>
+  "#" +
+  [1, 3, 5]
+    .map((i) => Math.round(parseInt(hex.slice(i, i + 2), 16) * amount + 255 * (1 - amount)).toString(16).padStart(2, "0"))
+    .join("");
+
 const escapeXml = (s) =>
   s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -39,7 +46,7 @@ for (const p of people) {
   await sharp(Buffer.from(logo)).png({ compressionLevel: 9 }).toFile(`${OUT}/${p.key}-logo.png`);
 
   const avatar = `<svg xmlns="http://www.w3.org/2000/svg" width="184" height="184">
-    <rect width="184" height="184" fill="${p.accent}" opacity="0.14"/>
+    <rect width="184" height="184" fill="${tint(p.accent, 0.16)}"/>
     <text x="92" y="112" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700"
       fill="${p.accent}" text-anchor="middle">${escapeXml(initials([p.firstName, p.lastName]))}</text>
   </svg>`;

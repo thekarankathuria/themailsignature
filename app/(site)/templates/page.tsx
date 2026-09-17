@@ -5,33 +5,15 @@ import { DesignCard } from "@/components/marketing/DesignCard";
 import { Section } from "@/components/marketing/Section";
 import { SectionHeading } from "@/components/marketing/SectionHeading";
 import { TemplateBrowser } from "@/components/marketing/TemplateBrowser";
-import { ALL_DESIGNS, designSignature, designsFor, type Design } from "@/lib/marketing/designs";
+import { designHtml as html, toBrowserItem as toItem } from "@/lib/marketing/design-items";
+import { ALL_DESIGNS, designsFor, type Design } from "@/lib/marketing/designs";
 import { TEMPLATE_SAMPLES, sampleSignature } from "@/lib/marketing/samples";
-import { INDUSTRIES, INDUSTRY_BY_SLUG } from "@/lib/marketing/industries";
+import { INDUSTRIES } from "@/lib/marketing/industries";
 import { pageMetadata } from "@/lib/marketing/pages";
-import type { BrowserItem } from "@/lib/marketing/template-filter";
 import { renderSignature } from "@/lib/signature/render";
-import { TEMPLATES, TEMPLATE_BY_ID } from "@/lib/signature/templates";
+import { TEMPLATES } from "@/lib/signature/templates";
 
 export const metadata = pageMetadata("templates");
-
-function toItem(design: Design): BrowserItem {
-  return {
-    id: design.id,
-    industry: design.industry,
-    industryName: INDUSTRY_BY_SLUG[design.industry]?.name ?? design.industry,
-    layoutId: design.layoutId,
-    name: design.name,
-    tier: design.tier,
-    animated: design.animated,
-    tags: TEMPLATE_BY_ID[design.layoutId]?.tags ?? [],
-  };
-}
-
-function html(design: Design): string {
-  const { data, style } = designSignature(design);
-  return renderSignature(data, style, { assetBase: "" });
-}
 
 /** One design per designer layout, preferring animated ones so motion shows. */
 function featured(): Design[] {
