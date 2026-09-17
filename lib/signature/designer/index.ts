@@ -4,14 +4,18 @@
  */
 import type { TemplateMeta } from "../types";
 import { bold, boldMeta } from "./bold";
+import { colorblock, colorblockMeta } from "./colorblock";
 import { corporate, corporateMeta } from "./corporate";
 import { editorial, editorialMeta } from "./editorial";
 import { executive, executiveMeta } from "./executive";
 import type { Renderer } from "./kit";
 import { luxe, luxeMeta } from "./luxe";
+import { monogram, monogramMeta } from "./monogram";
 import { nordic, nordicMeta } from "./nordic";
+import { personal, personalMeta } from "./personal";
 import { startup, startupMeta } from "./startup";
 import { studio, studioMeta } from "./studio";
+import { ultra, ultraMeta } from "./ultra";
 
 export const DESIGNER_RENDERERS: Record<string, Renderer> = {
   luxe,
@@ -22,6 +26,10 @@ export const DESIGNER_RENDERERS: Record<string, Renderer> = {
   bold,
   startup,
   editorial,
+  personal,
+  ultra,
+  monogram,
+  colorblock,
 };
 
 export const DESIGNER_TEMPLATES: TemplateMeta[] = [
@@ -33,4 +41,8 @@ export const DESIGNER_TEMPLATES: TemplateMeta[] = [
   boldMeta,
   startupMeta,
   editorialMeta,
+  personalMeta,
+  ultraMeta,
+  monogramMeta,
+  colorblockMeta,
 ];
