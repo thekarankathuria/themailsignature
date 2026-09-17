@@ -52,3 +52,6 @@ next-env.d.ts
 
 # layout review sheets
 /.review
+
+# local database, outbox and uploads
+/data
