@@ -33,6 +33,7 @@ const HOSTILE: SignatureData = {
   ctaText: "Go",
   ctaUrl: "example.com/go",
   tagline: "5 > 3 & 2 < 4",
+  sideText: "<b>Ideas</b>\nPeople\n\"><script>alert(9)</script>",
   disclaimer: "Confidential </td></table><script>alert(7)</script>",
   greenFooter: true,
   social: { linkedin: "javascript:alert(8)", x: "x.com/real" },
@@ -67,12 +68,22 @@ function textAnchorsMissingColour(html: string): number {
   return count;
 }
 
-for (const template of TEMPLATES) {
-  const style = { ...DEFAULT_STYLE, templateId: template.id };
+// The designer options (animation, status dot, contact icons) add images and
+// columns, so every layout is also checked with all of them switched on.
+const EXTRAS = {
+  iconAnimation: "pulse",
+  statusDot: "blink",
+  contactIcons: "muted",
+} as const;
 
-  for (const [variant, data] of [
-    ["hostile", HOSTILE],
-    ["default", DEFAULT_DATA],
+for (const template of TEMPLATES) {
+  const plain = { ...DEFAULT_STYLE, templateId: template.id };
+  const extras = { ...plain, iconAnimation: EXTRAS.iconAnimation, statusDot: EXTRAS.statusDot, contactIcons: EXTRAS.contactIcons };
+
+  for (const [variant, data, style] of [
+    ["hostile", HOSTILE, plain],
+    ["default", DEFAULT_DATA, plain],
+    ["hostile+extras", { ...HOSTILE, photoUrl: "https://cdn.test/p.png" }, extras],
   ] as const) {
     const html = renderSignature(data, style, { assetBase: "https://cdn.test" });
     const tags = tagsOf(html);
@@ -82,11 +93,21 @@ for (const template of TEMPLATES) {
 
     // Injection: user input must never become markup or an active URL.
     check(at("no script element"), !tags.some((t) => /^<script/i.test(t)));
-    check(at("no event handler attribute"), !tags.some((t) => /\son[a-z]+\s*=/i.test(t)));
+    // Quoted values are blanked first: escaped user text inside an alt or href
+    // can legitimately read "onerror=", but it is text, not an attribute.
+    check(
+      at("no event handler attribute"),
+      !tags.some((t) => /\son[a-z]+\s*=/i.test(t.replace(/"[^"]*"/g, '""'))),
+    );
     check(at("no dangerous href"), !attrValues(tags, "href").some((v) => DANGEROUS.test(v)));
     check(at("no dangerous src"), !attrValues(tags, "src").some((v) => DANGEROUS.test(v)));
     check(at("payload not reflected as markup"), !html.includes("<img src=x"));
     check(at("closing tag payload escaped"), !html.includes("</td></table><script"));
+    check(at("side text escaped"), !html.includes("<b>Ideas</b>") && !html.includes("alert(9)</script>"));
+    if (variant === "hostile+extras") {
+      check(at("animated icons used"), !html.includes("/i/social/") && html.includes("/i/social-anim/pulse/"));
+      check(at("contact icons used"), html.includes("/i/contact/"));
+    }
 
     // Mail-client safety: the subset Word actually renders.
     check(at("no stylesheet block"), !tags.some((t) => /^<style/i.test(t)));
@@ -133,5 +154,5 @@ if (failures.length) {
   process.exit(1);
 }
 console.log(
-  `All render checks passed: ${TEMPLATES.length} templates x 2 payloads, plus URL and plain-text checks.`,
+  `All render checks passed: ${TEMPLATES.length} templates x 3 payloads, plus URL and plain-text checks.`,
 );

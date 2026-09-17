@@ -7,8 +7,8 @@
  * Word's renderer ignores both.
  */
 import { socialIconPath, statusDotPath } from "../assets";
-import { esc, gutter, img, safeUrl, spacer, table, textCell } from "../html";
-import { fullName, photoImg, socialRow } from "../parts";
+import { esc, gap, gutter, img, safeUrl, spacer, table, textCell } from "../html";
+import { bannerImg, ctaButton, footerRows, fullName, photoImg, socialRow } from "../parts";
 import { SOCIALS } from "../social";
 import type { FontKey, RenderContext, SignatureData, SignatureStyle } from "../types";
 
@@ -200,4 +200,14 @@ export function tint(hex: string, amount: number): string {
       .toString(16)
       .padStart(2, "0");
   return `#${mix(0)}${mix(2)}${mix(4)}`.toUpperCase();
+}
+
+/** Call to action, banner and legal lines, appended under every layout. */
+export function closing(data: SignatureData, style: SignatureStyle): string {
+  let out = "";
+  const cta = ctaButton(data, style);
+  if (cta) out += spacer(gap(style) + 10) + `<tr><td>${cta}</td></tr>`;
+  const banner = bannerImg(data);
+  if (banner) out += spacer(gap(style) + 10) + `<tr><td>${banner}</td></tr>`;
+  return out + footerRows(data, style);
 }

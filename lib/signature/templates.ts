@@ -19,6 +19,7 @@ import {
   socialRow,
   taglineRow,
 } from "./parts";
+import { DESIGNER_RENDERERS, DESIGNER_TEMPLATES } from "./designer";
 import type {
   RenderContext,
   SignatureData,
@@ -111,8 +112,8 @@ const meridian: Renderer = (data, style, ctx) => {
   const details = table(
     nameRow(data, style) +
       roleRow(data, style) +
-      (contactRows(data, style)
-        ? spacer(gap(style) + 2) + contactRows(data, style)
+      (contactRows(data, style, { ctx })
+        ? spacer(gap(style) + 2) + contactRows(data, style, { ctx })
         : "") +
       (social ? spacer(gap(style) + 4) + `<tr><td>${social}</td></tr>` : "") +
       taglineRow(data, style),
@@ -155,7 +156,7 @@ const stack: Renderer = (data, style, ctx) => {
   } else {
     rows += spacer(gap(style) + 2);
   }
-  rows += contactRows(data, style);
+  rows += contactRows(data, style, { ctx });
   if (photo && logo) rows += spacer(gap(style) + 4) + `<tr><td>${logo}</td></tr>`;
   if (social) rows += spacer(gap(style) + 6) + `<tr><td>${social}</td></tr>`;
   rows += taglineRow(data, style);
@@ -182,7 +183,7 @@ const ledger: Renderer = (data, style, ctx) => {
   rows += spacer(gap(style) + 6);
   if (style.showDivider) rows += hairline(style.accent);
   rows += spacer(gap(style) + 6);
-  rows += `<tr><td>${table(contactColumns(data, style))}</td></tr>`;
+  rows += `<tr><td>${table(contactColumns(data, style, ctx))}</td></tr>`;
   if (social) rows += spacer(gap(style) + 6) + `<tr><td>${social}</td></tr>`;
   rows += taglineRow(data, style);
   rows += trailer(data, style);
@@ -213,7 +214,7 @@ const portrait: Renderer = (data, style, ctx) => {
   rows += spacer(gap(style) + 6);
   if (style.showDivider) rows += hairline(style.mutedColor + "40");
   rows += spacer(gap(style) + 6);
-  rows += `<tr><td>${table(contactColumns(data, style))}</td></tr>`;
+  rows += `<tr><td>${table(contactColumns(data, style, ctx))}</td></tr>`;
   if (logo) rows += spacer(gap(style) + 8) + `<tr><td>${logo}</td></tr>`;
   rows += taglineRow(data, style);
   rows += trailer(data, style);
@@ -232,6 +233,7 @@ const slate: Renderer = (data, style, ctx) => {
     textColor: "#DFE1E5",
     mutedColor: "#9BA0A8",
     linkColor: style.accent,
+    contactIcons: style.contactIcons === "none" ? "none" : "light",
   };
 
   const media = mediaStack(data, local);
@@ -240,8 +242,8 @@ const slate: Renderer = (data, style, ctx) => {
   const details = table(
     nameRow(data, local) +
       roleRow(data, local) +
-      (contactRows(data, local)
-        ? spacer(gap(local) + 2) + contactRows(data, local)
+      (contactRows(data, local, { ctx })
+        ? spacer(gap(local) + 2) + contactRows(data, local, { ctx })
         : "") +
       (social ? spacer(gap(local) + 4) + `<tr><td>${social}</td></tr>` : ""),
   );
@@ -272,8 +274,8 @@ const minimal: Renderer = (data, style, ctx) => {
   const details = table(
     nameRow(data, style) +
       roleRow(data, style) +
-      (contactRows(data, style)
-        ? spacer(gap(style) + 2) + contactRows(data, style)
+      (contactRows(data, style, { ctx })
+        ? spacer(gap(style) + 2) + contactRows(data, style, { ctx })
         : "") +
       (social ? spacer(gap(style) + 4) + `<tr><td>${social}</td></tr>` : ""),
   );
@@ -304,7 +306,7 @@ const broadcast: Renderer = (data, style, ctx) => {
 
   let rows = `<tr><td>${head}</td></tr>`;
   rows += spacer(gap(style) + 4);
-  rows += `<tr><td>${table(contactColumns(data, style))}</td></tr>`;
+  rows += `<tr><td>${table(contactColumns(data, style, ctx))}</td></tr>`;
   if (social) rows += spacer(gap(style) + 6) + `<tr><td>${social}</td></tr>`;
 
   const banner = bannerImg(data);
@@ -330,8 +332,8 @@ const split: Renderer = (data, style, ctx) => {
   const details = table(
     nameRow(data, style) +
       roleRow(data, style) +
-      (contactRows(data, style)
-        ? spacer(gap(style) + 2) + contactRows(data, style)
+      (contactRows(data, style, { ctx })
+        ? spacer(gap(style) + 2) + contactRows(data, style, { ctx })
         : ""),
   );
 
@@ -377,6 +379,7 @@ export const RENDERERS: Record<string, Renderer> = {
   minimal,
   broadcast,
   split,
+  ...DESIGNER_RENDERERS,
 };
 
 /** Layouts available on the Free plan. Everything else is Pro. */
@@ -449,6 +452,7 @@ export const TEMPLATES: TemplateMeta[] = [
     name: "Split",
     blurb: "Details left, logo right, social and button on one baseline.",
   },
+  ...DESIGNER_TEMPLATES,
 ];
 
 export const TEMPLATE_BY_ID: Record<string, TemplateMeta> = Object.fromEntries(

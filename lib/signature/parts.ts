@@ -129,7 +129,25 @@ export function contactLines(
   return lines;
 }
 
-/** Contact block as stacked rows, led by icons, letter labels, or nothing. */
+/** What leads a contact line: an icon, a letter label, or nothing. */
+function contactLead(line: ContactLine, style: SignatureStyle, ctx?: RenderContext): string {
+  const tone = style.contactIcons;
+  if (tone !== "none" && ctx) {
+    return `${img({
+      src: contactIconPath(ctx.assetBase, tone, line.kind),
+      width: 14,
+      height: 14,
+      alt: line.label,
+      extra: "display:inline-block;vertical-align:-2px;",
+    })}&nbsp;&nbsp;`;
+  }
+  if (style.showLabels) {
+    return `<span style="color:${style.mutedColor};font-weight:700;">${line.label}</span><span style="color:${style.mutedColor};">&#58;&nbsp;</span>`;
+  }
+  return "";
+}
+
+/** Contact block as stacked rows. */
 export function contactRows(
   data: SignatureData,
   style: SignatureStyle,
@@ -139,29 +157,17 @@ export function contactRows(
   if (!lines.length) return "";
   const size = Math.max(10, style.fontSize - 1);
   const lh = Math.round(size * 1.6);
-  const tone = style.contactIcons;
 
   return lines
-    .map((line) => {
-      let lead = "";
-      if (tone !== "none" && opts.ctx) {
-        lead = `${img({
-          src: contactIconPath(opts.ctx.assetBase, tone, line.kind),
-          width: 14,
-          height: 14,
-          alt: line.label,
-          extra: "display:inline-block;vertical-align:-2px;",
-        })}&nbsp;&nbsp;`;
-      } else if (style.showLabels) {
-        lead = `<span style="color:${style.mutedColor};font-weight:700;">${line.label}</span><span style="color:${style.mutedColor};">&#58;&nbsp;</span>`;
-      }
-      return `<tr>${textCell(lead + line.html, style, {
-        size,
-        lineHeight: lh,
-        color: style.textColor,
-        align: opts.align,
-      })}</tr>`;
-    })
+    .map(
+      (line) =>
+        `<tr>${textCell(contactLead(line, style, opts.ctx) + line.html, style, {
+          size,
+          lineHeight: lh,
+          color: style.textColor,
+          align: opts.align,
+        })}</tr>`,
+    )
     .join("");
 }
 
@@ -169,6 +175,7 @@ export function contactRows(
 export function contactColumns(
   data: SignatureData,
   style: SignatureStyle,
+  ctx?: RenderContext,
 ): string {
   const lines = contactLines(data, style);
   if (!lines.length) return "";
@@ -179,12 +186,10 @@ export function contactColumns(
   const column = (items: ContactLine[]) =>
     table(
       items
-        .map((line) => {
-          const label = style.showLabels
-            ? `<span style="color:${style.mutedColor};font-weight:700;">${line.label}</span><span style="color:${style.mutedColor};">&#58;&nbsp;</span>`
-            : "";
-          return `<tr>${textCell(label + line.html, style, { size, lineHeight: lh })}</tr>`;
-        })
+        .map(
+          (line) =>
+            `<tr>${textCell(contactLead(line, style, ctx) + line.html, style, { size, lineHeight: lh })}</tr>`,
+        )
         .join(""),
     );
 
