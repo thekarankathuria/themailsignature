@@ -14,7 +14,7 @@ describe("database", () => {
     const tables = first
       .prepare("select name from sqlite_master where type = 'table' order by name")
       .all()
-      .map((r) => (r as { name: string }).name);
+      .map((r) => (r as unknown as { name: string }).name);
     expect(tables).toEqual(
       expect.arrayContaining(["users", "sessions", "auth_tokens", "signatures", "subscriptions", "billing_events", "uploads", "schema_migrations"]),
     );
