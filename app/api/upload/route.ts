@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
 import { currentUser } from "@/lib/auth/current";
+import { canUpload } from "@/lib/billing/entitlements";
+import { planFor } from "@/lib/billing/plans";
 import { db } from "@/lib/db";
 import { nowIso } from "@/lib/db/ids";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
@@ -34,6 +36,12 @@ export async function POST(request: Request) {
   const user = await currentUser();
   if (!user) {
     return NextResponse.json({ error: "Log in to upload images." }, { status: 401 });
+  }
+  if (!canUpload(planFor(user.id))) {
+    return NextResponse.json(
+      { error: "Uploading and hosting images is part of Pro. You can still paste a link to an image hosted anywhere.", code: "upgrade" },
+      { status: 403 },
+    );
   }
 
   const form = await request.formData().catch(() => null);

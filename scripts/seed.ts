@@ -8,6 +8,8 @@
 import { randomBytes } from "node:crypto";
 import { appendFileSync, existsSync, readFileSync } from "node:fs";
 import { createUser, findUserByEmail, markVerified } from "../lib/auth/users";
+import { grantPlan } from "../lib/billing/local";
+import { planFor } from "../lib/billing/plans";
 
 const ENV_FILE = ".env.local";
 
@@ -35,12 +37,14 @@ async function main() {
     const passwordKey = `${account.key}_PASSWORD`;
     const existing = findUserByEmail(account.email);
     if (existing) {
-      console.log(`exists   ${account.email} (${account.plan})`);
+      if (account.plan !== "free" && planFor(existing.id) === "free") grantPlan(existing.id, account.plan, "year");
+      console.log(`exists   ${account.email} (${planFor(existing.id)})`);
       continue;
     }
     const password = env[passwordKey] || randomBytes(15).toString("base64url");
     const user = await createUser(account.email, password);
     markVerified(user.id);
+    if (account.plan !== "free") grantPlan(user.id, account.plan, "year");
     console.log(`created  ${account.email} (${account.plan})`);
     if (!env[passwordKey]) lines.push(`${emailKey}=${account.email}`, `${passwordKey}=${password}`);
   }
