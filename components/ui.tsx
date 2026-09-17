@@ -256,11 +256,14 @@ export function Toggle({
 
 export function Segmented<T extends string>({
   label,
+  badge,
   value,
   onChange,
   options,
 }: {
   label?: string;
+  /** Shown after the label, e.g. a plan badge. */
+  badge?: React.ReactNode;
   value: T;
   onChange: (v: T) => void;
   options: Array<{ value: T; label: string }>;
@@ -268,8 +271,9 @@ export function Segmented<T extends string>({
   return (
     <div className="flex flex-col gap-1.5">
       {label ? (
-        <span className="text-xs font-medium text-ink-600 dark:text-ink-300">
+        <span className="flex items-center gap-1.5 text-xs font-medium text-ink-600 dark:text-ink-300">
           {label}
+          {badge}
         </span>
       ) : null}
       <div

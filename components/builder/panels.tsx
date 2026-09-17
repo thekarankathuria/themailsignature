@@ -1,17 +1,21 @@
 "use client";
 
+import { STATUS_COLORS } from "@/lib/signature/assets";
 import { FONT_LABELS } from "@/lib/signature/html";
 import { ACCENT_PRESETS } from "@/lib/signature/defaults";
 import { ICON_STYLE_LABELS, SOCIALS } from "@/lib/signature/social";
 import { TEMPLATE_BY_ID } from "@/lib/signature/templates";
 import type {
+  ContactIconTone,
   Density,
   FontKey,
+  IconAnimation,
   IconStyle,
   PhotoShape,
   SignatureData,
   SignatureStyle,
   SocialKey,
+  StatusDot,
 } from "@/lib/signature/types";
 import {
   ColorInput,
@@ -24,6 +28,7 @@ import {
   cx,
 } from "@/components/ui";
 import { ImageField } from "./ImageField";
+import { ProBadge } from "./ProBadge";
 
 export interface PanelProps {
   data: SignatureData;
@@ -204,6 +209,77 @@ export function StylePanel({ style, setStyle }: PanelProps) {
         </Field>
       </div>
 
+      <div className="flex flex-col gap-4 border-t border-ink-200 pt-4 dark:border-ink-800">
+        <div className={grid}>
+          <Segmented<IconAnimation>
+            label="Icon animation"
+            badge={<ProBadge />}
+            value={style.iconAnimation}
+            onChange={(v) => setStyle({ iconAnimation: v })}
+            options={[
+              { value: "none", label: "None" },
+              { value: "pulse", label: "Pulse" },
+              { value: "bounce", label: "Bounce" },
+              { value: "wiggle", label: "Wiggle" },
+            ]}
+          />
+          <Segmented<ContactIconTone>
+            label="Contact icons"
+            value={style.contactIcons}
+            onChange={(v) => setStyle({ contactIcons: v })}
+            options={[
+              { value: "none", label: "Off" },
+              { value: "ink", label: "Dark" },
+              { value: "muted", label: "Grey" },
+              { value: "light", label: "Light" },
+            ]}
+          />
+        </div>
+        <div className={grid}>
+          <Segmented<StatusDot>
+            label="Status dot"
+            badge={<ProBadge />}
+            value={style.statusDot}
+            onChange={(v) => setStyle({ statusDot: v })}
+            options={[
+              { value: "none", label: "Off" },
+              { value: "static", label: "Still" },
+              { value: "blink", label: "Blink" },
+            ]}
+          />
+          <Select<FontKey>
+            label="Accent font"
+            hint="Used for names and side text in designer layouts."
+            value={style.secondaryFont}
+            onChange={(v) => setStyle({ secondaryFont: v })}
+            options={(Object.keys(FONT_LABELS) as FontKey[]).map((k) => ({ value: k, label: FONT_LABELS[k] }))}
+          />
+        </div>
+        {style.statusDot !== "none" ? (
+          <div role="group" aria-label="Status dot colour" className="flex flex-wrap gap-2">
+            {STATUS_COLORS.map((color) => (
+              <button
+                key={color}
+                type="button"
+                aria-label={`Status colour ${color}`}
+                aria-pressed={style.statusColor.toLowerCase() === color.toLowerCase()}
+                onClick={() => setStyle({ statusColor: color })}
+                className={cx(
+                  "size-6 rounded-full border-2 transition-transform",
+                  style.statusColor.toLowerCase() === color.toLowerCase()
+                    ? "scale-110 border-ink-900 dark:border-ink-100"
+                    : "border-transparent",
+                )}
+                style={{ backgroundColor: color }}
+              />
+            ))}
+          </div>
+        ) : null}
+        <p className="text-[11px] leading-snug text-ink-500 dark:text-ink-400">
+          Animation plays in Gmail, Apple Mail and Outlook on the web. Classic Outlook for Windows shows the first frame.
+        </p>
+      </div>
+
       <div className="flex flex-col divide-y divide-ink-200 border-t border-ink-200 pt-2 dark:divide-ink-800 dark:border-ink-800">
         <Toggle label="Divider" hint="The accent rule or line built into the template." checked={style.showDivider} onChange={(v) => setStyle({ showDivider: v })} />
         <Toggle label="Contact labels" hint="Prefixes each line with P, M, E, W or A." checked={style.showLabels} onChange={(v) => setStyle({ showLabels: v })} />
@@ -266,6 +342,7 @@ export function ExtrasPanel({ data, set }: PanelProps) {
         <TextInput label="Booking link text" value={data.meetingLabel} onChange={(v) => set({ meetingLabel: v })} placeholder="Book a 20-minute call" />
       </div>
       <TextInput label="Tagline" hint="One italic line under the details." value={data.tagline} onChange={(v) => set({ tagline: v })} placeholder="Brand strategy for climate companies" />
+      <TextArea label="Side text" hint="Up to four short lines, shown by designer layouts that have a side column." value={data.sideText} onChange={(v) => set({ sideText: v })} placeholder={"People\nIdeas\nProgress"} rows={4} />
       <TextArea label="Legal disclaimer" hint="Small print below the signature." value={data.disclaimer} onChange={(v) => set({ disclaimer: v })} placeholder="This email and any attachments are confidential." rows={3} />
       <div className="border-t border-ink-200 pt-2 dark:border-ink-800">
         <Toggle label="Environmental footer" hint="Adds the line about printing." checked={data.greenFooter} onChange={(v) => set({ greenFooter: v })} />

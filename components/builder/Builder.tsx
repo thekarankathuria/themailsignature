@@ -26,7 +26,7 @@ import {
 import { TEMPLATE_BY_ID } from "@/lib/signature/templates";
 import type { SignatureData, SignatureStyle } from "@/lib/signature/types";
 import { ExportPanel } from "./ExportPanel";
-import { withTemplate } from "./initial-state";
+import { withDesign, withTemplate } from "./initial-state";
 import { Preview, type PreviewBg, type PreviewWidth } from "./Preview";
 import { TemplateGrid } from "./TemplateGrid";
 import {
@@ -75,9 +75,15 @@ function useIsClient() {
   );
 }
 
-export function Builder({ initialTemplate }: { initialTemplate?: string } = {}) {
+export function Builder({
+  initialTemplate,
+  initialDesign,
+}: { initialTemplate?: string; initialDesign?: string } = {}) {
   const mounted = useIsClient();
-  const initial = useMemo(() => withTemplate(load(), initialTemplate), [initialTemplate]);
+  const initial = useMemo(
+    () => withDesign(withTemplate(load(), initialTemplate), initialDesign),
+    [initialTemplate, initialDesign],
+  );
   const [data, setData] = useState<SignatureData>(initial.data);
   const [style, setStyleState] = useState<SignatureStyle>(initial.style);
   const [clientId, setClientId] = useState("gmail");

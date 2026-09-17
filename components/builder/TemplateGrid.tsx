@@ -5,6 +5,7 @@ import { renderSignature } from "@/lib/signature/render";
 import { TEMPLATES } from "@/lib/signature/templates";
 import type { SignatureData, SignatureStyle } from "@/lib/signature/types";
 import { cx } from "@/components/ui";
+import { ProBadge } from "./ProBadge";
 
 /** Thumbnails are the real renderer at 40%, so what you pick is what you get. */
 const THUMB_SCALE = 0.4;
@@ -30,46 +31,61 @@ export function TemplateGrid({
     [data, style, assetBase],
   );
 
+  const groups = [
+    { id: "designer", title: "Designer layouts", items: previews.filter((t) => t.group === "designer") },
+    { id: "classic", title: "Classic templates", items: previews.filter((t) => t.group === "classic") },
+  ];
+
   return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-      {previews.map((t) => {
-        const active = t.id === style.templateId;
-        return (
-          <button
-            key={t.id}
-            type="button"
-            aria-pressed={active}
-            onClick={() => onSelect(t.id)}
-            className={cx(
-              "group flex flex-col overflow-hidden rounded-[14px] border text-left transition-colors",
-              active
-                ? "border-blue-brand-600 ring-1 ring-blue-brand-600 dark:border-blue-brand-400 dark:ring-blue-brand-400"
-                : "border-ink-200 hover:border-ink-300 dark:border-ink-800 dark:hover:border-ink-700",
-            )}
-          >
-            <span className="block h-[120px] overflow-hidden bg-white p-3">
-              <span
-                className="sig-thumb block"
-                style={{ width: THUMB_WIDTH, transform: `scale(${THUMB_SCALE})` }}
-                dangerouslySetInnerHTML={{ __html: t.html }}
-              />
-            </span>
-            <span className="flex min-h-[62px] flex-col gap-0.5 border-t border-ink-200 bg-ink-50 px-3 py-2 dark:border-ink-800 dark:bg-ink-900">
-              <span
-                className={cx(
-                  "text-xs font-semibold",
-                  active ? "text-blue-brand-700 dark:text-blue-brand-300" : "text-ink-900 dark:text-ink-100",
-                )}
-              >
-                {t.name}
-              </span>
-              <span className="text-[11px] leading-snug text-ink-500 dark:text-ink-400">
-                {t.blurb}
-              </span>
-            </span>
-          </button>
-        );
-      })}
+    <div className="flex flex-col gap-6">
+      {groups.map((group) => (
+        <section key={group.id} aria-labelledby={`tpl-group-${group.id}`} className="flex flex-col gap-3">
+          <h3 id={`tpl-group-${group.id}`} className="text-xs font-semibold text-ink-600 dark:text-ink-300">
+            {group.title}
+          </h3>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {group.items.map((t) => {
+              const active = t.id === style.templateId;
+              return (
+                <button
+                  key={t.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => onSelect(t.id)}
+                  className={cx(
+                    "group flex flex-col overflow-hidden rounded-[14px] border text-left transition-colors",
+                    active
+                      ? "border-blue-brand-600 ring-1 ring-blue-brand-600 dark:border-blue-brand-400 dark:ring-blue-brand-400"
+                      : "border-ink-200 hover:border-ink-300 dark:border-ink-800 dark:hover:border-ink-700",
+                  )}
+                >
+                  <span className="block h-[120px] overflow-hidden bg-white p-3">
+                    <span
+                      className="sig-thumb block"
+                      style={{ width: THUMB_WIDTH, transform: `scale(${THUMB_SCALE})` }}
+                      dangerouslySetInnerHTML={{ __html: t.html }}
+                    />
+                  </span>
+                  <span className="flex min-h-[62px] flex-col gap-0.5 border-t border-ink-200 bg-ink-50 px-3 py-2 dark:border-ink-800 dark:bg-ink-900">
+                    <span
+                      className={cx(
+                        "flex items-center gap-1.5 text-xs font-semibold",
+                        active ? "text-blue-brand-700 dark:text-blue-brand-300" : "text-ink-900 dark:text-ink-100",
+                      )}
+                    >
+                      {t.name}
+                      {t.tier === "pro" ? <ProBadge /> : null}
+                    </span>
+                    <span className="text-[11px] leading-snug text-ink-500 dark:text-ink-400">
+                      {t.blurb}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }

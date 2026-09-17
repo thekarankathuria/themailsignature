@@ -3,6 +3,7 @@
 import { Trash, UploadSimple } from "@phosphor-icons/react";
 import { useRef, useState } from "react";
 import { Button, Field, cx } from "@/components/ui";
+import { ProBadge } from "./ProBadge";
 
 type Status = "idle" | "uploading" | "error";
 
@@ -90,9 +91,7 @@ export function ImageField({
             >
               <UploadSimple size={15} aria-hidden />
               {status === "uploading" ? "Uploading" : "Upload"}
-              <span className="rounded-full bg-blue-brand-50 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide text-blue-brand-700 dark:bg-blue-brand-950 dark:text-blue-brand-200">
-                Pro
-              </span>
+              <ProBadge />
             </Button>
           </div>
 
