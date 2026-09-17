@@ -12,7 +12,7 @@ const NAV: Array<{ label: string; href: string }> = [
   { label: "Help", href: "/help" },
 ];
 
-export function SiteHeader() {
+export function SiteHeader({ signedIn = false }: { signedIn?: boolean } = {}) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,8 +37,11 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-3">
-          <Link href="/login" className="hidden text-sm font-medium text-ink-700 hover:text-navy-900 sm:inline">
-            Log in
+          <Link
+            href={signedIn ? "/app/signatures" : "/login"}
+            className="hidden text-sm font-medium text-ink-700 hover:text-navy-900 sm:inline"
+          >
+            {signedIn ? "My signatures" : "Log in"}
           </Link>
           <Link
             href="/editor"
@@ -73,8 +76,12 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/login" onClick={() => setOpen(false)} className="py-2.5 text-sm font-medium text-ink-700">
-              Log in
+            <Link
+              href={signedIn ? "/app/signatures" : "/login"}
+              onClick={() => setOpen(false)}
+              className="py-2.5 text-sm font-medium text-ink-700"
+            >
+              {signedIn ? "My signatures" : "Log in"}
             </Link>
           </Container>
         </nav>

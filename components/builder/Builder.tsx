@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowCounterClockwise } from "@phosphor-icons/react";
+import Link from "next/link";
 import {
   useCallback,
   useEffect,
@@ -192,6 +193,14 @@ export function Builder({
           <span className="hidden text-sm text-ink-500 sm:inline dark:text-ink-400">
             Signature builder
           </span>
+          {signedIn && (
+            <Link
+              href="/app/signatures"
+              className="hidden text-sm font-medium text-ink-600 hover:text-ink-900 sm:inline dark:text-ink-400 dark:hover:text-ink-100"
+            >
+              My signatures
+            </Link>
+          )}
           <div className="ml-auto flex items-center gap-2">
             <Button
               variant="ghost"
