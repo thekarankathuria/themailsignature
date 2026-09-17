@@ -84,6 +84,15 @@ Every URL the previous site exposed (`/generator`, `/solution/<slug>`,
 `/contact-us`, `/privacypolicy`, ...) redirects permanently to its new home via
 `redirects()` in `next.config.ts`; `scripts/check-redirects.ts` guards the list.
 
+Designs are data too: `lib/marketing/designs.ts` pairs each of the 21
+industries with six layouts (the first free, on a free layout) and an industry
+palette, fonts and side text. `/templates` filters them by industry, style,
+plan and animation, and `/editor?design=<id>` opens one.
+
+Animated signatures use GIFs only, because mail clients strip CSS animation.
+Frame one of every GIF is the finished still image, since classic Outlook for
+Windows may show only that frame.
+
 Brand rasters are generated from `public/brand/logo-source.png`:
 
 ```bash
@@ -137,6 +146,10 @@ npm run lint
 npm run icons   # regenerate the social icon PNGs
 npm run brand   # regenerate the brand rasters
 npm run samples # regenerate the sample-person logos, avatars and banner
+npm run contact-icons # regenerate the phone / email / web / location PNGs
+npm run anim    # regenerate animated social icons and status dots (GIF)
+npm run portraits # generate illustrative sample portraits (needs OPENAI_API_KEY)
+npm run review:layouts # write .review/layouts.html showing every layout
 npm run check:routes # crawl a running site: every sitemap page and internal link returns 200
 npm run check:launch # fails until every cited claim has shipped, placeholders are filled and prices are final
 ```

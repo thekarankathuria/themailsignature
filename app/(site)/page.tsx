@@ -86,7 +86,8 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
-        <div className="mt-10 flex justify-center">
+        <p className="mt-4 text-center text-xs text-ink-600">Sample people, companies and photos are illustrative.</p>
+        <div className="mt-8 flex justify-center">
           <ButtonLink href="/templates" variant="secondary">See all {ALL_DESIGNS.length} designs</ButtonLink>
         </div>
       </Section>

@@ -78,7 +78,7 @@ export default async function IndustryPage({ params }: Props) {
             </div>
           </div>
           <EmailFrame subject="Following up on our call">
-            <div className="overflow-x-auto" dangerouslySetInnerHTML={{ __html: designHtml(showcase) }} />
+            <div inert className="overflow-x-auto [&_img]:max-w-none" dangerouslySetInnerHTML={{ __html: designHtml(showcase) }} />
           </EmailFrame>
         </div>
       </Section>

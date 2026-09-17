@@ -22,8 +22,9 @@ export function DesignCard({
     <article className="@container flex flex-col overflow-hidden rounded-card border border-ink-200 bg-white transition-colors hover:border-ink-300">
       <div className="h-[160px] overflow-hidden border-b border-ink-100 bg-white px-4 pt-4 @[420px]:h-[200px] @[520px]:h-[248px]">
         <div
+          inert
           aria-hidden="true"
-          className="w-[620px] origin-top-left scale-[0.5] @[420px]:scale-[0.64] @[520px]:scale-[0.8]"
+          className="w-[620px] origin-top-left [&_img]:max-w-none scale-[0.5] @[420px]:scale-[0.64] @[520px]:scale-[0.8]"
           dangerouslySetInnerHTML={{ __html: html }}
         />
       </div>

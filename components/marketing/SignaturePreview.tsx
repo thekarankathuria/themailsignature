@@ -20,7 +20,8 @@ export function SignaturePreview({
   const html = renderSignature(data, style, { assetBase: "" });
   return (
     <div
-      className={`overflow-x-auto ${className}`}
+      inert
+      className={`overflow-x-auto [&_img]:max-w-none ${className}`}
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );
