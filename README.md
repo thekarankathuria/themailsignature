@@ -144,6 +144,7 @@ npm run contact-icons # regenerate the phone / email / web / location PNGs
 npm run anim    # regenerate animated social icons and status dots (GIF)
 npm run portraits # generate illustrative sample portraits (needs OPENAI_API_KEY)
 npm run review:layouts # write .review/layouts.html showing every layout
+npm run screenshots  # recapture the editor screenshots the homepage steps use
 npm run check:routes # crawl a running site: every sitemap page and internal link returns 200
 npm run check:launch # fails until every cited claim has shipped, placeholders are filled and prices are final
 npm run check:flow   # end-to-end account, plan and export checks against a running server
@@ -178,22 +179,35 @@ npm run seed         # local test accounts
 ```
 app/
   (site)/               marketing pages, shared header/footer shell
-  (auth)/               login, signup
+  (auth)/               login, signup, password reset
+  app/                  the signed-in workspace: signatures, billing, settings
   editor/page.tsx       the builder
+  checkout/             the local test checkout
+  dev/outbox/           the local email outbox (absent in production)
+  api/signatures/       save, duplicate and export saved signatures
   api/upload/route.ts   content-addressed image hosting
   api/contact/route.ts  contact form delivery
 components/
   brand/                Logo lockup
   builder/              panels, preview, export, template grid
+  app/                  workspace nav, signature list, billing, settings
+  marketing/            the marketing page sections
   site/                 header, footer, container, theme toggle
 lib/
   signature/            the render engine (no React, no DOM)
-  marketing/            industry page SEO data
-  supabase/             client factories and auth actions
+  marketing/            marketing copy, designs, claims and SEO data
+  auth/                 passwords, sessions, tokens, the account service
+  db/                   the SQLite connection and migrations
+  billing/              plans, entitlements and the local billing provider
+  mail/                 templates and the outbox / Resend sender
+  signatures/           saved-signature storage and validation
+  storage/              upload paths and image normalisation
   clipboard.ts          rich-HTML clipboard write with a legacy fallback
 scripts/
   gen-social-icons.mjs  simple-icons to PNG
   gen-brand-assets.mjs  logo to brand rasters
+  capture-screenshots.mjs  the editor screenshots on the homepage
+  seed.ts               local test accounts
   check-*.ts            the test suites above
 ```
 

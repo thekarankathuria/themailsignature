@@ -1,7 +1,16 @@
 # TheMailSignature — production readiness design
 
 Date: 2026-09-15
-Status: awaiting review
+Status: accepted; the data layer is superseded
+
+**Amendment, 2026-09-17.** Sections 3.3, 4 and 7 specified Supabase for the
+database, auth, email and file storage. That is no longer what ships: the
+platform runs on its own SQLite database, its own accounts and sessions, a
+local mail outbox behind a provider interface, and uploads on disk, as
+specified in `2026-09-17-local-platform-design.md`. The phases, the marketing
+plan and everything else in this document still stand; read the Supabase
+passages as history. Section 7 below has been updated to the shipped stack,
+because it is the list we run at launch.
 
 ## 1. Why this document exists
 
@@ -239,11 +248,15 @@ pre-launch checklist run against staging.
 ## 7. Pre-launch checklist
 
 - [ ] `NEXT_PUBLIC_SITE_URL` set to the production origin; canonicals correct
-- [ ] Supabase: Site URL and redirect allow-list updated; custom SMTP configured
+- [ ] Email: sending domain verified at the provider with SPF, DKIM and DMARC;
+      `RESEND_API_KEY` and `MAIL_FROM` set, so nothing falls back to the outbox
+- [ ] `/dev/outbox` and the test checkout both return 404 on the live origin
 - [ ] Stripe: live keys, products, prices, webhook endpoint and signing secret
-- [ ] Storage bucket public-read, INSERT for `authenticated`, no UPDATE/DELETE
+- [ ] `DATABASE_PATH` and `UPLOAD_DIR` on a persistent volume, not the container
+      layer; `NEXT_PUBLIC_UPLOAD_BASE` set to the address uploads keep forever
 - [ ] TLS, HSTS, security headers verified on the live origin
-- [ ] Backups scheduled and one restore rehearsed
+- [ ] Backups scheduled for the database file and the upload directory, and one
+      restore rehearsed
 - [ ] Legal placeholders filled and reviewed
 - [ ] Analytics with consent; cookie policy matches what is actually set
 - [ ] `robots.txt` allows indexing; sitemap submitted to Search Console
