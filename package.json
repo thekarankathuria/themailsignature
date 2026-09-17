@@ -17,6 +17,7 @@
     "test:unit": "vitest run",
     "check:launch": "tsx scripts/check-launch.ts",
     "check:routes": "tsx scripts/check-routes.ts",
+    "check:flow": "tsx scripts/check-flow.ts",
     "review:layouts": "tsx scripts/review-layouts.ts",
     "seed": "tsx scripts/seed.ts"
   },

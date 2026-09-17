@@ -104,37 +104,31 @@ The production plan, phase by phase, is in
 
 ## Running it locally
 
-The editor is behind a Supabase session, so the app needs credentials before
-`/editor` will load. Without them `proxy.ts` throws and every matched route
-returns a blank 500.
+Everything runs on this machine: the database is a SQLite file, accounts are
+our own, email lands in a local outbox and checkout is a test page.
 
 ```bash
-cp .env.example .env.local     # then fill in the two Supabase values
+cp .env.example .env.local     # optional; the defaults work
 npm install
+npm run seed                   # local test accounts, passwords written to .env.local
 npm run dev                    # http://localhost:3000
 ```
 
-`NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` come from the
-Supabase dashboard under **Project Settings -> API Keys**. The *publishable*
-key (`sb_publishable_...`) is the one that belongs here; it is designed to sit
-in a browser bundle. The `sb_secret_...` key must never appear in a
-`NEXT_PUBLIC_` variable.
+- **Database**: `data/app.db` (override with `DATABASE_PATH`). Migrations in
+  `lib/db/migrations.ts` run on first connection.
+- **Accounts**: email and password, scrypt hashes, server-side sessions in the
+  `tms_session` cookie. `lib/auth/service.ts` holds the logic; the pages call it
+  through the server actions in `lib/auth/actions.ts`.
+- **Email**: with no `RESEND_API_KEY`, every message is written to `data/outbox`
+  and readable at `/dev/outbox` (that route does not exist in production).
+- **Plans**: `lib/billing`. `/checkout` completes instantly in development and
+  moves no money; set `ENABLE_TEST_CHECKOUT=1` to allow it in a production
+  build. Entitlements live in `lib/billing/entitlements.ts` and are enforced by
+  the export and upload routes, not by the browser.
+- **Uploads**: `UPLOAD_DIR` (default `public/u`), served by `app/u/[file]`.
 
-Two things must line up in the Supabase project itself, or signup completes but
-the confirmation link goes nowhere:
-
-- **Site URL** set to `http://localhost:3000`
-- **Redirect URLs** containing `http://localhost:3000/**`, so the link in the
-  confirmation mail can return to `/auth/callback`
-
-Signups require email confirmation. For a login that works immediately, create
-a user under **Authentication -> Users -> Add user** with *Auto confirm user*
-ticked, rather than turning confirmation off for the whole project.
-
-`lib/env.ts` is the only place these variables are read. It validates at runtime
-and throws naming the missing variable — the call sites previously used a `!`
-assertion, which is erased at compile time and let `undefined` reach Supabase as
-an unreadable stack trace.
+The editor is public. Copying, downloading and installing ask for an account,
+keep the draft, and save it once the visitor is signed in.
 
 ## Commands
 
@@ -152,6 +146,8 @@ npm run portraits # generate illustrative sample portraits (needs OPENAI_API_KEY
 npm run review:layouts # write .review/layouts.html showing every layout
 npm run check:routes # crawl a running site: every sitemap page and internal link returns 200
 npm run check:launch # fails until every cited claim has shipped, placeholders are filled and prices are final
+npm run check:flow   # end-to-end account, plan and export checks against a running server
+npm run seed         # local test accounts
 ```
 
 `npm test` runs eight node suites, then the Vitest component and unit tests

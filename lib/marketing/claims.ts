@@ -7,7 +7,7 @@
  * When a phase ships, raise SHIPPED_THROUGH_PHASE. When a feature is cut,
  * delete its claim and let the checks point at every sentence that cited it.
  */
-export const SHIPPED_THROUGH_PHASE = 2;
+export const SHIPPED_THROUGH_PHASE = 3;
 
 export const CLAIMS = {
   // Shipped: the editor and render engine that already exist.
