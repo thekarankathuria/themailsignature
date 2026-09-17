@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GoogleButton } from "@/components/auth/GoogleButton";
 import { LoginForm } from "@/components/auth/LoginForm";
+import { EditorNotice, fromEditor, redirectIfSignedIn } from "../auth-context";
 
 export const metadata: Metadata = {
   title: "Log in",
@@ -15,26 +15,26 @@ export default async function LoginPage({
   searchParams: Promise<{ next?: string; error?: string }>;
 }) {
   const { next, error } = await searchParams;
+  await redirectIfSignedIn(next);
+  const signupHref = next ? `/signup?next=${encodeURIComponent(next)}` : "/signup";
 
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-semibold text-ink-900 dark:text-ink-100">
-        Log in
-      </h1>
-      {error ? (
-        <p className="text-sm text-red-600">
-          We couldn&apos;t complete that sign-in link. If you already confirmed
-          your email, log in with your password below.
+    <>
+      <h1 className="text-2xl font-bold tracking-tight text-navy-900">Log in</h1>
+      <p className="mt-1 mb-6 text-sm text-ink-600">Welcome back. Your saved signatures are waiting.</p>
+      {fromEditor(next) && <EditorNotice />}
+      {error === "verify" && (
+        <p role="alert" className="mb-4 rounded-lg bg-navy-50 px-4 py-3 text-sm text-navy-900">
+          That confirmation link has expired or was already used. Log in and request a new one from your settings.
         </p>
-      ) : null}
-      <GoogleButton next={next} />
+      )}
       <LoginForm next={next} />
-      <p className="text-center text-sm text-ink-600 dark:text-ink-400">
-        No account?{" "}
-        <Link href="/signup" className="font-medium text-blue-brand-600 dark:text-blue-brand-300">
-          Sign up
+      <p className="mt-6 text-center text-sm text-ink-600">
+        New here?{" "}
+        <Link href={signupHref} className="font-semibold text-blue-brand-600 hover:text-blue-brand-700">
+          Create a free account
         </Link>
       </p>
-    </div>
+    </>
   );
 }

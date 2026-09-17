@@ -1,44 +1,43 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
-import { TextInput, Button } from "@/components/ui";
-import { login } from "@/lib/supabase/actions";
+import { loginAction } from "@/lib/auth/actions";
+import { AuthField, FormError, SubmitButton } from "./AuthField";
 
 export function LoginForm({ next }: { next?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [failure, setFailure] = useState<{ field: string; error: string } | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function handleSubmit(event: React.FormEvent) {
+  function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    setError(null);
+    setFailure(null);
     startTransition(async () => {
-      const result = await login({ email, password, next });
-      if (result?.error) setError(result.error);
+      const result = await loginAction({ email, password, next });
+      if (result && !result.ok) setFailure(result);
     });
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <TextInput
-        label="Email"
-        type="email"
-        value={email}
-        onChange={setEmail}
-        placeholder="you@company.com"
-      />
-      <TextInput
+    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <FormError message={failure?.error} />
+      <AuthField label="Email" type="email" name="email" autoComplete="email" value={email} onChange={setEmail} />
+      <AuthField
         label="Password"
         type="password"
+        name="password"
+        autoComplete="current-password"
         value={password}
         onChange={setPassword}
-        placeholder="********"
+        aside={
+          <Link href="/forgot-password" className="text-sm font-medium text-blue-brand-600 hover:text-blue-brand-700">
+            Forgot password?
+          </Link>
+        }
       />
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Logging in…" : "Log in"}
-      </Button>
+      <SubmitButton pending={pending}>{pending ? "Logging in..." : "Log in"}</SubmitButton>
     </form>
   );
 }

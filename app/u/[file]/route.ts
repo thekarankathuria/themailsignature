@@ -19,7 +19,7 @@ export async function GET(
   if (!name) return new Response("Not found", { status: 404 });
 
   try {
-    const bytes = await readFile(join(uploadDir(), name));
+    const bytes = await readFile(join(/*turbopackIgnore: true*/ uploadDir(), name));
     const ext = name.slice(name.lastIndexOf(".") + 1);
     return new Response(new Uint8Array(bytes), {
       headers: {

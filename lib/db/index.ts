@@ -17,7 +17,7 @@ let connection: DatabaseSync | null = null;
 export function databasePath(): string {
   const configured = process.env.DATABASE_PATH?.trim();
   if (configured === ":memory:") return configured;
-  return resolve(configured || "data/app.db");
+  return resolve(/*turbopackIgnore: true*/ configured || "data/app.db");
 }
 
 export function db(): DatabaseSync {

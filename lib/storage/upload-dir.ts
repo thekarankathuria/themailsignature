@@ -10,7 +10,7 @@ import { join, relative, resolve, isAbsolute } from "node:path";
  */
 export function uploadDir(): string {
   const configured = process.env.UPLOAD_DIR?.trim();
-  return configured ? resolve(configured) : join(process.cwd(), "public", "u");
+  return configured ? resolve(/*turbopackIgnore: true*/ configured) : join(process.cwd(), "public", "u");
 }
 
 /** True when uploads sit inside public/, where Next serves them itself. */

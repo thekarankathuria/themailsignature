@@ -1,55 +1,59 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useTransition } from "react";
-import { TextInput, Button } from "@/components/ui";
-import { signup } from "@/lib/supabase/actions";
+import { signupAction } from "@/lib/auth/actions";
+import { AuthField, FormError, SubmitButton } from "./AuthField";
 
-export function SignupForm() {
+export function SignupForm({ next }: { next?: string }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [failure, setFailure] = useState<{ field: string; error: string } | null>(null);
   const [pending, startTransition] = useTransition();
 
-  function handleSubmit(event: React.FormEvent) {
+  function onSubmit(event: React.FormEvent) {
     event.preventDefault();
-    setError(null);
+    setFailure(null);
     startTransition(async () => {
-      const result = await signup({ email, password });
-      if (result && "error" in result) setError(result.error);
-      else setSubmitted(true);
+      const result = await signupAction({ email, password, next });
+      if (result && !result.ok) setFailure(result);
     });
   }
 
-  if (submitted) {
-    return (
-      <p className="text-sm text-ink-700 dark:text-ink-300">
-        Check {email} for a confirmation link to finish creating your
-        account.
-      </p>
-    );
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <TextInput
+    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate>
+      <FormError message={failure?.field === "form" ? failure.error : undefined} />
+      <AuthField
         label="Email"
         type="email"
+        name="email"
+        autoComplete="email"
         value={email}
         onChange={setEmail}
-        placeholder="you@company.com"
+        error={failure?.field === "email" ? failure.error : undefined}
       />
-      <TextInput
+      <AuthField
         label="Password"
         type="password"
+        name="password"
+        autoComplete="new-password"
         value={password}
         onChange={setPassword}
-        placeholder="At least 6 characters"
+        hint="At least 10 characters."
+        error={failure?.field === "password" ? failure.error : undefined}
       />
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      <Button type="submit" disabled={pending} className="w-full">
-        {pending ? "Signing up…" : "Sign up"}
-      </Button>
+      <SubmitButton pending={pending}>{pending ? "Creating account..." : "Create free account"}</SubmitButton>
+      <p className="text-center text-xs leading-relaxed text-ink-600">
+        By creating an account you agree to the{" "}
+        <Link href="/legal/terms" className="underline hover:text-navy-900">
+          Terms of Use
+        </Link>{" "}
+        and{" "}
+        <Link href="/legal/privacy" className="underline hover:text-navy-900">
+          Privacy Policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }

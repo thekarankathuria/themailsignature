@@ -162,7 +162,7 @@ export async function removeAccount(input: { userId: string; password: string })
   deleteUser(user.id);
   for (const { name } of orphans) {
     const safe = safeUploadName(name);
-    if (safe) rmSync(join(uploadDir(), safe), { force: true });
+    if (safe) rmSync(join(/*turbopackIgnore: true*/ uploadDir(), safe), { force: true });
   }
   await sendMail({ to: user.email, ...templates.accountDeleted() });
   return { ok: true };

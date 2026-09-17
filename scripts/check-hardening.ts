@@ -14,12 +14,8 @@ import {
   clientKey,
   rateLimit,
 } from "../lib/rate-limit";
-import { MissingEnvError, isSupabaseConfigured, siteUrl } from "../lib/env";
-import {
-  contentAddress,
-  isDurableStorageConfigured,
-  storageBucket,
-} from "../lib/storage/images";
+import { MissingEnvError, requiredEnv, siteUrl } from "../lib/env";
+import { contentAddress } from "../lib/storage/images";
 
 const failures: string[] = [];
 const check = (name: string, ok: boolean) => {
@@ -69,14 +65,10 @@ async function main() {
   );
 
   // --- env guard ----------------------------------------------------------
-  const saved = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-  check("missing config is not reported as configured", !isSupabaseConfigured());
-
+  delete process.env.TMS_HARDENING_PROBE;
   let thrown: unknown;
   try {
-    // Imported lazily so the deletion above is in effect.
-    (await import("../lib/env")).supabaseUrl();
+    requiredEnv("TMS_HARDENING_PROBE");
   } catch (error) {
     thrown = error;
   }
@@ -84,20 +76,20 @@ async function main() {
   check(
     "the error names the variable and how to fix it",
     thrown instanceof Error &&
-      thrown.message.includes("NEXT_PUBLIC_SUPABASE_URL") &&
+      thrown.message.includes("TMS_HARDENING_PROBE") &&
       thrown.message.includes(".env.local"),
   );
-
-  process.env.NEXT_PUBLIC_SUPABASE_URL = "   ";
+  process.env.TMS_HARDENING_PROBE = "   ";
   let blankThrew = false;
   try {
-    (await import("../lib/env")).supabaseUrl();
+    requiredEnv("TMS_HARDENING_PROBE");
   } catch {
     blankThrew = true;
   }
   check("a whitespace-only value counts as missing", blankThrew);
-  if (saved === undefined) delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-  else process.env.NEXT_PUBLIC_SUPABASE_URL = saved;
+  process.env.TMS_HARDENING_PROBE = " value ";
+  check("a present value is trimmed", requiredEnv("TMS_HARDENING_PROBE") === "value");
+  delete process.env.TMS_HARDENING_PROBE;
 
   // --- site url -----------------------------------------------------------
   const savedSite = process.env.NEXT_PUBLIC_SITE_URL;
@@ -132,18 +124,6 @@ async function main() {
     "the address is 32 hex chars plus extension",
     /^[0-9a-f]{32}\.png$/.test(contentAddress(bytesA, "png")),
   );
-
-  const savedBucket = process.env.SUPABASE_STORAGE_BUCKET;
-  delete process.env.SUPABASE_STORAGE_BUCKET;
-  check("no bucket configured means disk storage", !isDurableStorageConfigured());
-  check("storageBucket reports null when unset", storageBucket() === null);
-  process.env.SUPABASE_STORAGE_BUCKET = "  signatures  ";
-  check("a configured bucket is detected", isDurableStorageConfigured());
-  check("the bucket name is trimmed", storageBucket() === "signatures");
-  process.env.SUPABASE_STORAGE_BUCKET = "   ";
-  check("a whitespace-only bucket counts as unset", !isDurableStorageConfigured());
-  if (savedBucket === undefined) delete process.env.SUPABASE_STORAGE_BUCKET;
-  else process.env.SUPABASE_STORAGE_BUCKET = savedBucket;
 
   if (failures.length) {
     console.error(`FAILED (${failures.length}):`);

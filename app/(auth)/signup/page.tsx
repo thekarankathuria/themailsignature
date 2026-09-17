@@ -1,28 +1,34 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { GoogleButton } from "@/components/auth/GoogleButton";
 import { SignupForm } from "@/components/auth/SignupForm";
+import { EditorNotice, fromEditor, redirectIfSignedIn } from "../auth-context";
 
 export const metadata: Metadata = {
-  title: "Sign up",
+  title: "Create your account",
   alternates: { canonical: "/signup" },
   robots: { index: false },
 };
 
-export default function SignupPage() {
+export default async function SignupPage({ searchParams }: { searchParams: Promise<{ next?: string; plan?: string }> }) {
+  const { next, plan } = await searchParams;
+  // Paid-plan buttons on the pricing page link here; send new accounts on to checkout.
+  const checkoutNext = plan === "pro" || plan === "business" ? `/checkout?plan=${plan}` : undefined;
+  const destination = next ?? checkoutNext;
+  await redirectIfSignedIn(destination);
+  const loginHref = destination ? `/login?next=${encodeURIComponent(destination)}` : "/login";
+
   return (
-    <div className="flex flex-col gap-6">
-      <h1 className="text-lg font-semibold text-ink-900 dark:text-ink-100">
-        Create your account
-      </h1>
-      <GoogleButton />
-      <SignupForm />
-      <p className="text-center text-sm text-ink-600 dark:text-ink-400">
+    <>
+      <h1 className="text-2xl font-bold tracking-tight text-navy-900">Create your account</h1>
+      <p className="mt-1 mb-6 text-sm text-ink-600">Free forever. Save your signatures and copy them into any email client.</p>
+      {fromEditor(destination) && <EditorNotice />}
+      <SignupForm next={destination} />
+      <p className="mt-6 text-center text-sm text-ink-600">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-blue-brand-600 dark:text-blue-brand-300">
+        <Link href={loginHref} className="font-semibold text-blue-brand-600 hover:text-blue-brand-700">
           Log in
         </Link>
       </p>
-    </div>
+    </>
   );
 }

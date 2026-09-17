@@ -22,8 +22,8 @@ export default function PrivacyPage() {
       <h2>What we collect</h2>
       <ul>
         <li>
-          <strong>Account data:</strong> your email address and a securely hashed password, or the
-          identity details your sign-in provider shares if you sign in with one.
+          <strong>Account data:</strong> your email address and a securely hashed password. We never
+          store your password itself.
         </li>
         <li>
           <strong>Signature content:</strong> the details you save in a signature, such as your name,
@@ -67,10 +67,9 @@ export default function PrivacyPage() {
 
       <h2>Who processes it for us</h2>
       <ul>
-        <li><strong>Supabase:</strong> account authentication, database and image storage.</li>
+        <li><strong>Our hosting provider:</strong> runs the servers that store your account, signatures and uploaded images.</li>
         <li><strong>Resend:</strong> delivery of service emails and contact messages.</li>
         <li><strong>Stripe:</strong> payment processing for paid plans.</li>
-        <li>Our hosting provider, which runs the servers the service is delivered from.</li>
       </ul>
       <p>
         These providers process data on our instructions and under contracts that require them to

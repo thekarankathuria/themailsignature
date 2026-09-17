@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import sharp from "sharp";
-import { createClient } from "@/lib/supabase/server";
+import { currentUser } from "@/lib/auth/current";
+import { db } from "@/lib/db";
+import { nowIso } from "@/lib/db/ids";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
 import { isStoreFailure, storeImage } from "@/lib/storage/images";
 
@@ -8,11 +10,7 @@ export const runtime = "nodejs";
 
 const MAX_BYTES = 4 * 1024 * 1024;
 
-/**
- * Twenty uploads per IP per ten minutes. Checked before the session lookup,
- * because `getUser()` is itself a network round trip to Supabase and should
- * not be floodable by an unauthenticated caller.
- */
+/** Twenty uploads per IP per ten minutes, checked before any other work. */
 const LIMIT = { limit: 20, windowMs: 10 * 60 * 1000 };
 
 /**
@@ -33,12 +31,9 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await currentUser();
   if (!user) {
-    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    return NextResponse.json({ error: "Log in to upload images." }, { status: 401 });
   }
 
   const form = await request.formData().catch(() => null);
@@ -59,12 +54,10 @@ export async function POST(request: Request) {
 
   let output = input;
   let ext = "png";
-  let contentType = "image/png";
 
   if (file.type === "image/gif") {
     // Left untouched so animation survives.
     ext = "gif";
-    contentType = "image/gif";
   } else {
     try {
       const image = sharp(input, { failOn: "error" });
@@ -84,13 +77,7 @@ export async function POST(request: Request) {
     }
   }
 
-  const stored = await storeImage({
-    request,
-    supabase,
-    bytes: output,
-    ext,
-    contentType,
-  });
+  const stored = await storeImage({ origin: new URL(request.url).origin, bytes: output, ext });
 
   if (isStoreFailure(stored)) {
     console.error(`[upload] ${stored.error}`);
@@ -99,6 +86,11 @@ export async function POST(request: Request) {
       { status: stored.status },
     );
   }
+
+  // Remember who uploaded what, so deleting an account can remove its files.
+  db()
+    .prepare("insert or ignore into uploads (user_id, name, created_at) values (?, ?, ?)")
+    .run(user.id, stored.name, nowIso());
 
   return NextResponse.json({ url: stored.url });
 }

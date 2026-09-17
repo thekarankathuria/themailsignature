@@ -1,24 +1,13 @@
 /**
- * Runtime-validated access to the environment variables this app cannot run
- * without.
+ * Environment access with useful failures.
  *
- * The call sites used to read `process.env.NEXT_PUBLIC_SUPABASE_URL!`. The `!`
- * is a *type-level* assertion with no runtime effect, so a missing value sailed
- * through into `createServerClient()` and surfaced as a Supabase stack trace
- * from inside proxy.ts — which, because middleware runs before routing, took
- * out every matched route with a blank 500 rather than a diagnosable error.
- *
- * Each variable is spelled out as a literal member expression on purpose:
- * Next.js inlines `NEXT_PUBLIC_*` into the browser bundle by textual
- * substitution, and only for static member access. A dynamic
- * `process.env[name]` lookup is left untouched by the bundler and reads as
- * undefined on the client, so a generic getter would work server-side and fail
- * silently in the browser. Only the validation is shared.
+ * `requiredEnv` is for server code: it reads `process.env[name]` dynamically,
+ * which Next.js does not inline into browser bundles. Browser-visible values
+ * (`NEXT_PUBLIC_*`) must be read with a literal member expression, as
+ * `siteUrl` does, or the bundler cannot substitute them.
  */
 
-const SETUP_HINT =
-  "Copy .env.example to .env.local and fill it in " +
-  "(Supabase dashboard -> Project Settings -> API Keys), then restart `npm run dev`.";
+const SETUP_HINT = "Copy .env.example to .env.local, fill it in, then restart `npm run dev`.";
 
 class MissingEnvError extends Error {
   constructor(name: string) {
@@ -27,32 +16,11 @@ class MissingEnvError extends Error {
   }
 }
 
-function required(value: string | undefined, name: string): string {
-  const trimmed = value?.trim();
-  if (!trimmed) throw new MissingEnvError(name);
-  return trimmed;
-}
-
-export function supabaseUrl(): string {
-  return required(process.env.NEXT_PUBLIC_SUPABASE_URL, "NEXT_PUBLIC_SUPABASE_URL");
-}
-
-export function supabaseAnonKey(): string {
-  return required(
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    "NEXT_PUBLIC_SUPABASE_ANON_KEY",
-  );
-}
-
-/**
- * True when both Supabase values are present. Lets a caller branch on
- * configuration without paying for a thrown error.
- */
-export function isSupabaseConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL?.trim() &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim(),
-  );
+/** A server-side variable that must be present; whitespace counts as missing. */
+export function requiredEnv(name: string): string {
+  const value = process.env[name]?.trim();
+  if (!value) throw new MissingEnvError(name);
+  return value;
 }
 
 /** Absolute origin the site is served from, without a trailing slash. */

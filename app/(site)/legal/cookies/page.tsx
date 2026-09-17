@@ -32,9 +32,9 @@ export default function CookiesPage() {
           </thead>
           <tbody>
             <tr className="border-b border-ink-100">
-              <td className="whitespace-nowrap py-2 pr-4 font-mono">sb-…-auth-token</td>
-              <td className="py-2 pr-4">Keeps you signed in (set by our authentication provider, Supabase).</td>
-              <td className="py-2">Until you sign out or the session expires</td>
+              <td className="whitespace-nowrap py-2 pr-4 font-mono">tms_session</td>
+              <td className="py-2 pr-4">Keeps you signed in. It holds a random identifier; your details stay on our servers.</td>
+              <td className="py-2">30 days, or until you sign out</td>
             </tr>
           </tbody>
         </table>
