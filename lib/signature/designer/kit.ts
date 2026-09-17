@@ -72,12 +72,12 @@ export function shortRule(color: string, width = 28): string {
 export function nameLine(
   data: SignatureData,
   style: SignatureStyle,
-  opts: { size: number; weight?: number; font?: FontKey; color?: string; tracking?: string; upper?: boolean; text?: string },
+  opts: { size: number; weight?: number; font?: FontKey; color?: string; tracking?: string; upper?: boolean; text?: string; suffix?: string },
 ): string {
   const raw = opts.text ?? fullName(data);
   if (!raw) return "";
   const shown = opts.upper || style.uppercaseName ? raw.toUpperCase() : raw;
-  return `<tr>${textCell(esc(shown), style, {
+  return `<tr>${textCell(esc(shown) + (opts.suffix ?? ""), style, {
     size: opts.size,
     weight: opts.weight ?? 700,
     color: opts.color ?? style.nameColor,
@@ -106,32 +106,29 @@ export function titleLine(
   })}</tr>`;
 }
 
-/**
- * Photo with an optional ring and a status dot. Outlook cannot overlap
- * elements, so the dot sits in a short row under the photo's right edge.
- */
-export function photoWithStatus(
-  data: SignatureData,
-  style: SignatureStyle,
-  ctx: RenderContext,
-  opts: { ring?: string } = {},
-): string {
+/** Photo inside a coloured ring. */
+export function ringedPhoto(data: SignatureData, style: SignatureStyle, ring: string): string {
   const photo = photoImg(data, style);
   if (!photo) return "";
   const size = data.photoSize || 92;
-  const framed = opts.ring
-    ? table(
-        `<tr><td bgcolor="${opts.ring}" style="background-color:${opts.ring};padding:5px;border-radius:${Math.round((size + 10) / 2)}px;line-height:0;font-size:0;">${photo}</td></tr>`,
-      )
-    : photo;
-  if (style.statusDot === "none") return framed;
-  const dot = img({
+  return table(
+    `<tr><td bgcolor="${ring}" style="background-color:${ring};padding:5px;border-radius:${Math.round((size + 10) / 2)}px;line-height:0;font-size:0;">${photo}</td></tr>`,
+  );
+}
+
+/**
+ * The availability dot, sized to sit inline after a name. Outlook cannot
+ * overlap images, so it never sits on the photo itself.
+ */
+export function statusDot(style: SignatureStyle, ctx: RenderContext): string {
+  if (style.statusDot === "none") return "";
+  return `&nbsp;&nbsp;${img({
     src: statusDotPath(ctx.assetBase, style.statusDot, style.statusColor),
-    width: 16,
-    height: 16,
+    width: 12,
+    height: 12,
     alt: "Available",
-  });
-  return table(`<tr><td>${framed}</td></tr><tr><td align="right" style="line-height:0;font-size:0;padding-right:${opts.ring ? 12 : 6}px;">${dot}</td></tr>`);
+    extra: "display:inline-block;vertical-align:1px;",
+  })}`;
 }
 
 /** Social icons stacked vertically, for layouts with an icon rail. */
