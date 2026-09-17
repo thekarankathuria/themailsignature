@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { uploadDir } from "./upload-dir";
 
 /**
  * Where a signature image gets stored.
@@ -78,7 +79,7 @@ async function putToDisk(
   bytes: Buffer,
 ): Promise<StoredImage | StoreFailure> {
   try {
-    const dir = join(process.cwd(), "public", "u");
+    const dir = uploadDir();
     await mkdir(dir, { recursive: true });
     await writeFile(join(dir, name), bytes);
   } catch (cause) {

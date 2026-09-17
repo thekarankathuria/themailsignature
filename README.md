@@ -39,10 +39,13 @@ a deployment concern:
   The bucket is public-read (mail clients fetch with no credentials) and grants
   INSERT to `authenticated` only. There is deliberately no UPDATE or DELETE
   policy: a content-addressed object is immutable by construction.
-- **unset** — the local-disk fallback, writing to `public/u`. Fine for local
-  development, **fatal on any host with an ephemeral filesystem** (Vercel,
-  containers), where a redeploy wipes the disk and every signature already sent
-  goes blank.
+- **unset** — the server-disk driver, writing to `UPLOAD_DIR` (default
+  `public/u`). On the VPS, set `UPLOAD_DIR` to a persistent volume outside the
+  app; `app/u/[file]/route.ts` serves those files at `/u/<hash>` with an
+  immutable cache header. The default `public/u` is fine for local development
+  and **fatal on any host with an ephemeral filesystem** (Vercel, containers
+  without a mounted volume), where a redeploy wipes the disk and every
+  signature already sent goes blank.
 
 Because a duplicate upload is by definition the same bytes, "this object already
 exists" is treated as success rather than an error.

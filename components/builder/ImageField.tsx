@@ -72,7 +72,7 @@ export function ImageField({
               id={id}
               value={value}
               onChange={(e) => onChange(e.target.value)}
-              placeholder="Paste an image URL"
+              placeholder="Paste an image link (hosted anywhere)"
               className={cx(
                 "w-full rounded-[10px] border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900",
                 "placeholder:text-ink-500 hover:border-ink-300 dark:border-ink-800 dark:bg-ink-900",
@@ -86,9 +86,13 @@ export function ImageField({
               disabled={status === "uploading"}
               onClick={() => inputRef.current?.click()}
               className="shrink-0 px-3"
+              title="Upload and host on TheMailSignature (Pro and Business)"
             >
               <UploadSimple size={15} aria-hidden />
               {status === "uploading" ? "Uploading" : "Upload"}
+              <span className="rounded-full bg-blue-brand-50 px-1.5 py-px text-[10px] font-semibold uppercase tracking-wide text-blue-brand-700 dark:bg-blue-brand-950 dark:text-blue-brand-200">
+                Pro
+              </span>
             </Button>
           </div>
 
