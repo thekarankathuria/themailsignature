@@ -34,6 +34,15 @@ export function issueToken(userId: string, kind: TokenKind): string {
   return token;
 }
 
+/** The user id for a valid, unused token, without using it up. */
+export function peekToken(token: string, kind: TokenKind): string | null {
+  if (!token || token.length > 100) return null;
+  const row = db()
+    .prepare("select user_id, expires_at from auth_tokens where token_hash = ? and kind = ? and used_at is null")
+    .get(hashToken(token), kind) as { user_id: string; expires_at: string } | undefined;
+  return row && new Date(row.expires_at).getTime() > Date.now() ? row.user_id : null;
+}
+
 /** Marks a valid token used and returns its user id, or null. */
 export function consumeToken(token: string, kind: TokenKind): string | null {
   if (!token || token.length > 100) return null;
