@@ -12,7 +12,7 @@ export const PAGE_META = {
     path: "/templates",
     title: "Email Signature Templates | TheMailSignature",
     description:
-      "Eight email signature templates built from Outlook-safe HTML tables. Preview each one with real details, then open it in the editor.",
+      "126 email signature designs for 21 industries, built on 20 Outlook-safe layouts. Filter by industry, style or plan, then open one in the editor.",
   },
   pricing: {
     path: "/pricing",

@@ -35,7 +35,7 @@ export const PLANS: Plan[] = [
     minSeats: 1,
     cta: { label: "Create my signature", href: "/editor" },
     highlighted: false,
-    features: ["free-four-templates", "free-one-signature", "renders-everywhere", "install-guides", "free-footer-link"],
+    features: ["free-templates", "free-one-signature", "external-images", "renders-everywhere", "free-footer-link"],
   },
   {
     id: "pro",
@@ -47,7 +47,7 @@ export const PLANS: Plan[] = [
     minSeats: 1,
     cta: { label: "Get Pro", href: "/signup?plan=pro" },
     highlighted: true,
-    features: ["all-templates", "unlimited-signatures", "no-footer-link", "pro-extras", "self-serve-billing"],
+    features: ["all-templates", "animated-elements", "pro-image-hosting", "unlimited-signatures", "no-footer-link", "pro-extras"],
   },
   {
     id: "business",
@@ -77,12 +77,15 @@ export const COMPARISON: Array<{ category: string; rows: ComparisonRow[] }> = [
   {
     category: "Signatures",
     rows: [
-      { label: "Templates", claims: ["templates-8", "free-four-templates", "all-templates"], free: "4", pro: "All 8", business: "All 8" },
+      { label: "Layouts", claims: ["layouts-20", "free-templates", "all-templates"], free: "4 classic", pro: "All 20", business: "All 20" },
+      { label: "Industry designs", claims: ["industry-designs"], free: "1 per industry", pro: "All 126", business: "All 126" },
       { label: "Saved signatures", claims: ["free-one-signature", "unlimited-signatures", "saved-signatures"], free: "1", pro: "Unlimited", business: "Unlimited" },
       { label: "Works in Outlook, Gmail and Apple Mail", claims: ["renders-everywhere"], free: true, pro: true, business: true },
       { label: "Fonts, colours and spacing", claims: ["styling"], free: true, pro: true, business: true },
       { label: "Social icons", claims: ["social-icons"], free: true, pro: true, business: true },
-      { label: "Logo and headshot", claims: ["images", "image-hosting"], free: true, pro: true, business: true },
+      { label: "Logo and headshot from your own links", claims: ["images", "external-images"], free: true, pro: true, business: true },
+      { label: "Upload and host images with us", claims: ["pro-image-hosting", "image-hosting"], free: false, pro: true, business: true },
+      { label: "Animated icons and status badges", claims: ["animated-elements"], free: false, pro: true, business: true },
       { label: "Banners, GIFs and buttons", claims: ["pro-extras", "buttons"], free: false, pro: true, business: true },
       { label: "TheMailSignature link removed", claims: ["free-footer-link", "no-footer-link"], free: false, pro: true, business: true },
     ],

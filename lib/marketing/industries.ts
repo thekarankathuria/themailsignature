@@ -153,7 +153,7 @@ export const INDUSTRIES: Industry[] = [
       {
         q: "Does a long signature cause problems in ticket threads?",
         a: "It can make long threads hard to read. Keep support signatures to a few lines; the Stack template has the narrowest footprint on phones.",
-        claims: ["templates-8"],
+        claims: ["layouts-20"],
       },
       {
         q: "Can every agent use the same design?",
@@ -234,7 +234,7 @@ export const INDUSTRIES: Industry[] = [
       {
         q: "I do not have a logo yet. What should I use?",
         a: "Start without one. The Minimal template needs no images, and you can switch templates later without retyping your details.",
-        claims: ["templates-8"],
+        claims: ["layouts-20"],
       },
       {
         q: "Can I remove the TheMailSignature link?",
@@ -460,7 +460,7 @@ export const INDUSTRIES: Industry[] = [
       {
         q: "Which template suits a law firm?",
         a: "Minimal is text-only and formal, and Ledger suits firms that want their logo across the top. You can switch at any time.",
-        claims: ["templates-8"],
+        claims: ["layouts-20"],
       },
       {
         q: "Can the firm lock the notice for every lawyer?",
@@ -493,7 +493,7 @@ export const INDUSTRIES: Industry[] = [
       {
         q: "What size should a signature banner be?",
         a: "Keep it no wider than the signature, around 600 pixels at most, with large text. The Broadcast template is designed around a full-width banner.",
-        claims: ["images", "templates-8"],
+        claims: ["images", "layouts-20"],
       },
       {
         q: "Can I see whether people click the banner?",
@@ -681,7 +681,7 @@ export const INDUSTRIES: Industry[] = [
       {
         q: "Should realtors include a photo?",
         a: "Usually yes. Clients choose agents they recognise, and a headshot next to your name helps. The Portrait template is built around one.",
-        claims: ["images", "templates-8"],
+        claims: ["images", "layouts-20"],
       },
       {
         q: "Can I link to my listings?",
@@ -756,8 +756,8 @@ export const INDUSTRIES: Industry[] = [
     faqs: [
       {
         q: "Is the Free plan enough for a student?",
-        a: "For most students, yes. Free includes four templates and one saved signature.",
-        claims: ["free-four-templates", "free-one-signature"],
+        a: "For most students, yes. Free includes the classic templates, a design made for students and one saved signature.",
+        claims: ["free-templates", "free-one-signature"],
       },
       {
         q: "Can I use my university's logo?",

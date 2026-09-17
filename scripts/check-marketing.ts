@@ -18,7 +18,10 @@ import { COMPANY, PLACEHOLDER_PREFIX } from "../lib/marketing/company";
 import { industrySeo } from "../lib/marketing/industry-seo";
 import * as pricing from "../lib/pricing";
 import { CONTENT_MODULES } from "../lib/marketing/content-index";
+import { ALL_DESIGNS, designSignature, designsFor } from "../lib/marketing/designs";
 import { INDUSTRIES } from "../lib/marketing/industries";
+import { EDITORIAL_SURFACE } from "../lib/signature/designer/editorial";
+import { FREE_TEMPLATE_IDS } from "../lib/signature/templates";
 import { SAMPLE_PEOPLE } from "../lib/marketing/samples";
 import { TEMPLATE_BY_ID } from "../lib/signature/templates";
 
@@ -67,6 +70,7 @@ const BANNED: Array<[RegExp, string]> = [
   [/\btestimonial/i, "no testimonials"],
   [/\btrusted by\b/i, "no social proof"],
   [/#1\b/, "no superlatives"],
+  [/[–—]/, "no en or em dashes in copy; use a period, comma or colon"],
   [/\b\d[\d,.]*\s*[kKmM]?\+?\s+(happy\s+)?(users|customers|companies|teams|professionals)\b/, "no usage numbers"],
 ];
 const SCAN = ["app/(site)", "components/marketing", "lib/marketing", "lib/pricing.ts"];
@@ -79,7 +83,11 @@ function scan(path: string) {
     return;
   }
   if (!TEXT.has(extname(path))) return;
-  const text = readFileSync(path, "utf8");
+  // Comments are for developers and never reach the page.
+  const text = readFileSync(path, "utf8")
+    .split("\n")
+    .filter((line) => !/^\s*(\/\/|\*|\/\*)/.test(line))
+    .join("\n");
   for (const [pattern, why] of BANNED) {
     const match = text.match(pattern);
     if (match) fail(`${path}: "${match[0]}" (${why})`);
@@ -133,6 +141,36 @@ for (const person of Object.values(SAMPLE_PEOPLE)) {
   const ratio = contrast(person.accent, ground);
   if (ratio < 4.5) {
     fail(`sample ${person.key}: accent ${person.accent} is ${ratio.toFixed(2)}:1 on ${ground} (min 4.5)`);
+  }
+}
+
+// 7. Designs: six per industry, one free on a free layout, readable colours.
+for (const industry of INDUSTRIES) {
+  const designs = designsFor(industry.slug);
+  const free = designs.filter((d) => d.tier === "free");
+  if (designs.length < 6) fail(`designs ${industry.slug}: ${designs.length} designs (min 6)`);
+  if (free.length !== 1) fail(`designs ${industry.slug}: ${free.length} free designs (need 1)`);
+  if (free[0] && !FREE_TEMPLATE_IDS.includes(free[0].layoutId)) {
+    fail(`designs ${industry.slug}: free design uses pro layout ${free[0].layoutId}`);
+  }
+}
+for (const design of ALL_DESIGNS) {
+  const { style } = designSignature(design);
+  // Dark cards set their own text colours; only the accent (used for the
+  // button under the card, and for white text on Color Block) is checked.
+  const darkCard = design.layoutId === "executive" || design.layoutId === "slate";
+  const surface = design.layoutId === "editorial" ? EDITORIAL_SURFACE : "#FFFFFF";
+  const pairs: Array<[string, string]> = darkCard
+    ? [["accent", style.accent]]
+    : [
+        ["accent", style.accent],
+        ["name", style.nameColor],
+        ["text", style.textColor],
+        ["muted", style.mutedColor],
+      ];
+  for (const [label, color] of pairs) {
+    const ratio = contrast(color, surface);
+    if (ratio < 4.5) fail(`design ${design.id}: ${label} ${color} is ${ratio.toFixed(2)}:1 on ${surface}`);
   }
 }
 

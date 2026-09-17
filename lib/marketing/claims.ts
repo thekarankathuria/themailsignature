@@ -11,7 +11,9 @@ export const SHIPPED_THROUGH_PHASE = 2;
 
 export const CLAIMS = {
   // Shipped: the editor and render engine that already exist.
-  "templates-8": { label: "8 signature templates", shipsIn: 1 },
+  "layouts-20": { label: "20 signature layouts, from classic to designer", shipsIn: 1 },
+  "industry-designs": { label: "6 designs for each of 21 industries", shipsIn: 1 },
+  "external-images": { label: "Use images from your own links", shipsIn: 1 },
   "renders-everywhere": { label: "Table-based HTML that holds up in Outlook, Gmail and Apple Mail", shipsIn: 1 },
   "social-icons": { label: "Icons for 22 social networks", shipsIn: 1 },
   "images": { label: "Logo, headshot and banner images", shipsIn: 1 },
@@ -26,10 +28,12 @@ export const CLAIMS = {
   "saved-signatures": { label: "Save signatures to your account and edit them later", shipsIn: 3 },
   "self-serve-deletion": { label: "Delete your account and data from settings", shipsIn: 3 },
   // Phase 4 — billing.
-  "free-four-templates": { label: "4 templates on the Free plan", shipsIn: 4 },
+  "free-templates": { label: "4 classic templates plus the free design for your industry", shipsIn: 4 },
   "free-one-signature": { label: "1 saved signature on the Free plan", shipsIn: 4 },
   "free-footer-link": { label: "A small \"Made with TheMailSignature\" link on Free signatures", shipsIn: 4 },
-  "all-templates": { label: "Every template", shipsIn: 4 },
+  "all-templates": { label: "Every layout and every industry design", shipsIn: 4 },
+  "animated-elements": { label: "Animated social icons and status badges", shipsIn: 4 },
+  "pro-image-hosting": { label: "Upload images and animations and we host them for you", shipsIn: 4 },
   "unlimited-signatures": { label: "Unlimited saved signatures", shipsIn: 4 },
   "no-footer-link": { label: "No TheMailSignature link", shipsIn: 4 },
   "pro-extras": { label: "Banners, animated GIFs, call-to-action and meeting buttons", shipsIn: 4 },

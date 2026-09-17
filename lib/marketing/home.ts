@@ -33,8 +33,8 @@ export const HOME: {
       },
       {
         title: "Choose a layout",
-        body: "Switch between eight templates at any time. Your details carry over, so you can compare layouts in seconds.",
-        claims: ["templates-8"],
+        body: "Start from a design made for your industry, or switch between 20 layouts. Your details carry over as you compare.",
+        claims: ["layouts-20", "industry-designs"],
       },
       {
         title: "Copy it into your email",

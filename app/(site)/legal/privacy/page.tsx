@@ -67,9 +67,9 @@ export default function PrivacyPage() {
 
       <h2>Who processes it for us</h2>
       <ul>
-        <li><strong>Supabase</strong> — account authentication, database and image storage.</li>
-        <li><strong>Resend</strong> — delivery of service emails and contact messages.</li>
-        <li><strong>Stripe</strong> — payment processing for paid plans.</li>
+        <li><strong>Supabase:</strong> account authentication, database and image storage.</li>
+        <li><strong>Resend:</strong> delivery of service emails and contact messages.</li>
+        <li><strong>Stripe:</strong> payment processing for paid plans.</li>
         <li>Our hosting provider, which runs the servers the service is delivered from.</li>
       </ul>
       <p>

@@ -7,8 +7,8 @@ export const FAQS: Record<"home" | "pricing" | "teams" | "help", Faq[]> = {
   home: [
     {
       q: "Is TheMailSignature free?",
-      a: "Yes. The Free plan gives you 4 templates and one saved signature at no cost. Pro and Business add every template, unlimited signatures and team features.",
-      claims: ["free-four-templates", "free-one-signature"],
+      a: "Yes. The Free plan includes the 4 classic templates, the free design for your industry and one saved signature. Pro and Business add every layout and design, animation, image hosting and team features.",
+      claims: ["free-templates", "free-one-signature", "all-templates"],
     },
     {
       q: "Which email clients does it work with?",
@@ -56,6 +56,16 @@ export const FAQS: Record<"home" | "pricing" | "teams" | "help", Faq[]> = {
       q: "What is the link on Free signatures?",
       a: "Signatures made on the Free plan end with a small \"Made with TheMailSignature\" link. Pro and Business signatures do not include it.",
       claims: ["free-footer-link", "no-footer-link"],
+    },
+    {
+      q: "Do animated signatures work in Outlook?",
+      a: "Animated icons play in Gmail, Apple Mail, Outlook on the web and the new Outlook. Classic Outlook for Windows may show only the first frame, which is designed to look complete on its own.",
+      claims: ["animated-elements"],
+    },
+    {
+      q: "Can I use images hosted somewhere else?",
+      a: "Yes, on every plan. Paste a link to your logo or photo. Pro and Business can also upload images and let us host them.",
+      claims: ["external-images", "pro-image-hosting"],
     },
     {
       q: "Which currency are prices in?",

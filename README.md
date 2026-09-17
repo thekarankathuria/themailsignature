@@ -15,7 +15,9 @@ constraint drives the whole architecture:
   `http(s):`, `mailto:` and `tel:` survive as links.
 - `lib/signature/parts.ts` composes those primitives into reusable blocks
   (name, role, contact rows, social row, button, footer).
-- `lib/signature/templates.ts` arranges the blocks eight different ways.
+- `lib/signature/templates.ts` arranges the blocks eight classic ways, and
+  `lib/signature/designer/` adds twelve designer layouts built from the shared
+  helpers in `designer/kit.ts`.
   Templates are data, not components, so adding one is a single function.
 - `lib/signature/render.ts` is the only entry point the UI calls.
 
@@ -142,7 +144,8 @@ npm run check:launch # fails until every cited claim has shipped, placeholders a
 `npm test` runs eight node suites, then the Vitest component and unit tests
 (`components/**/*.test.tsx`):
 
-- `check-render.ts` renders all eight templates against a hostile payload and
+- `check-render.ts` renders every layout against a hostile payload (and again
+  with animation, a status dot and contact icons switched on) and
   asserts that no script element, event handler, or dangerous URL scheme
   survives, and that the output stays inside the subset Word understands. Run
   it after any change to `lib/signature`.

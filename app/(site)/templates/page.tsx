@@ -14,7 +14,7 @@ export default function TemplatesPage() {
         <SectionHeading
           as="h1"
           eyebrow="Templates"
-          title="Eight signature layouts, all built for Outlook"
+          title="Signature designs for every line of work"
           lede="Every template is made of HTML tables with inline styles, the only format Outlook for Windows renders reliably. The examples below are live renders, not images. Open one in the editor and replace the details with yours."
         />
       </Section>

@@ -17,7 +17,7 @@ export const industrySeo: Record<string, IndustrySeo> = {
   accountants: {
     title: "Accountants Email Signature Generator",
     description:
-      "Build a compliant, professional signature for your accounting practice in minutes. Add credentials, disclaimers and booking links — free to start.",
+      "Build a compliant, professional signature for your accounting practice in minutes. Add credentials, disclaimers and booking links. Free to start.",
   },
   ceos: {
     title: "CEO Email Signature Generator",
@@ -27,7 +27,7 @@ export const industrySeo: Record<string, IndustrySeo> = {
   consultants: {
     title: "Consultant Email Signature Generator",
     description:
-      "Turn every client email into a pitch. Create a consultant signature with your services, calendar link and credentials — no design skills needed.",
+      "Turn every client email into a pitch. Create a consultant signature with your services, calendar link and credentials. No design skills needed.",
   },
   "customer-support": {
     title: "Customer Support Email Signature Generator",
@@ -52,7 +52,7 @@ export const industrySeo: Record<string, IndustrySeo> = {
   freelancers: {
     title: "Freelancer Email Signature Generator",
     description:
-      "Win more work from your inbox. Build a freelance signature with your portfolio, rates page and socials — free, and ready in a few minutes.",
+      "Win more work from your inbox. Build a freelance signature with your portfolio, rates page and socials. Free and ready in minutes.",
   },
   healthcare: {
     title: "Healthcare Email Signature Generator",
@@ -107,7 +107,7 @@ export const industrySeo: Record<string, IndustrySeo> = {
   "sales-teams": {
     title: "Sales Team Email Signature Generator",
     description:
-      "Book more meetings from email. Give every rep a signature with a calendar link, demo CTA and click tracking — consistent across the team.",
+      "Book more meetings from email. Give every rep a signature with a calendar link, demo button and click counts, consistent across the team.",
   },
   students: {
     title: "Student Email Signature Generator",

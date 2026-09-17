@@ -2,7 +2,7 @@ import type { Cell, ComparisonRow } from "@/lib/pricing";
 
 function CellValue({ value }: { value: Cell }) {
   if (value === true) return <><span aria-hidden="true" className="font-bold text-blue-brand-600">✓</span><span className="sr-only">Included</span></>;
-  if (value === false) return <><span aria-hidden="true" className="text-ink-300">—</span><span className="sr-only">Not included</span></>;
+  if (value === false) return <><span aria-hidden="true" className="text-ink-300">-</span><span className="sr-only">Not included</span></>;
   return <span className="text-navy-900">{value}</span>;
 }
 
