@@ -14,6 +14,9 @@ export type SamplePerson = {
   city: string;
   accent: string;
   cta?: { text: string };
+  /** Generated portrait, if one exists; otherwise the monogram avatar is used. */
+  photo?: string;
+  portrait?: { presentation: string; age: string };
 };
 
 export const SAMPLE_PEOPLE: Record<string, SamplePerson> = Object.fromEntries(
@@ -52,7 +55,7 @@ export function sampleSignature(
     addressLine2: "",
     logoUrl: `/samples/${person.key}-logo.png`,
     logoLink: site,
-    photoUrl: `/samples/${person.key}-avatar.png`,
+    photoUrl: person.photo ?? `/samples/${person.key}-avatar.png`,
     bannerUrl: templateId === "broadcast" ? "/samples/banner.png" : "",
     // Unlinked: the engine gives banners empty alt text, so a linked banner
     // would be an unnamed link (see the Phase 3 follow-up in the progress notes).
