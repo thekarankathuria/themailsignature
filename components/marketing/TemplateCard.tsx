@@ -20,6 +20,15 @@ export function TemplateCard({
       </div>
       <div className="flex flex-1 flex-col p-6">
         <Heading className="font-semibold text-navy-900">{template.name}</Heading>
+        <p className="mt-2">
+          <span
+            className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+              template.tier === "free" ? "bg-ink-100 text-ink-800" : "bg-blue-brand-50 text-blue-brand-700"
+            }`}
+          >
+            {template.tier === "free" ? "Free" : "Pro"}
+          </span>
+        </p>
         <p className="mt-1 flex-1 text-sm leading-relaxed text-ink-600">{template.blurb}</p>
         <Link
           href={`/editor?template=${template.id}`}
