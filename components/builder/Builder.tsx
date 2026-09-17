@@ -17,16 +17,19 @@ import {
   EMPTY_DATA,
   STORAGE_KEY,
 } from "@/lib/signature/defaults";
-import {
-  estimateWidth,
-  renderDocument,
-  renderPlainText,
-  renderSignature,
-} from "@/lib/signature/render";
+import { estimateWidth, renderSignature } from "@/lib/signature/render";
 import { TEMPLATE_BY_ID } from "@/lib/signature/templates";
 import type { SignatureData, SignatureStyle } from "@/lib/signature/types";
+import { AccountGate } from "./AccountGate";
 import { ExportPanel } from "./ExportPanel";
+import { ProBar } from "./ProBar";
+import { UpgradeNotice } from "./UpgradeNotice";
+import { readUiState, saveUiState, type ProFeature } from "./editor-session";
+import { SaveStatus } from "./SaveStatus";
+import { useSignatureAccount } from "./useSignatureAccount";
 import { withDesign, withTemplate } from "./initial-state";
+import { freeVersion, proFeatures } from "@/lib/billing/entitlements";
+import type { PlanId } from "@/lib/billing/plans";
 import { Preview, type PreviewBg, type PreviewWidth } from "./Preview";
 import { TemplateGrid } from "./TemplateGrid";
 import {
@@ -78,15 +81,33 @@ function useIsClient() {
 export function Builder({
   initialTemplate,
   initialDesign,
-}: { initialTemplate?: string; initialDesign?: string } = {}) {
+  signedIn = false,
+  plan = "free",
+  initialSignatureId,
+  initialSaved,
+  resume = false,
+}: {
+  initialTemplate?: string;
+  initialDesign?: string;
+  signedIn?: boolean;
+  plan?: PlanId;
+  initialSignatureId?: string;
+  /** A saved signature opened with ?id=, which wins over the local draft. */
+  initialSaved?: { data: SignatureData; style: SignatureStyle; name: string };
+  resume?: boolean;
+} = {}) {
   const mounted = useIsClient();
-  const initial = useMemo(
-    () => withDesign(withTemplate(load(), initialTemplate), initialDesign),
-    [initialTemplate, initialDesign],
-  );
+  const initial = useMemo(() => {
+    if (initialSaved) return { data: initialSaved.data, style: initialSaved.style };
+    return withDesign(withTemplate(load(), initialTemplate), initialDesign);
+  }, [initialTemplate, initialDesign, initialSaved]);
   const [data, setData] = useState<SignatureData>(initial.data);
   const [style, setStyleState] = useState<SignatureStyle>(initial.style);
-  const [clientId, setClientId] = useState("gmail");
+  const [clientId, setClientId] = useState(() =>
+    typeof window === "undefined" ? "gmail" : readUiState().clientId ?? "gmail",
+  );
+  const [gateOpen, setGateOpen] = useState(false);
+  const [upgradeFeatures, setUpgradeFeatures] = useState<ProFeature[] | null>(null);
   const [previewBg, setPreviewBg] = useState<PreviewBg>("light");
   const [previewWidth, setPreviewWidth] = useState<PreviewWidth>("desktop");
 
@@ -123,15 +144,35 @@ export function Builder({
 
   const ctx = useMemo(() => ({ assetBase }), [assetBase]);
 
+  const account = useSignatureAccount({
+    signedIn,
+    plan,
+    initialSignatureId,
+    resume,
+    data,
+    style,
+    designId: initialDesign,
+  });
+
+  // Which Pro options this signature uses, recalculated as it is edited.
+  const usedProFeatures = useMemo(() => proFeatures(data, style), [data, style]);
+
+  const switchToFree = useCallback(() => {
+    const free = freeVersion(data, style);
+    setData(free.data);
+    setStyleState(free.style);
+    setUpgradeFeatures(null);
+  }, [data, style]);
+
+  // Remember the chosen email client, so it survives signing in.
+  useEffect(() => {
+    if (mounted) saveUiState({ ...readUiState(), clientId });
+  }, [mounted, clientId]);
+
   const html = useMemo(
     () => (mounted ? renderSignature(data, style, ctx) : ""),
     [data, style, ctx, mounted],
   );
-  const source = useMemo(
-    () => (mounted ? renderDocument(data, style, ctx) : ""),
-    [data, style, ctx, mounted],
-  );
-  const plain = useMemo(() => renderPlainText(data, style), [data, style]);
   const width = useMemo(() => estimateWidth(data, style), [data, style]);
 
   const fileName =
@@ -163,6 +204,7 @@ export function Builder({
               <ArrowCounterClockwise size={15} aria-hidden />
               Start over
             </Button>
+            {signedIn && <SaveStatus state={account.saveState} error={account.saveError} />}
             <ThemeToggle />
           </div>
         </div>
@@ -217,6 +259,18 @@ export function Builder({
         </div>
 
         <div className="flex flex-col gap-6 lg:sticky lg:top-22">
+          {mounted && (
+            <ProBar features={usedProFeatures} plan={plan} onSwitchToFree={switchToFree} />
+          )}
+
+          {upgradeFeatures && (
+            <UpgradeNotice
+              features={upgradeFeatures}
+              onSwitchToFree={switchToFree}
+              onDismiss={() => setUpgradeFeatures(null)}
+            />
+          )}
+
           <div className="rounded-[14px] border border-ink-200 bg-white p-4 dark:border-ink-800 dark:bg-ink-900">
             {mounted ? (
               <Preview
@@ -233,17 +287,29 @@ export function Builder({
           </div>
 
           <div className="rounded-[14px] border border-ink-200 bg-white p-4 dark:border-ink-800 dark:bg-ink-900">
+            {mounted ? (
             <ExportPanel
-              html={html}
-              source={source}
-              plain={plain}
               clientId={clientId}
               onClientChange={setClientId}
               fileName={fileName}
+              signedIn={signedIn}
+              onRequireAccount={() => setGateOpen(true)}
+              onExport={account.requestExport}
+              onUpgradeNeeded={setUpgradeFeatures}
             />
+            ) : (
+              <div className="h-[320px] animate-pulse rounded-[10px] bg-ink-100 dark:bg-ink-800" />
+            )}
           </div>
         </div>
       </main>
+
+      {gateOpen && (
+        <AccountGate
+          search={typeof window === "undefined" ? "" : window.location.search}
+          onClose={() => setGateOpen(false)}
+        />
+      )}
     </div>
   );
 }

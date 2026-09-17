@@ -5,30 +5,51 @@ import { useState } from "react";
 import { CLIENTS, CLIENT_BY_ID, CLIENT_GROUPS } from "@/lib/signature/clients";
 import { copyRichHtml, copyText, downloadFile } from "@/lib/clipboard";
 import { Button, cx } from "@/components/ui";
+import type { ExportPayload, ExportResult, ProFeature } from "./editor-session";
 
 type Copied = null | "rich" | "source" | "plain";
 
 export function ExportPanel({
-  html,
-  source,
-  plain,
   clientId,
   onClientChange,
   fileName,
+  signedIn,
+  onRequireAccount,
+  onExport,
+  onUpgradeNeeded,
 }: {
-  html: string;
-  source: string;
-  plain: string;
   clientId: string;
   onClientChange: (id: string) => void;
   fileName: string;
+  /** Signed-out visitors are asked to create an account before copying. */
+  signedIn: boolean;
+  onRequireAccount: () => void;
+  /** Asks the server for the finished signature, with plan rules applied. */
+  onExport: () => Promise<ExportResult>;
+  onUpgradeNeeded: (features: ProFeature[]) => void;
 }) {
   const [copied, setCopied] = useState<Copied>(null);
   const [failed, setFailed] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
   const client = CLIENT_BY_ID[clientId] ?? CLIENTS[0];
 
-  async function run(kind: Exclude<Copied, null>, action: () => Promise<boolean>) {
-    const ok = await action();
+  async function run(kind: Exclude<Copied, null>, apply: (payload: ExportPayload) => Promise<boolean> | boolean) {
+    if (!signedIn) {
+      onRequireAccount();
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setFailed(false);
+    const result = await onExport();
+    setBusy(false);
+    if (!result.ok) {
+      if (result.code === "upgrade") onUpgradeNeeded(result.features);
+      else setError(result.error);
+      return;
+    }
+    const ok = await apply(result.payload);
     setFailed(!ok);
     if (ok) {
       setCopied(kind);
@@ -68,26 +89,38 @@ export function ExportPanel({
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button onClick={() => run("rich", () => copyRichHtml(html, plain))}>
+        <Button disabled={busy} onClick={() => run("rich", (payload) => copyRichHtml(payload.html, payload.text))}>
           {copied === "rich" ? <Check size={16} weight="bold" aria-hidden /> : <Copy size={16} aria-hidden />}
-          {label("rich", "Copy signature")}
+          {busy ? "Preparing" : label("rich", "Copy signature")}
         </Button>
-        <Button variant="secondary" onClick={() => run("source", () => copyText(source))}>
+        <Button variant="secondary" disabled={busy} onClick={() => run("source", (payload) => copyText(payload.document))}>
           {copied === "source" ? <Check size={16} weight="bold" aria-hidden /> : <CodeSimple size={16} aria-hidden />}
           {label("source", "Copy HTML source")}
         </Button>
-        <Button variant="secondary" onClick={() => run("plain", () => copyText(plain))}>
+        <Button variant="secondary" disabled={busy} onClick={() => run("plain", (payload) => copyText(payload.text))}>
           {copied === "plain" ? <Check size={16} weight="bold" aria-hidden /> : <TextT size={16} aria-hidden />}
           {label("plain", "Copy plain text")}
         </Button>
         <Button
           variant="secondary"
-          onClick={() => downloadFile(`${fileName}.html`, source, "text/html")}
+          disabled={busy}
+          onClick={() =>
+            run("source", (payload) => {
+              downloadFile(`${fileName}.html`, payload.document, "text/html");
+              return true;
+            })
+          }
         >
           <DownloadSimple size={16} aria-hidden />
           Download .html
         </Button>
       </div>
+
+      {error ? (
+        <p role="alert" className="rounded-[10px] bg-red-50 px-3 py-2 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300">
+          {error}
+        </p>
+      ) : null}
 
       {failed ? (
         <p role="alert" className="rounded-[10px] bg-red-50 px-3 py-2 text-xs text-red-800 dark:bg-red-950/40 dark:text-red-300">
