@@ -221,6 +221,7 @@ export function Builder({
 
       <main className="mx-auto grid max-w-[1400px] gap-6 px-4 py-6 sm:px-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-start">
         <div className="flex flex-col gap-3">
+          <div data-screenshot="templates">
           <Panel title="Template" summary={TEMPLATE_BY_ID[style.templateId]?.name} defaultOpen>
             {mounted ? (
               <TemplateGrid
@@ -241,9 +242,13 @@ export function Builder({
             )}
           </Panel>
 
+          </div>
+
+          <div data-screenshot="details">
           <Panel title="Your details" summary="Name, role and contact" defaultOpen>
             <DetailsPanel {...panelProps} />
           </Panel>
+          </div>
 
           <Panel title="Logo, photo and banner" summary="Images and the button">
             <GraphicsPanel {...panelProps} />
@@ -295,7 +300,7 @@ export function Builder({
             )}
           </div>
 
-          <div className="rounded-[14px] border border-ink-200 bg-white p-4 dark:border-ink-800 dark:bg-ink-900">
+          <div data-screenshot="install" className="rounded-[14px] border border-ink-200 bg-white p-4 dark:border-ink-800 dark:bg-ink-900">
             {mounted ? (
             <ExportPanel
               clientId={clientId}

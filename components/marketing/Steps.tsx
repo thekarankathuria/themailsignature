@@ -16,14 +16,18 @@ export function Steps({ steps }: { steps: Step[] }) {
           </span>
           <h3 className="mt-4 text-lg font-semibold text-navy-900">{step.title}</h3>
           <p className="mt-2 leading-relaxed text-ink-600">{step.body}</p>
+          {/* mt-auto keeps the screenshots on one line when the text above
+              them wraps to different heights. */}
           {step.image && (
-            <Image
-              src={step.image.src}
-              alt={step.image.alt}
-              width={step.image.width}
-              height={step.image.height}
-              className="mt-5 rounded-card border border-ink-200 shadow-sm"
-            />
+            <div className="mt-auto pt-5">
+              <Image
+                src={step.image.src}
+                alt={step.image.alt}
+                width={step.image.width}
+                height={step.image.height}
+                className="rounded-card border border-ink-200 shadow-sm"
+              />
+            </div>
           )}
         </li>
       ))}
