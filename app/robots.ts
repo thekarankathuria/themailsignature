@@ -7,7 +7,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       // Uploaded images are referenced from mail, not from pages, so there is
       // nothing for a crawler to do in there.
-      { userAgent: "*", allow: "/", disallow: ["/api/", "/u/"] },
+      { userAgent: "*", allow: "/", disallow: ["/api/", "/u/", "/dev/", "/app/"] },
     ],
     sitemap: `${SITE}/sitemap.xml`,
   };
