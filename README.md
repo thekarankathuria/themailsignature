@@ -177,7 +177,9 @@ npm run review:layouts # write .review/layouts.html showing every layout
 npm run screenshots  # recapture the editor screenshots the homepage steps use
 npm run check:routes # crawl a running site: every sitemap page and internal link returns 200
 npm run check:launch # fails until every cited claim has shipped, placeholders are filled and prices are final
-npm run check:flow   # end-to-end account, plan and export checks against a running server
+npm run check:flow   # end-to-end account, plan, team and export checks against a running server
+npm run check:headers # security headers, the CSP nonce and /api/health against a running server
+npm run backup       # database (online copy) and uploads into BACKUP_DIR
 npm run seed         # local test accounts
 ```
 
@@ -203,6 +205,26 @@ npm run seed         # local test accounts
   claim is cited, SEO titles and descriptions fit search limits and are unique,
   the 21 industry entries are complete, sample accents meet contrast, and no
   ratings, testimonials, usage numbers or "AI" claims appear.
+
+## Running it in production
+
+One container, one volume, no database server: the database is a file inside
+the volume. `Dockerfile` builds Next's standalone output on Node 24 (which the
+built-in SQLite driver needs) and `docker-compose.yml` mounts `/data` for the
+database, the uploads and the outbox. Put a reverse proxy in front for TLS.
+
+- **Health**: `/api/health` answers 503 when the database, mail or uploads are
+  actually broken, so an uptime monitor can tell "the process is up" from "the
+  process can serve people". Point your monitor at it.
+- **Backups**: `npm run backup` copies the database with SQLite's own online
+  copy, which is safe while the site is running, and the uploads beside it.
+  Restore by stopping the site, putting the two back where they came from, and
+  checking `/api/health`.
+- **Content-Security-Policy**: set in `proxy.ts` with a per-request nonce, and
+  report-only until `CSP_ENFORCE=1`. Watch `CSP_REPORT_URI` for a few releases
+  first: a policy that breaks the editor is worse than no policy.
+- **Cookies**: one, the session, which is strictly necessary. There is no
+  consent banner and none is needed until a non-essential cookie exists.
 
 ## Layout
 
