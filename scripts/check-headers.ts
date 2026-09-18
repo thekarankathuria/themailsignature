@@ -43,14 +43,32 @@ async function main() {
     check(`${header}`, Boolean(value && valid(value)), value ? `got "${value}", wanted ${expected}` : "missing");
   }
 
-  const csp = response.headers.get("content-security-policy-report-only");
-  check("content-security-policy-report-only", Boolean(csp), "missing");
+  const enforcing = process.env.CSP_ENFORCE === "1";
+  const cspHeader = enforcing ? "content-security-policy" : "content-security-policy-report-only";
+  const csp = response.headers.get(cspHeader);
+  check(cspHeader, Boolean(csp), "missing");
   for (const directive of CSP_DIRECTIVES) {
     check(`csp has ${directive}`, Boolean(csp?.includes(directive)));
   }
-  // Until the reports are quiet, the enforcing header must NOT be set: turning
-  // it on by accident would break the editor for everybody at once.
-  check("csp is still report-only", !response.headers.get("content-security-policy"));
+  // The nonce is what makes this policy enforceable at all: Next streams its
+  // hydration data in inline scripts, which 'self' alone would block.
+  check("csp carries a nonce", /'nonce-[a-f0-9]{16,}'/.test(csp ?? ""));
+  check("csp uses strict-dynamic", Boolean(csp?.includes("'strict-dynamic'")));
+  check("csp allows no inline script keyword", !csp?.includes("'unsafe-inline' 'strict-dynamic'"));
+
+  const second = await fetch(`${BASE}/`);
+  const secondCsp = second.headers.get(cspHeader) ?? "";
+  const nonceOf = (value: string) => value.match(/'nonce-([a-f0-9]+)'/)?.[1];
+  check("every response gets a fresh nonce", Boolean(nonceOf(csp ?? "")) && nonceOf(csp ?? "") !== nonceOf(secondCsp));
+
+  if (!enforcing) {
+    // Turning the policy on by accident would break the editor for everybody
+    // at once, so the enforcing header must be absent until somebody means it.
+    check("csp is still report-only", !response.headers.get("content-security-policy"));
+    // Browsers ignore this directive in a report-only policy and log an error
+    // about it in every visitor's console.
+    check("report-only csp omits upgrade-insecure-requests", !csp?.includes("upgrade-insecure-requests"));
+  }
 
   check("framework version is not advertised", !response.headers.get("x-powered-by"));
 
