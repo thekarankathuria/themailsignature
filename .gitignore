@@ -55,3 +55,6 @@ next-env.d.ts
 
 # local database, outbox and uploads
 /data
+
+# Local MCP server config, per machine
+.mcp.json
