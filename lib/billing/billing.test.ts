@@ -1,12 +1,13 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createUser } from "@/lib/auth/users";
-import { closeDb } from "@/lib/db";
+import { closeDb, db } from "@/lib/db";
 import { DEFAULT_DATA, DEFAULT_STYLE } from "@/lib/signature/defaults";
 import { FREE_TEMPLATE_IDS, TEMPLATES } from "@/lib/signature/templates";
-import { canExport, freeVersion, nearestFreeLayout, proFeatures, withFreeFooter } from "./entitlements";
-import { cancelAtPeriodEnd, grantPlan, resumePlan } from "./local";
-import { planFor, subscriptionFor } from "./plans";
+import { addMember, createOrg } from "@/lib/teams/store";
+import { canExport, canUpload, freeVersion, nearestFreeLayout, proFeatures, withFreeFooter } from "./entitlements";
+import { cancelAtPeriodEnd, grantBusiness, grantPlan, resumePlan } from "./local";
+import { effectiveSubscription, planFor, subscriptionFor } from "./plans";
 
 beforeEach(() => {
   process.env.DATABASE_PATH = ":memory:";
@@ -99,5 +100,47 @@ describe("plans", () => {
     vi.setSystemTime(Date.now() + 400 * 24 * 60 * 60 * 1000);
     expect(planFor(user.id)).toBe("business");
     expect(subscriptionFor(user.id)?.seats).toBe(3);
+  });
+});
+
+describe("plans through a membership", () => {
+  async function team() {
+    const owner = await createUser("owner@example.com", "a sensible passphrase");
+    const mate = await createUser("mate@example.com", "a sensible passphrase");
+    const org = createOrg({ name: "Northbeam", ownerId: owner.id });
+    grantBusiness(owner.id, { orgId: org.id, seats: 3, interval: "month" });
+    addMember(org.id, mate.id, "member");
+    return { owner, mate, org };
+  }
+
+  it("gives every member the organization's plan", async () => {
+    const { owner, mate } = await team();
+    expect(planFor(owner.id)).toBe("business");
+    expect(planFor(mate.id)).toBe("business");
+    // The member pays for nothing, so they have no subscription of their own.
+    expect(subscriptionFor(mate.id)).toBeNull();
+    expect(effectiveSubscription(mate.id)?.seats).toBe(3);
+  });
+
+  it("drops a member back to their own plan when the organization's lapses", async () => {
+    const { owner, mate } = await team();
+    db().prepare("update subscriptions set status = 'canceled' where user_id = ?").run(owner.id);
+    expect(planFor(mate.id)).toBe("free");
+    expect(planFor(owner.id)).toBe("free");
+
+    grantPlan(mate.id, "pro", "month");
+    expect(planFor(mate.id)).toBe("pro");
+  });
+
+  it("prefers the organization's plan over a member's own", async () => {
+    const { mate } = await team();
+    grantPlan(mate.id, "pro", "month");
+    expect(planFor(mate.id)).toBe("business");
+  });
+
+  it("lets business do everything pro does", () => {
+    const features = proFeatures({ ...plain, bannerUrl: "https://x.example/b.png" }, { ...DEFAULT_STYLE, templateId: "luxe" });
+    expect(canExport("business", features)).toBe(true);
+    expect(canUpload("business")).toBe(true);
   });
 });

@@ -1,3 +1,4 @@
+import { MIN_BUSINESS_SEATS } from "./billing/plans";
 import type { ClaimId } from "@/lib/marketing/claims";
 
 /**
@@ -56,7 +57,7 @@ export const PLANS: Plan[] = [
     monthly: 4,
     annual: 38,
     perSeat: true,
-    minSeats: 3,
+    minSeats: MIN_BUSINESS_SEATS,
     cta: { label: "Start with Business", href: "/signup?plan=business" },
     highlighted: false,
     features: ["team-invites", "company-template", "brand-kit", "click-analytics", "roles"],
