@@ -1,0 +1,39 @@
+# One container and one volume. The database is a file inside the volume, so
+# there is nothing else to run and nothing else to back up.
+#
+#   cp .env.example .env    # fill it in first
+#   docker compose up -d --build
+#   docker compose exec app node -e "..."   # one-off tasks
+#
+# Put a reverse proxy (Caddy, nginx) in front for TLS, forwarding to app:3000.
+services:
+  app:
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      NEXT_PUBLIC_UPLOAD_BASE: ${NEXT_PUBLIC_UPLOAD_BASE}
+      NEXT_PUBLIC_ASSET_BASE: ${NEXT_PUBLIC_ASSET_BASE}
+      RESEND_API_KEY: ${RESEND_API_KEY}
+      MAIL_FROM: ${MAIL_FROM}
+      CSP_REPORT_URI: ${CSP_REPORT_URI}
+    volumes:
+      - data:/data
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  data:

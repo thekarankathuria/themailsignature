@@ -65,6 +65,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Ship only the files the server needs, so the container stays small and
+  // node_modules does not travel with it. See the Dockerfile.
+  output: "standalone",
+
   // Don't advertise the framework version.
   poweredByHeader: false,
 
