@@ -1,12 +1,14 @@
 import { LegalPage } from "@/components/marketing/LegalPage";
 import { COMPANY } from "@/lib/marketing/company";
 import { pageMetadata } from "@/lib/marketing/pages";
+import { UI_KEY } from "@/components/builder/editor-session";
+import { THEME_KEY } from "@/components/site/ThemeToggle";
 import { STORAGE_KEY } from "@/lib/signature/defaults";
 
 export const metadata = pageMetadata("cookies");
 
-/** Must match the key in components/site/ThemeToggle.tsx. */
-const THEME_KEY = "sendmark.theme";
+// The keys are imported rather than retyped, so this page cannot drift from
+// what the app actually stores.
 
 export default function CookiesPage() {
   return (
@@ -41,7 +43,7 @@ export default function CookiesPage() {
       </div>
 
       <h2>Browser storage</h2>
-      <p>The editor also saves two items in your browser&rsquo;s local storage. They never leave your device.</p>
+      <p>The editor also saves three items in your browser&rsquo;s local storage. They never leave your device.</p>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
           <thead>
@@ -54,6 +56,13 @@ export default function CookiesPage() {
             <tr className="border-b border-ink-100">
               <td className="whitespace-nowrap py-2 pr-4 font-mono">{STORAGE_KEY}</td>
               <td className="py-2">Your unsaved signature draft, so it is still there when you come back.</td>
+            </tr>
+            <tr className="border-b border-ink-100">
+              <td className="whitespace-nowrap py-2 pr-4 font-mono">{UI_KEY}</td>
+              <td className="py-2">
+                Which step of the editor you were on and which email client you picked, so signing in does not lose your
+                place.
+              </td>
             </tr>
             <tr className="border-b border-ink-100">
               <td className="whitespace-nowrap py-2 pr-4 font-mono">{THEME_KEY}</td>

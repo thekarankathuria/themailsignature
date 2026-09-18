@@ -94,4 +94,4 @@ export const EMPTY_DATA: SignatureData = {
   social: {},
 };
 
-export const STORAGE_KEY = "sendmark.signature.v1";
+export const STORAGE_KEY = "tms.signature.v1";

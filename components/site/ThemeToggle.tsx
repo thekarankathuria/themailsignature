@@ -2,6 +2,9 @@
 
 import { Moon, Sun } from "@phosphor-icons/react";
 
+/** Named here so the cookie policy can list it from one place. */
+export const THEME_KEY = "tms.theme";
+
 /**
  * Reads and writes the theme straight from the document element. Both icons
  * are rendered and swapped by the `dark` class, so there is no client state to
@@ -12,7 +15,7 @@ export function ThemeToggle() {
     const next = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", next);
     try {
-      localStorage.setItem("sendmark.theme", next ? "dark" : "light");
+      localStorage.setItem(THEME_KEY, next ? "dark" : "light");
     } catch {
       // Private browsing; the choice just will not persist.
     }

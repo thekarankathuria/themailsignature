@@ -8,7 +8,7 @@ import type { SignatureData, SignatureStyle } from "@/lib/signature/types";
  * surrounding context: which email client was selected and which signature is
  * open, so the editor looks untouched when the user comes back signed in.
  */
-const UI_KEY = "tms.editor.ui";
+export const UI_KEY = "tms.editor.ui";
 
 export type EditorUiState = { clientId?: string; signatureId?: string };
 
