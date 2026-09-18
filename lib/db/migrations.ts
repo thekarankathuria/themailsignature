@@ -81,4 +81,86 @@ export const MIGRATIONS: Array<{ id: string; sql: string }> = [
       );
     `,
   },
+  {
+    id: "002_teams",
+    sql: `
+      create table organizations (
+        id text primary key,
+        name text not null,
+        analytics_enabled integer not null default 0,
+        created_at text not null,
+        updated_at text not null
+      );
+
+      -- unique(user_id) is the rule "one organization per person", kept here
+      -- rather than in application code so two concurrent invitation accepts
+      -- cannot leave someone in two organizations on two plans.
+      create table memberships (
+        id text primary key,
+        org_id text not null references organizations(id) on delete cascade,
+        user_id text not null unique references users(id) on delete cascade,
+        role text not null check (role in ('owner', 'admin', 'member')),
+        created_at text not null
+      );
+      create index memberships_org on memberships(org_id);
+
+      create table invitations (
+        id text primary key,
+        org_id text not null references organizations(id) on delete cascade,
+        email text not null collate nocase,
+        role text not null check (role in ('admin', 'member')),
+        token_hash text not null unique,
+        invited_by text references users(id) on delete set null,
+        expires_at text not null,
+        accepted_at text,
+        revoked_at text,
+        created_at text not null
+      );
+      create index invitations_org on invitations(org_id, email);
+
+      create table org_templates (
+        org_id text primary key references organizations(id) on delete cascade,
+        name text not null,
+        data text not null,
+        style text not null,
+        locked text not null,
+        updated_at text not null
+      );
+
+      create table brand_kits (
+        org_id text primary key references organizations(id) on delete cascade,
+        colors text not null,
+        fonts text not null,
+        logo_url text,
+        banner_url text,
+        updated_at text not null
+      );
+
+      create table tracked_links (
+        id text primary key,
+        org_id text not null references organizations(id) on delete cascade,
+        signature_id text not null references signatures(id) on delete cascade,
+        kind text not null,
+        label text,
+        url text not null,
+        created_at text not null,
+        unique (signature_id, kind, url)
+      );
+      create index tracked_links_org on tracked_links(org_id);
+
+      -- A click record is a link, a day and a count: no address, no user
+      -- agent, no recipient, nothing that identifies a reader.
+      create table link_clicks (
+        link_id text not null references tracked_links(id) on delete cascade,
+        day text not null,
+        clicks integer not null default 0,
+        primary key (link_id, day)
+      );
+
+      alter table subscriptions add column org_id text references organizations(id) on delete cascade;
+      create unique index subscriptions_org on subscriptions(org_id);
+
+      alter table signatures add column org_template_id text references organizations(id) on delete set null;
+    `,
+  },
 ];
