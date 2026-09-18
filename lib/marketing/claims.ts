@@ -7,6 +7,12 @@
  * When a phase ships, raise SHIPPED_THROUGH_PHASE. When a feature is cut,
  * delete its claim and let the checks point at every sentence that cited it.
  */
+/**
+ * Phases 4 (billing) and 5 (Business) are built and tested, but both describe
+ * what somebody gets when they pay, and nobody can pay until Stripe is
+ * connected at go-live. So this stays at 3, `check:launch` keeps listing those
+ * claims, and it becomes 5 the day real payments work.
+ */
 export const SHIPPED_THROUGH_PHASE = 3;
 
 export const CLAIMS = {
@@ -27,7 +33,7 @@ export const CLAIMS = {
   "no-signup-to-start": { label: "Build and copy a signature without an account", shipsIn: 3 },
   "saved-signatures": { label: "Save signatures to your account and edit them later", shipsIn: 3 },
   "self-serve-deletion": { label: "Delete your account and data from settings", shipsIn: 3 },
-  // Phase 4 — billing.
+  // Phase 4 — billing. Built against the local provider; needs Stripe.
   "free-templates": { label: "4 classic templates plus the free design for your industry", shipsIn: 4 },
   "free-one-signature": { label: "1 saved signature on the Free plan", shipsIn: 4 },
   "free-footer-link": { label: "A small \"Made with TheMailSignature\" link on Free signatures", shipsIn: 4 },
@@ -38,7 +44,7 @@ export const CLAIMS = {
   "no-footer-link": { label: "No TheMailSignature link", shipsIn: 4 },
   "pro-extras": { label: "Banners, animated GIFs, call-to-action and meeting buttons", shipsIn: 4 },
   "self-serve-billing": { label: "Change plan, update payment and cancel yourself", shipsIn: 4 },
-  // Phase 5 — Business.
+  // Phase 5 — Business. Built; reachable once payments are connected.
   "team-invites": { label: "Invite teammates and manage seats", shipsIn: 5 },
   "company-template": { label: "A company signature template with admin-locked fields", shipsIn: 5 },
   "brand-kit": { label: "A shared brand kit: colours, fonts, logo and banner", shipsIn: 5 },

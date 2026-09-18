@@ -130,6 +130,36 @@ npm run dev                    # http://localhost:3000
 The editor is public. Copying, downloading and installing ask for an account,
 keep the draft, and save it once the visitor is signed in.
 
+## Teams
+
+The Business plan buys an organization, not just a plan: `/checkout?plan=business`
+asks for a company name and creates the organization, its owner and the
+subscription together. One person belongs to at most one organization, which is
+a unique index on `memberships.user_id` rather than a rule in code.
+
+- **Roles**: owner (billing and seats as well as everything below), admin
+  (invite, remove, brand kit, company template), member. A team always keeps one
+  owner. `lib/teams/guard.ts` resolves the caller's role from the database on
+  every action; nothing the browser sends decides what it may do.
+- **Seats**: a pending invitation holds a seat until it is accepted, expires or
+  is taken back, so a team cannot promise the same seat twice. Seats never drop
+  below the people using them.
+- **Invitations**: hashed single-use tokens, seven days, bound to the address
+  they were sent to, so a forwarded invitation cannot add a stranger.
+- **Company template** (`lib/teams/locks.ts`): admins lock groups (layout,
+  colours and fonts, logo, banner, company details, disclaimer, social links).
+  Locked groups are merged in from the template every time a signature is
+  rendered, so a member who writes a locked value straight to the API still
+  sends the company's, and an admin's edit reaches everybody with no migration.
+- **Brand kit**: approved colours, fonts, logo and banner. A convenience, not a
+  control; the template is the control.
+- **Click counts**: a team can switch these on. Outbound links are swapped for
+  `/l/<id>` at export; following one redirects and adds to a daily count. A
+  click record is a link, a day and a number, with no address, user agent or
+  recipient, which is what keeps the "no tracking pixels" promise true. `/l/<id>`
+  is the only route that redirects to a stored address, so it re-checks the
+  scheme rather than trusting the row.
+
 ## Commands
 
 ```bash
@@ -197,6 +227,7 @@ lib/
   signature/            the render engine (no React, no DOM)
   marketing/            marketing copy, designs, claims and SEO data
   auth/                 passwords, sessions, tokens, the account service
+  teams/                organizations, roles, invitations, locks, click counts
   db/                   the SQLite connection and migrations
   billing/              plans, entitlements and the local billing provider
   mail/                 templates and the outbox / Resend sender

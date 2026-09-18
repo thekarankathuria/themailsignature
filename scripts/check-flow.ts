@@ -112,6 +112,8 @@ async function main() {
     /src="https?:\/\/[^"]+\/i\/social\//.test(payload.html),
   );
 
+  await businessWalkthrough();
+
   // Clean up: deleting the account removes everything.
   const { removeAccount } = await import("../lib/auth/service");
   const removed = await removeAccount({ userId: user.id, password });
@@ -124,6 +126,85 @@ async function main() {
     process.exit(1);
   }
   console.log(`\nFlow check passed against ${BASE}.`);
+}
+
+/**
+ * The Business tier end to end: buy a team, invite somebody, lock the logo,
+ * and check that the member's export carries the company's logo and that a
+ * tracked link redirects and counts.
+ */
+async function businessWalkthrough() {
+  const { createUser } = await import("../lib/auth/users");
+  const { createSession } = await import("../lib/auth/sessions");
+  const { startBusiness } = await import("../lib/teams/subscribe");
+  const { invite, acceptInvitation } = await import("../lib/teams/invitations");
+  const { writeTemplate, linkMemberSignatures } = await import("../lib/teams/template");
+  const { setAnalyticsEnabled } = await import("../lib/teams/store");
+  const { clicksFor } = await import("../lib/teams/links");
+  const { planFor } = await import("../lib/billing/plans");
+  const { DEFAULT_DATA, DEFAULT_STYLE } = await import("../lib/signature/defaults");
+
+  const stamp = Date.now();
+  const ownerEmail = `owner-${stamp}@themailsignature.test`;
+  const mateEmail = `mate-${stamp}@themailsignature.test`;
+  const owner = await createUser(ownerEmail, password);
+  const mate = await createUser(mateEmail, password);
+
+  const started = startBusiness({ userId: owner.id, companyName: "Flow Check Ltd", seats: 3, interval: "month" });
+  check("business plan creates a team", started.ok, started.ok ? "" : started.error);
+  if (!started.ok) return;
+  check("owner is on the business plan", planFor(owner.id) === "business");
+
+  const invited = await invite({ orgId: started.orgId, invitedBy: owner.id, email: mateEmail, role: "member" });
+  check("invitation sent", invited.ok, invited.ok ? "" : invited.error);
+  if (!invited.ok) return;
+
+  const joined = await acceptInvitation(invited.token, mate.id);
+  check("invitation accepted", joined.ok, joined.ok ? "" : joined.error);
+  check("member is on the business plan", planFor(mate.id) === "business");
+
+  const companyLogo = "https://flowcheck.example/logo.png";
+  writeTemplate(started.orgId, {
+    name: "Company template",
+    data: { ...DEFAULT_DATA, company: "Flow Check Ltd", logoUrl: companyLogo, website: "flowcheck.example" },
+    style: DEFAULT_STYLE,
+    locked: ["logo", "company"],
+  });
+  setAnalyticsEnabled(started.orgId, true);
+
+  // The member saves their own signature with their own logo.
+  cookie = `tms_session=${createSession(mate.id, "check-flow").token}`;
+  const created = await api("/api/signatures", {
+    method: "POST",
+    body: JSON.stringify({
+      name: "Member signature",
+      data: { firstName: "Mem", lastName: "Ber", logoUrl: "https://elsewhere.example/mine.png", website: "mine.example" },
+      style: { templateId: "meridian" },
+    }),
+  });
+  check("member saved a signature", created.status === 201, `status ${created.status}`);
+  const { signature: memberSignature } = await created.json();
+  linkMemberSignatures(started.orgId);
+
+  const exported = await api(`/api/signatures/${memberSignature.id}/export`);
+  check("member can export", exported.status === 200, `status ${exported.status}`);
+  const payload = await exported.json();
+  check("locked logo comes from the company template", payload.html.includes("flowcheck.example/logo.png"));
+  check("the member's own logo is not sent", !payload.html.includes("elsewhere.example/mine.png"));
+
+  const tracked = payload.html.match(/\/l\/([0-9a-f]{32})/);
+  check("links are counted for this team", Boolean(tracked));
+  if (tracked) {
+    const hop = await fetch(`${BASE}/l/${tracked[1]}`, { redirect: "manual" });
+    check("a tracked link redirects", hop.status === 302, `status ${hop.status}`);
+    check("it redirects to the real address", (hop.headers.get("location") ?? "").includes("flowcheck.example"));
+    const counted = clicksFor(started.orgId).some((link) => link.clicks > 0);
+    check("the click was counted", counted);
+  }
+
+  const { removeAccount } = await import("../lib/auth/service");
+  await removeAccount({ userId: mate.id, password });
+  await removeAccount({ userId: owner.id, password });
 }
 
 main().catch((error) => {

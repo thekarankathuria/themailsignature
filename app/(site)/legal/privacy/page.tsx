@@ -46,6 +46,14 @@ export default function PrivacyPage() {
           <strong>Technical data:</strong> your IP address, used briefly to limit abuse such as
           repeated form submissions, and standard server logs used to keep the service secure.
         </li>
+        <li>
+          <strong>Click counts, on Business teams that switch them on:</strong> when a team turns on
+          click counting, links in that team&rsquo;s signatures point at this site and then go
+          straight on to where they were always going. We add one to a count for that link on that
+          day. We do not record who followed it, their address, their device, or the email it came
+          from, and we do not set a cookie on them. An owner or admin of the team can switch this off
+          at any time.
+        </li>
       </ul>
       <p>
         Details you type into the editor without saving stay in your own browser. See the{" "}
@@ -53,7 +61,8 @@ export default function PrivacyPage() {
       </p>
       <p>
         We do not add tracking pixels to your signatures, and we do not collect information about the
-        people you email.
+        people you email. Click counting, where a team has switched it on, counts follows of a link
+        and nothing about the person who followed it.
       </p>
 
       <h2>Why we use it</h2>
