@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Panel } from "@/components/ui";
 import { DetailsPanel, ExtrasPanel, GraphicsPanel, SocialPanel, StylePanel } from "@/components/builder/panels";
@@ -19,12 +19,16 @@ import { LOCK_GROUPS, type LockGroupId } from "@/lib/teams/locks";
 export function CompanyTemplateEditor({
   orgName,
   initial,
-  assetBase,
 }: {
   orgName: string;
   initial: { name: string; data: SignatureData; style: SignatureStyle; locked: LockGroupId[] };
-  assetBase: string;
 }) {
+  // The preview runs in this browser, so icons resolve against this origin.
+  // The exported signature gets a real origin from the server instead.
+  const assetBase = useMemo(
+    () => process.env.NEXT_PUBLIC_ASSET_BASE || (typeof window === "undefined" ? "" : window.location.origin),
+    [],
+  );
   const router = useRouter();
   const [data, setData] = useState(initial.data);
   const [style, setStyle] = useState(initial.style);
@@ -56,7 +60,16 @@ export function CompanyTemplateEditor({
         <Panel title="Template">
           <TemplateGrid data={data} style={style} assetBase={assetBase} onSelect={(id) => setStylePatch({ templateId: id })} />
         </Panel>
-        <Panel title="Company details">
+        <Panel
+          title="Details and company"
+          summary="Name, role and contact details are only for this preview"
+          defaultOpen
+        >
+          <p className="mb-4 rounded-lg bg-navy-50 px-3.5 py-3 text-sm leading-relaxed text-navy-900">
+            Every member fills in their own name, role and contact details, and those cannot be locked. What you type
+            here only shows how the template looks. The company name, website and address below are the ones you can
+            lock.
+          </p>
           <DetailsPanel {...panelProps} />
         </Panel>
         <Panel title="Logo and images">
@@ -74,7 +87,7 @@ export function CompanyTemplateEditor({
       </div>
 
       <div className="flex w-full flex-col gap-4 lg:sticky lg:top-6 lg:w-[26rem] lg:shrink-0">
-        <Panel title="Preview">
+        <Panel title="Preview" defaultOpen>
           <Preview
             html={renderSignature(data, style, { assetBase })}
             width={previewWidth}

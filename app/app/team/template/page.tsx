@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { CompanyTemplateEditor } from "@/components/app/CompanyTemplateEditor";
 import { currentUser } from "@/lib/auth/current";
-import { siteUrl } from "@/lib/env";
 import { canEditTemplate } from "@/lib/teams/guard";
 import { findOrgForUser, roleOf } from "@/lib/teams/store";
 import { templateOrBlank } from "@/lib/teams/template";
@@ -34,7 +33,6 @@ export default async function CompanyTemplatePage() {
       <CompanyTemplateEditor
         orgName={org.name}
         initial={{ name: template.name, data: template.data, style: template.style, locked: template.locked }}
-        assetBase={process.env.NEXT_PUBLIC_ASSET_BASE?.trim() || siteUrl()}
       />
     </div>
   );
