@@ -6,6 +6,8 @@ import { isResponse, jsonError, requireUser } from "@/lib/http/guard";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
 import { renderDocument, renderPlainText, renderSignature } from "@/lib/signature/render";
 import { getSignature } from "@/lib/signatures/store";
+import { trackLinks } from "@/lib/teams/links";
+import { findOrg } from "@/lib/teams/store";
 import { withCompanyTemplate } from "@/lib/teams/template";
 
 export const runtime = "nodejs";
@@ -45,9 +47,15 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   // Absolute URLs: icons have to load from the recipient's mail client.
   const assetBase = process.env.NEXT_PUBLIC_ASSET_BASE?.trim() || siteUrl();
   const ctx = { assetBase };
-  const body = renderSignature(data, style, ctx);
+  const rendered = renderSignature(data, style, ctx);
+  // Teams that asked for click counts get their outbound links sent through
+  // /l/<id>. Nothing else about the email changes.
+  const org = signature.orgTemplateId ? findOrg(signature.orgTemplateId) : null;
+  const body =
+    org?.analyticsEnabled ? trackLinks(rendered, { orgId: org.id, signatureId: signature.id }) : rendered;
+
   const html = plan === "free" ? withFreeFooter(body, style, siteUrl()) : body;
-  const document = renderDocument(data, style, ctx);
+  const document = renderDocument(data, style, ctx).replace(rendered, body);
 
   return NextResponse.json({
     html,
