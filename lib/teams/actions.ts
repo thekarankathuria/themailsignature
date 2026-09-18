@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth/current";
 import { rateLimit } from "@/lib/rate-limit";
+import { writeBrandKit } from "./brand";
 import { requireRole, TeamError, assertNotLastOwner, outranks } from "./guard";
 import { acceptInvitation, invite, revokeInvitation, type InvitableRole } from "./invitations";
 import { removeMember, renameOrg, roleOf, setAnalyticsEnabled, setRole, type Role } from "./store";
@@ -143,4 +144,22 @@ export async function acceptInvitationAction(input: { token: string }): Promise<
   if (!result.ok) return fail("form", result.error);
   revalidatePath("/app/team");
   redirect("/app/team?joined=1");
+}
+
+export async function saveBrandKitAction(input: {
+  colors?: string[];
+  fonts?: string[];
+  logoUrl?: string;
+  bannerUrl?: string;
+}): Promise<TeamActionResult> {
+  const user = await requireUser();
+  try {
+    const { org } = requireRole(user.id, ["owner", "admin"]);
+    writeBrandKit(org.id, input as Parameters<typeof writeBrandKit>[1]);
+    revalidatePath("/app/team/brand");
+    revalidatePath("/editor");
+    return { ok: true };
+  } catch (error) {
+    return asFailure(error);
+  }
 }
