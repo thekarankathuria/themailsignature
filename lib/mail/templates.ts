@@ -100,3 +100,42 @@ export function subscriptionCanceled(input: { plan: string; periodEnd: string })
     ],
   });
 }
+
+export function teamInvite({
+  orgName,
+  invitedBy,
+  role,
+  url,
+}: {
+  orgName: string;
+  invitedBy: string | null;
+  role: "admin" | "member";
+  url: string;
+}) {
+  const who = invitedBy ? `${invitedBy} invited you` : "You have been invited";
+  return renderEmail({
+    subject: `Join ${orgName} on TheMailSignature`,
+    preheader: `${who} to join ${orgName}.`,
+    heading: `Join ${orgName}`,
+    blocks: [
+      { kind: "p", text: `${who} to join ${orgName} on TheMailSignature as ${role === "admin" ? "an admin" : "a member"}.` },
+      { kind: "p", text: "Your team has a company signature template. You fill in your own name, role and contact details, and the parts your admins locked stay as they set them." },
+      { kind: "button", label: "Join the team", url },
+      { kind: "small", text: "This invitation works for seven days and can be used once. If you were not expecting it, you can ignore this email." },
+    ],
+  });
+}
+
+export function joinedTeam(orgName: string) {
+  const site = siteUrl();
+  return renderEmail({
+    subject: `You joined ${orgName}`,
+    preheader: `Your signature now follows the ${orgName} template.`,
+    heading: `Welcome to ${orgName}`,
+    blocks: [
+      { kind: "p", text: `You are on the ${orgName} team. Add your own details and your signature is ready to install.` },
+      { kind: "button", label: "Make my signature", url: `${site}/editor` },
+      { kind: "small", text: `Setup steps for every email client are at ${site}/help.` },
+    ],
+  });
+}
