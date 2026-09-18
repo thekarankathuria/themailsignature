@@ -6,6 +6,7 @@ import { isResponse, jsonError, requireUser } from "@/lib/http/guard";
 import { clientKey, rateLimit } from "@/lib/rate-limit";
 import { renderDocument, renderPlainText, renderSignature } from "@/lib/signature/render";
 import { getSignature } from "@/lib/signatures/store";
+import { withCompanyTemplate } from "@/lib/teams/template";
 
 export const runtime = "nodejs";
 
@@ -28,8 +29,12 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   const signature = getSignature(guard.user.id, id);
   if (!signature) return jsonError(404, "That signature does not exist.");
 
+  // The company template is applied here, not in the editor, so a member who
+  // writes a locked value straight to the API still sends the company's.
+  const { data, style } = withCompanyTemplate(signature);
+
   const plan = planFor(guard.user.id);
-  const features = proFeatures(signature.data, signature.style);
+  const features = proFeatures(data, style);
   if (!canExport(plan, features)) {
     return jsonError(402, "This signature uses Pro features. Upgrade to copy it, or switch to the free options.", {
       code: "upgrade",
@@ -40,14 +45,14 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   // Absolute URLs: icons have to load from the recipient's mail client.
   const assetBase = process.env.NEXT_PUBLIC_ASSET_BASE?.trim() || siteUrl();
   const ctx = { assetBase };
-  const body = renderSignature(signature.data, signature.style, ctx);
-  const html = plan === "free" ? withFreeFooter(body, signature.style, siteUrl()) : body;
-  const document = renderDocument(signature.data, signature.style, ctx);
+  const body = renderSignature(data, style, ctx);
+  const html = plan === "free" ? withFreeFooter(body, style, siteUrl()) : body;
+  const document = renderDocument(data, style, ctx);
 
   return NextResponse.json({
     html,
     document: plan === "free" ? document.replace(body, html) : document,
-    text: renderPlainText(signature.data, signature.style),
+    text: renderPlainText(data, style),
     plan,
     features,
   });

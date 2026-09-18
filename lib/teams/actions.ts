@@ -5,9 +5,11 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/auth/current";
 import { rateLimit } from "@/lib/rate-limit";
 import { writeBrandKit } from "./brand";
+import { linkMemberSignatures } from "./template";
 import { requireRole, TeamError, assertNotLastOwner, outranks } from "./guard";
 import { acceptInvitation, invite, revokeInvitation, type InvitableRole } from "./invitations";
 import { removeMember, renameOrg, roleOf, setAnalyticsEnabled, setRole, type Role } from "./store";
+import { writeTemplate } from "./template";
 
 /**
  * Team actions. Every one resolves the caller's role from the database first,
@@ -157,6 +159,27 @@ export async function saveBrandKitAction(input: {
     const { org } = requireRole(user.id, ["owner", "admin"]);
     writeBrandKit(org.id, input as Parameters<typeof writeBrandKit>[1]);
     revalidatePath("/app/team/brand");
+    revalidatePath("/editor");
+    return { ok: true };
+  } catch (error) {
+    return asFailure(error);
+  }
+}
+
+export async function saveTemplateAction(input: {
+  name?: string;
+  data: unknown;
+  style: unknown;
+  locked: unknown;
+}): Promise<TeamActionResult> {
+  const user = await requireUser();
+  try {
+    const { org } = requireRole(user.id, ["owner", "admin"]);
+    writeTemplate(org.id, input);
+    // Members follow the template from now on: their signatures are not
+    // rewritten, they are merged at render, so nothing else needs touching.
+    linkMemberSignatures(org.id);
+    revalidatePath("/app/team/template");
     revalidatePath("/editor");
     return { ok: true };
   } catch (error) {

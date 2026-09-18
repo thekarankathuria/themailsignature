@@ -12,6 +12,8 @@ export type SavedSignature = {
   data: SignatureData;
   style: SignatureStyle;
   designId: string | null;
+  /** The organization whose company template this signature follows. */
+  orgTemplateId: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -23,6 +25,7 @@ type Row = {
   data: string;
   style: string;
   design_id: string | null;
+  org_template_id: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -44,6 +47,7 @@ function toSignature(row: Row): SavedSignature {
     data: normaliseData(JSON.parse(row.data)),
     style: normaliseStyle(JSON.parse(row.style)),
     designId: row.design_id,
+    orgTemplateId: row.org_template_id,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
