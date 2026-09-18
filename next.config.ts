@@ -3,14 +3,47 @@ import type { NextConfig } from "next";
 /**
  * Response headers applied to every route.
  *
- * Deliberately NOT included yet: Content-Security-Policy. Adding one means
- * first inventorying every origin the app loads from (Supabase, uploaded
- * images, later Stripe) and running it `Content-Security-Policy-Report-Only`
- * for a while; that is scheduled for launch hardening (Phase 6).
- * Shipping a CSP that has to be disabled at the first bug report is worse than
- * shipping none, so it is a tracked follow-up, not a one-line addition.
+ * The Content-Security-Policy is REPORT-ONLY on purpose. It is a real policy
+ * written against what the app actually loads, but a policy that breaks the
+ * editor is worse than no policy, so it reports for a while before it
+ * enforces. Switching it on means changing one key name, once the reports at
+ * `CSP_REPORT_URI` have been quiet through a few releases.
+ *
+ * Two allowances are not negotiable and are worth stating:
+ *   - `style-src 'unsafe-inline'`: signature HTML is inline-styled by design,
+ *     because that is the only thing every mail client understands, and the
+ *     previews render that same markup on the page.
+ *   - `img-src data:`: the editor previews an uploaded image before it is
+ *     saved, straight from the file the visitor picked.
+ * `script-src` allows no inline script, which is the part that matters.
  */
+const cspDirectives = [
+  "default-src 'self'",
+  // Next injects its own inline bootstrap in development only; production
+  // ships external chunks, so this stays tight.
+  process.env.NODE_ENV === "production"
+    ? "script-src 'self'"
+    : "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: https:",
+  "font-src 'self' data:",
+  "connect-src 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-src 'none'",
+  "upgrade-insecure-requests",
+];
+
 const securityHeaders = [
+  {
+    key: "Content-Security-Policy-Report-Only",
+    value: [
+      ...cspDirectives,
+      ...(process.env.CSP_REPORT_URI ? [`report-uri ${process.env.CSP_REPORT_URI}`] : []),
+    ].join("; "),
+  },
   // Stop the browser second-guessing declared content types.
   { key: "X-Content-Type-Options", value: "nosniff" },
   // Send the origin cross-site, the full path same-site; never leak query

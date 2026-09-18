@@ -4,6 +4,8 @@
  * redirects, and every sitemap page must have a title, a meta description and
  * a canonical link. Usage: BASE_URL=http://localhost:3107 npm run check:routes
  */
+export {};
+
 const BASE = (process.env.BASE_URL ?? "http://localhost:3000").replace(/\/$/, "");
 
 async function main() {
