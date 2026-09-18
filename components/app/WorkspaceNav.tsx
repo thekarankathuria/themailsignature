@@ -9,13 +9,15 @@ const LINKS = [
   { href: "/app/settings", label: "Settings" },
 ];
 
-export function WorkspaceNav() {
+/** `showTeam` comes from the server, which knows whether this person is on a team. */
+export function WorkspaceNav({ showTeam = false }: { showTeam?: boolean }) {
   const pathname = usePathname();
+  const links = showTeam ? [LINKS[0], { href: "/app/team", label: "Team" }, ...LINKS.slice(1)] : LINKS;
   return (
     <nav aria-label="Account" className="lg:w-56 lg:shrink-0">
       <ul className="flex gap-2 overflow-x-auto lg:flex-col lg:gap-1">
-        {LINKS.map((link) => {
-          const active = pathname === link.href;
+        {links.map((link) => {
+          const active = link.href === "/app/team" ? pathname.startsWith(link.href) : pathname === link.href;
           return (
             <li key={link.href}>
               <Link

@@ -39,6 +39,16 @@ export async function logoutAction(): Promise<void> {
   redirect("/");
 }
 
+/**
+ * Sign out and go to the login page for a particular destination. An
+ * invitation addressed to somebody else sends people here, so they come back
+ * to the invitation instead of the homepage.
+ */
+export async function logoutAndReturnAction(input: { next: string }): Promise<void> {
+  await endSession();
+  redirect(`/login?next=${encodeURIComponent(safeNext(input.next))}`);
+}
+
 export async function forgotPasswordAction(input: { email: string }): Promise<{ ok: true } | ActionFailure> {
   return service.requestReset({ email: str(input.email), ip: await clientIp() });
 }

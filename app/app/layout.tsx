@@ -6,6 +6,7 @@ import { AccountMenu } from "@/components/app/AccountMenu";
 import { WorkspaceNav } from "@/components/app/WorkspaceNav";
 import { currentUser } from "@/lib/auth/current";
 import { planFor } from "@/lib/billing/plans";
+import { findOrgForUser } from "@/lib/teams/store";
 
 export const metadata = { robots: { index: false, follow: false } };
 
@@ -14,6 +15,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
   const user = await currentUser();
   if (!user) redirect("/login?next=/app/signatures");
   const plan = planFor(user.id);
+  const onATeam = findOrgForUser(user.id) !== null;
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-navy-50">
@@ -28,7 +30,7 @@ export default async function AppLayout({ children }: Readonly<{ children: React
       </header>
 
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-8 px-5 py-8 sm:px-8 lg:flex-row">
-        <WorkspaceNav />
+        <WorkspaceNav showTeam={onATeam} />
         <main id="main" className="min-w-0 flex-1">
           {children}
         </main>
