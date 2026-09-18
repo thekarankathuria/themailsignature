@@ -12,6 +12,7 @@ import { formatPrice, type Plan } from "@/lib/pricing";
 export function TestCheckout({ plan, defaultInterval }: { plan: Plan; defaultInterval: "month" | "year" }) {
   const [interval, setInterval] = useState<"month" | "year">(defaultInterval);
   const [seats, setSeats] = useState(plan.minSeats);
+  const [companyName, setCompanyName] = useState("");
   const [error, setError] = useState("");
   const [pending, startTransition] = useTransition();
 
@@ -35,6 +36,22 @@ export function TestCheckout({ plan, defaultInterval }: { plan: Plan; defaultInt
           </button>
         ))}
       </div>
+
+      {plan.perSeat && (
+        <label className="flex flex-col gap-1.5 text-sm font-medium text-navy-900">
+          Company name
+          <input
+            name="companyName"
+            value={companyName}
+            onChange={(event) => setCompanyName(event.target.value)}
+            placeholder="Northbeam Studio"
+            className="rounded-lg border border-ink-300 px-3 py-2 font-normal"
+          />
+          <span className="text-xs font-normal text-ink-600">
+            Your team sees this name on invitations and on the company template.
+          </span>
+        </label>
+      )}
 
       {plan.perSeat && (
         <label className="flex items-center justify-between gap-4 text-sm font-medium text-navy-900">
@@ -75,7 +92,7 @@ export function TestCheckout({ plan, defaultInterval }: { plan: Plan; defaultInt
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
-            const result = await completeTestCheckout({ plan: plan.id, interval, seats });
+            const result = await completeTestCheckout({ plan: plan.id, interval, seats, companyName });
             if (result && !result.ok) setError(result.error);
           })
         }

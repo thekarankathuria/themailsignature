@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { closeDb, db } from "./index";
+import { closeDb, db, transaction } from "./index";
 import { newId } from "./ids";
 
 beforeEach(() => {
@@ -44,6 +44,30 @@ describe("database", () => {
     expect(() =>
       conn.prepare("insert into users (id, email, password_hash, created_at, updated_at) values (?, ?, ?, ?, ?)").run(newId(), "case@example.com", "x", now, now),
     ).toThrow();
+  });
+
+  it("lets transactions nest, rolling the whole thing back", () => {
+    const conn = db();
+    const now = new Date().toISOString();
+    const insert = (email: string) =>
+      conn
+        .prepare("insert into users (id, email, password_hash, created_at, updated_at) values (?, ?, ?, ?, ?)")
+        .run(newId(), email, "x", now, now);
+
+    transaction(() => {
+      insert("outer@example.com");
+      transaction(() => insert("inner@example.com"));
+    });
+    expect(conn.prepare("select count(*) as n from users").get()).toEqual({ n: 2 });
+
+    expect(() =>
+      transaction(() => {
+        insert("third@example.com");
+        transaction(() => insert("outer@example.com"));
+      }),
+    ).toThrow();
+    // The inner failure rolls back the outer write too.
+    expect(conn.prepare("select count(*) as n from users").get()).toEqual({ n: 2 });
   });
 
   it("creates 32-character hex ids", () => {

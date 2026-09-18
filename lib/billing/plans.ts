@@ -93,8 +93,4 @@ export function planFor(userId: string): PlanId {
 
 export const PLAN_NAMES: Record<PlanId, string> = { free: "Free", pro: "Pro", business: "Business" };
 
-/**
- * The smallest Business subscription. Billing is the authority on this number
- * and `lib/pricing.ts` shows it, so the page and the checkout cannot drift.
- */
-export const MIN_BUSINESS_SEATS = 3;
+export { MIN_BUSINESS_SEATS, MAX_SEATS } from "./limits";

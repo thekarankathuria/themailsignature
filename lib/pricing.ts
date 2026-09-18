@@ -1,4 +1,4 @@
-import { MIN_BUSINESS_SEATS } from "./billing/plans";
+import { MIN_BUSINESS_SEATS } from "./billing/limits";
 import type { ClaimId } from "@/lib/marketing/claims";
 
 /**

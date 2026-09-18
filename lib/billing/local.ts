@@ -1,6 +1,7 @@
 import { db } from "@/lib/db";
 import { newId, nowIso } from "@/lib/db/ids";
-import { MIN_BUSINESS_SEATS, type Interval, type PlanId } from "./plans";
+import { MIN_BUSINESS_SEATS } from "./limits";
+import type { Interval, PlanId } from "./plans";
 
 /**
  * The local payment provider: subscriptions change immediately and no money

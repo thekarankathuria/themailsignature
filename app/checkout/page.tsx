@@ -5,6 +5,7 @@ import { TestCheckout } from "@/components/app/TestCheckout";
 import { currentUser } from "@/lib/auth/current";
 import { localCheckoutEnabled } from "@/lib/billing/local";
 import { PLANS } from "@/lib/pricing";
+import { findOrgForUser, roleOf } from "@/lib/teams/store";
 import "../globals.css";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,8 @@ export default async function CheckoutPage({
 
   const user = await currentUser();
   if (!user) redirect(`/signup?next=${encodeURIComponent(`/checkout?plan=${plan.id}`)}`);
+  // A member is already covered by their team's plan and has nothing to buy.
+  if (findOrgForUser(user.id) && roleOf(user.id) !== "owner") redirect("/app/billing");
 
   return (
     <div className="flex min-h-[100dvh] flex-col bg-white px-4 py-10">

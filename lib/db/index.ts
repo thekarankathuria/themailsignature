@@ -58,10 +58,29 @@ function migrate(conn: DatabaseSync): void {
   }
 }
 
-/** Runs `fn` in a transaction, rolling back if it throws. */
+/**
+ * Runs `fn` in a transaction, rolling back if it throws.
+ *
+ * Reentrant: SQLite has no nested BEGIN, so an inner call joins the
+ * transaction that is already open and only the outermost one commits. That
+ * lets a function that writes atomically on its own (createOrg) be called
+ * inside a larger atomic operation (startBusiness) without either knowing
+ * about the other.
+ */
+let depth = 0;
+
 export function transaction<T>(fn: () => T): T {
   const conn = db();
+  if (depth > 0) {
+    depth += 1;
+    try {
+      return fn();
+    } finally {
+      depth -= 1;
+    }
+  }
   conn.exec("begin");
+  depth = 1;
   try {
     const result = fn();
     conn.exec("commit");
@@ -69,5 +88,7 @@ export function transaction<T>(fn: () => T): T {
   } catch (error) {
     conn.exec("rollback");
     throw error;
+  } finally {
+    depth = 0;
   }
 }

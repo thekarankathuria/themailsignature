@@ -1,9 +1,12 @@
 import Link from "next/link";
 import { BillingControls } from "@/components/app/BillingControls";
+import { SeatControl } from "@/components/app/SeatControl";
 import { currentUser } from "@/lib/auth/current";
 import { localCheckoutEnabled } from "@/lib/billing/local";
-import { PLAN_NAMES, planFor, subscriptionFor } from "@/lib/billing/plans";
+import { MIN_BUSINESS_SEATS, PLAN_NAMES, effectiveSubscription, planFor, subscriptionFor } from "@/lib/billing/plans";
 import { PLANS, formatPrice } from "@/lib/pricing";
+import { seatUsage } from "@/lib/teams/seats";
+import { findOrgForUser, roleOf } from "@/lib/teams/store";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Plan and billing" };
@@ -18,6 +21,13 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
   const subscription = subscriptionFor(user.id);
   const pro = PLANS.find((p) => p.id === "pro")!;
   const business = PLANS.find((p) => p.id === "business")!;
+
+  // A member is covered by their team's plan and pays for nothing, so the
+  // page shows them what they have and who to ask, and no controls at all.
+  const org = findOrgForUser(user.id);
+  const role = org ? roleOf(user.id) : null;
+  const owner = role === "owner";
+  const team = org ? { org, usage: seatUsage(org.id), subscription: effectiveSubscription(user.id) } : null;
 
   return (
     <div className="flex flex-col gap-6">
@@ -48,10 +58,37 @@ export default async function BillingPage({ searchParams }: { searchParams: Prom
             ? "Four classic templates, one designed template for your industry and one saved signature."
             : "Every layout and industry design, animated icons, image hosting and unlimited saved signatures."}
         </p>
-        <div className="mt-5">
-          <BillingControls plan={plan} cancelAtPeriodEnd={Boolean(subscription?.cancelAtPeriodEnd)} />
-        </div>
+        {team && !owner ? (
+          <p className="mt-5 rounded-lg bg-navy-50 px-4 py-3 text-sm leading-relaxed text-navy-900">
+            Your plan comes with your place on the {team.org.name} team. An owner of the team looks after the plan and
+            the seats.
+          </p>
+        ) : (
+          <div className="mt-5">
+            <BillingControls plan={plan} cancelAtPeriodEnd={Boolean(subscription?.cancelAtPeriodEnd)} />
+          </div>
+        )}
       </section>
+
+      {team && owner && (
+        <section className="rounded-card border border-ink-200 bg-white p-6">
+          <h2 className="text-lg font-semibold text-navy-900">Seats for {team.org.name}</h2>
+          <p className="mt-1 text-sm leading-relaxed text-ink-600">
+            Every seat is a person on your team. A pending invitation holds its seat until it is accepted or you take it
+            back.
+          </p>
+          <div className="mt-5">
+            <SeatControl
+              seats={team.subscription?.seats ?? MIN_BUSINESS_SEATS}
+              used={team.usage.used}
+              minSeats={MIN_BUSINESS_SEATS}
+            />
+          </div>
+          <Link href="/app/team" className="mt-4 inline-block text-sm font-semibold text-blue-brand-600 hover:text-blue-brand-700">
+            Manage your team
+          </Link>
+        </section>
+      )}
 
       {plan === "free" && (
         <section className="grid gap-4 sm:grid-cols-2">
