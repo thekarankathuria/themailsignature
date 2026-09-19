@@ -9,6 +9,7 @@ import { PLANS, formatPrice } from "@/lib/pricing";
 import { requireRole, TeamError } from "@/lib/teams/guard";
 import { changeSeats, cleanSeats, startBusiness } from "@/lib/teams/subscribe";
 import { cancelAtPeriodEnd, grantPlan, localCheckoutEnabled, resumePlan } from "./local";
+import { createCheckoutSession, createPortalSession, customerFor, stripeEnabled } from "./stripe";
 import { PLAN_NAMES, subscriptionFor, type Interval, type PlanId } from "./plans";
 
 /**
@@ -22,6 +23,53 @@ const longDate = (iso: string | null) =>
 
 function paidPlan(value: unknown): Exclude<PlanId, "free"> | null {
   return value === "pro" || value === "business" ? value : null;
+}
+
+/**
+ * Sends somebody to Stripe Checkout when it is configured. The local test
+ * checkout stays for development, so both paths keep working.
+ */
+export async function startCheckout(input: { plan: string; interval: string; seats?: number }) {
+  const user = await currentUser();
+  if (!user) redirect("/login?next=/app/billing");
+  if (!stripeEnabled()) return { ok: false, error: "Payments are not available yet." } satisfies BillingFailure;
+
+  const plan = paidPlan(input.plan);
+  if (!plan) return { ok: false, error: "Choose a plan." } satisfies BillingFailure;
+  const interval: Interval = input.interval === "year" ? "year" : "month";
+
+  let url: string;
+  try {
+    url = await createCheckoutSession({
+      userId: user.id,
+      email: user.email,
+      plan,
+      interval,
+      seats: plan === "business" ? cleanSeats(input.seats) : 1,
+    });
+  } catch (error) {
+    console.error("Stripe checkout failed", error);
+    return { ok: false, error: "Could not start checkout. Try again shortly." } satisfies BillingFailure;
+  }
+  redirect(url);
+}
+
+/** Opens the Stripe customer portal, where cards and cancellations live. */
+export async function openBillingPortal() {
+  const user = await currentUser();
+  if (!user) redirect("/login?next=/app/billing");
+  const customer = customerFor(user.id);
+  if (!stripeEnabled() || !customer) {
+    return { ok: false, error: "There is nothing to manage yet." } satisfies BillingFailure;
+  }
+  let url: string;
+  try {
+    url = await createPortalSession(customer);
+  } catch (error) {
+    console.error("Stripe portal failed", error);
+    return { ok: false, error: "Could not open the billing portal. Try again shortly." } satisfies BillingFailure;
+  }
+  redirect(url);
 }
 
 export async function completeTestCheckout(input: {

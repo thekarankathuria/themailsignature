@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Logo } from "@/components/brand/Logo";
+import { StripeCheckout } from "@/components/app/StripeCheckout";
 import { TestCheckout } from "@/components/app/TestCheckout";
 import { currentUser } from "@/lib/auth/current";
 import { localCheckoutEnabled } from "@/lib/billing/local";
+import { stripeEnabled } from "@/lib/billing/stripe";
 import { PLANS } from "@/lib/pricing";
 import { findOrgForUser, roleOf } from "@/lib/teams/store";
 import "../globals.css";
@@ -34,7 +36,9 @@ export default async function CheckoutPage({
         <div className="rounded-card border border-ink-200 bg-white p-6 shadow-lg shadow-navy-900/5 sm:p-8">
           <h1 className="text-2xl font-bold tracking-tight text-navy-900">Upgrade to {plan.name}</h1>
           <p className="mt-1 text-sm text-ink-600">Signed in as {user.email}.</p>
-          {localCheckoutEnabled() ? (
+          {stripeEnabled() ? (
+            <StripeCheckout plan={plan} defaultInterval={interval === "year" ? "year" : "month"} />
+          ) : localCheckoutEnabled() ? (
             <TestCheckout plan={plan} defaultInterval={interval === "year" ? "year" : "month"} />
           ) : (
             <div className="mt-6">
