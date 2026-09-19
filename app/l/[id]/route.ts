@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { recordClick, targetFor } from "@/lib/teams/links";
+import { isAutomated, recordClick, targetFor } from "@/lib/teams/links";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,17 +19,20 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     return NextResponse.redirect(new URL("/", request.url), 302);
   }
 
-  // Browsers and mail clients fetch links ahead of a click to preview them.
-  // Those are not clicks, and neither is a HEAD request.
+  // robots.txt disallows /l/; this covers whatever ignores it.
   const headers = request.headers;
-  const prefetch =
-    request.method === "HEAD" ||
-    headers.get("sec-purpose")?.includes("prefetch") ||
-    headers.get("purpose") === "prefetch" ||
-    headers.get("x-purpose") === "preview" ||
-    headers.get("x-moz") === "prefetch";
+  const automated = isAutomated({
+    method: request.method,
+    userAgent: headers.get("user-agent") ?? "",
+    headers: {
+      "sec-purpose": headers.get("sec-purpose"),
+      purpose: headers.get("purpose"),
+      "x-purpose": headers.get("x-purpose"),
+      "x-moz": headers.get("x-moz"),
+    },
+  });
 
-  if (!prefetch) recordClick(id);
+  if (!automated) recordClick(id);
 
   return NextResponse.redirect(target, 302);
 }

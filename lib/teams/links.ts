@@ -88,6 +88,35 @@ export function targetFor(id: string): string | null {
   return row.url;
 }
 
+/** Anything that says it is a robot is taken at its word. */
+const BOT = /bot|crawler|spider|crawling|preview|facebookexternalhit|slackbot|whatsapp|telegram|discord|curl|wget|python-requests|headless/i;
+
+/**
+ * Whether a request for a link is something other than a person clicking.
+ *
+ * Browsers and mail clients fetch links ahead of a click to preview them, and
+ * crawlers follow them wholesale. Counting those would quietly inflate every
+ * number on the analytics page.
+ */
+export function isAutomated({
+  method,
+  userAgent,
+  headers,
+}: {
+  method: string;
+  userAgent: string;
+  headers: Record<string, string | null | undefined>;
+}): boolean {
+  if (method === "HEAD") return true;
+  if (BOT.test(userAgent)) return true;
+  return (
+    Boolean(headers["sec-purpose"]?.includes("prefetch")) ||
+    headers.purpose === "prefetch" ||
+    headers["x-purpose"] === "preview" ||
+    headers["x-moz"] === "prefetch"
+  );
+}
+
 export function recordClick(id: string, when = new Date()): void {
   const day = when.toISOString().slice(0, 10);
   db()

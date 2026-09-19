@@ -153,3 +153,26 @@ describe("counting", () => {
     expect(clicksFor(org.id)).toEqual([]);
   });
 });
+
+describe("what counts as a click", () => {
+  it("knows a robot from a person", async () => {
+    const { isAutomated } = await import("./links");
+    const person =
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36";
+
+    expect(isAutomated({ method: "GET", userAgent: person, headers: {} })).toBe(false);
+    expect(isAutomated({ method: "HEAD", userAgent: person, headers: {} })).toBe(true);
+    for (const agent of [
+      "Googlebot/2.1 (+http://www.google.com/bot.html)",
+      "Mozilla/5.0 (compatible; bingbot/2.0)",
+      "facebookexternalhit/1.1",
+      "Slackbot-LinkExpanding 1.0",
+      "curl/8.4.0",
+      "GPTBot/1.0",
+    ]) {
+      expect(isAutomated({ method: "GET", userAgent: agent, headers: {} })).toBe(true);
+    }
+    expect(isAutomated({ method: "GET", userAgent: person, headers: { "sec-purpose": "prefetch;prerender" } })).toBe(true);
+    expect(isAutomated({ method: "GET", userAgent: person, headers: { purpose: "prefetch" } })).toBe(true);
+  });
+});
