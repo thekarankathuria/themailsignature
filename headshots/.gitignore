@@ -1,0 +1,8 @@
+# Drop the two supplied headshots here as man.png and woman.png, then run
+# npm run headshots
+# The images themselves are not committed; the cropped 184px avatars in
+# public/samples/ are.
+*.png
+*.jpg
+*.jpeg
+*.webp

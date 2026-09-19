@@ -9,6 +9,7 @@
     "lint": "eslint",
     "icons": "node scripts/gen-social-icons.mjs",
     "brand": "node scripts/gen-brand-assets.mjs",
+    "headshots": "node scripts/import-headshots.mjs",
     "samples": "node scripts/gen-sample-assets.mjs",
     "contact-icons": "node scripts/gen-contact-icons.mjs",
     "anim": "node scripts/gen-animated-icons.mjs",
